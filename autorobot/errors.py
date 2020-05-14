@@ -1,0 +1,2 @@
+class RobotPathError(BaseException):
+    pass
