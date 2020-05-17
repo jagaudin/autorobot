@@ -1,5 +1,6 @@
 import clr
 from pathlib import Path
+from enum import IntEnum
 
 from .errors import RobotPathError
 
@@ -14,13 +15,14 @@ try:
 except Exception as e:
     raise(RobotPathError(f"Couldn't find {p}\\*\\{suffix}"))
 
-from enum import Enum
 from RobotOM import (
+    IRobotCaseType,
     IRobotProjectType,
 )
 
-class RProjType(Enum):
-    '''Aliases for common project types (others exist, see ``IRobotProjectType``)'''
+
+class RProjType(IntEnum):
+    '''Aliases for common project types (others exist, see ``IRobotProjectType``).'''
     #: ``IRobotProjectType.I_PT_BUILDING``
     BUILDING = IRobotProjectType.I_PT_BUILDING
     #: ``IRobotProjectType.I_PT_FRAME_2D``
@@ -33,3 +35,11 @@ class RProjType(Enum):
     TRUSS_2D = IRobotProjectType.I_PT_TRUSS_2D
     #: ``IRobotProjectType.I_PT_TRUSS_3D``
     TRUSS_3D = IRobotProjectType.I_PT_TRUSS_3D
+
+
+class RCaseType(IntEnum):
+    '''Aliases for case type (see ``IRobotCaseType``).'''
+    #: ``IRobotCaseType.I_CT_SIMPLE``
+    SIMPLE = IRobotCaseType.I_CT_SIMPLE
+    #: ``IRobotCaseType.I_CT_COMBINATION``
+    COMB = IRobotCaseType.I_CT_COMBINATION
