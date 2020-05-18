@@ -1,6 +1,24 @@
-class RobotPathError(BaseException):
+class AutoRobotInitError(BaseException):
+    '''An exception raised when the module was not initialized.
+    '''
     pass
 
 
-class RobotNewProjError(BaseException):
+class AutoRobotProjError(BaseException):
+    '''An exception raised when creating a new project failed.
+    '''
     pass
+
+
+class AutoRobotPathError(BaseException):
+    '''An exception raised when the path to ``interop.RobotOM.dll`` is not valid.
+    '''
+    pass
+
+
+class AutoRobotValueError(BaseException):
+    '''An exception raised when an invalid value is encountered.
+    '''
+    pass
+
+
