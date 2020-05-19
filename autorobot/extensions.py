@@ -1,11 +1,13 @@
 import sys
 import numpy as np
+from abc import ABC
 
 from .constants import (
     _robot_dll_path,
     RCaseType,
     ROType,
 )
+from .decorators import abstract_attributes
 from .errors import (
     AutoRobotProjError,
     AutoRobotValueError,
@@ -113,11 +115,12 @@ class ExtendedRobotApp:
         raise AttributeError(f"{self.__class__.__name__} has not attribute '{name}'.")
 
         
-class Capsule:
+@abstract_attributes('_otype')     
+class Capsule(ABC):
     def __init__(self, inst):
         self._inst = inst
         if not isinstance(inst, self._otype):
-            raise AutoRobotValueError(f"{inst} is not an instance of `{str(self.otype)}`.")
+            raise AutoRobotValueError(f"{inst} is not an instance of `{str(self._otype)}`.")
         
     def __getattr__(self, name):
         if hasattr(self._inst, name):
@@ -141,8 +144,9 @@ class ExtendedNode(Capsule):
         ''' 
         return np.array([self.node.X, self.node.Y, self.node.Z])
 
-        
-class ExtendedServer(Capsule):
+
+@abstract_attributes('_otype', '_ctype', '_dtype', '_rtype')
+class ExtendedServer(Capsule, ABC):
     def __init__(self, inst, app):
         super(ExtendedServer, self).__init__(inst)
         self.app = app
@@ -151,12 +155,32 @@ class ExtendedServer(Capsule):
     def __enter__(self):
         if hasattr(self.server, 'BeginMultiOperation'):
             self.server.BeginMultiOperation()
+        return self
 
-    def __exit__(self):
+    def __exit__(self, exc_type,exc_value, traceback):
         if hasattr(self.server, 'EndMultiOperation'):
             self.server.EndMultiOPeration()
             
+    def get(self, n):
+        '''A method to retrieve objects from the server.
+        
+        :param int n: The object number
+        '''
+        try:
+            return self._rtype(self._ctype(self.server.Get(n)))
+        except Exception as e:
+            raise AutoRobotValueError(
+                f"{self.__class__.__name__} couldn't get id `{n}`."
+            ) from e
+            
     def select(self, s, obj=True):
+        '''Returns an iterator of objects referred to in a selection string.
+        
+        :param str s: A valid selection string
+        :param bool obj: Whether to return objects or objects' numbers.
+        :return: An generator of the selected objects
+        :rtype: generator
+        '''
         sel = self.app.select.Create(self._dtype)
         sel.FromText(str(s))
         if not obj:
@@ -174,11 +198,30 @@ class ExtendedBarServer(ExtendedServer):
     _ctype = IRobotBar
     _dtype = ROType.BAR
     _rtype = IRobotBar
+     
+    def create(self, start, end, num=None, obj=True):
+        '''Creates a new bar between ``start`` and ``end`` nodes.
+
+        :param start, end: The start and end nodes
+        :type start, end: IRobotNode or int
+        :param int num: The number of the new bar (optional)
+        :param bool obj: Whether the bar is returned as an object (default: ``True``)
+        :return: The new bar or its number
+        :rtype: IRobotBar or int
+        '''
+        try:
+            start, end = (
+                n.Number if hasattr(n, 'Number') else int(n) for n in (start, end)
+            )
+        except Exception as e:
+            raise AutoRobotValueError(
+                f"Couldn't create bar with nodes `{start}` and `{end}`."
+            ) from e
+        if num is None:
+            num = self.FreeNumber
+        self.Create(num, start, end)
+        return self.get(num) if obj else num
     
-    def get(self, n):
-        return IRobotBar(self.server.Get(n))   
-    
-        
         
 class ExtendedCaseServer(ExtendedServer):
     
@@ -186,13 +229,40 @@ class ExtendedCaseServer(ExtendedServer):
     _ctype = IRobotCase
     _dtype = ROType.CASE
     _rtype = IRobotCase
+    
+    @staticmethod
+    def recast(case):
+        '''Recasts a load case object according to its type.
+        
+        :param IRobotCase case: The load case object
+        '''
+        if case.Type == RCaseType.SIMPLE:
+            return IRobotSimpleCase(case)
+        elif case.Type == RCaseType.COMB:
+            return IRobotCaseCombination(case)
         
     def get(self, n):
-        c = IRobotCase(self.server.Get(n))
-        if c.Type == RCaseType.SIMPLE:
-            return IRobotSimpleCase(c)
-        elif c.Type == RCaseType.COMB:
-            return IRobotCaseCombination(c)
+        '''A method to retrieve load case objects from the server.
+        
+        :param int n: The case number
+        '''
+        return self.recast(super(ExtendedCaseServer, self).get(n))
+        
+        
+    def select(self, s, obj=True):
+        '''Returns an iterator of load case objects referred to in a selection string.
+        
+        :param str s: A valid selection string
+        :param bool obj: Whether to return cases or cases' numbers.
+        :return: An generator of the selected load cases
+        :rtype: generator
+        '''
+        it = super(ExtendedCaseServer, self).select(s, obj)
+        if not obj:
+            return it
+        else:
+            for c in it:
+                yield self.recast(c)
 
         
 class ExtendedNodeServer(ExtendedServer):
@@ -201,14 +271,16 @@ class ExtendedNodeServer(ExtendedServer):
     _ctype = IRobotNode
     _dtype = ROType.NODE
     _rtype = ExtendedNode
-
-    def get(self, n):
-        try:
-            return ExtendedNode(IRobotNode(self.Get(n)))
-        except Exception as e:
-            raise AutoRobotValueError(f"Couldn't get node with id `{n}`.") from e
     
     def create(self, x, y, z, num=None, obj=True):
+        '''Creates a new node from coordinates.
+        
+        :param float x, y, z: Coordinates of the new node
+        :param int num: The number for the new node
+        :param bool obj: Whether to return the object or its number
+        :return: The new node object or its number
+        :rtype: :py:class:`.ExtendedNode` or int
+        '''
         num = num or self.FreeNumber
         self.Create(num, float(x), float(y), float(z))
         return self.get(num) if obj else num

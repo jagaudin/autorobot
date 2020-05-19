@@ -16,8 +16,7 @@ from RobotOM import IRobotNode
 def distance(node, other):
     '''Returns the distance between to nodes or arrays.
     
-    :param node, other: Nodes, numbers or arrays
-    :type node, other: IRobotNode, int or numpy array
+    :param int node, other: Nodes' numbers (both args can also be node objects or numpy arrays)
     :return: The distance between two nodes
     :rtype: float
     '''

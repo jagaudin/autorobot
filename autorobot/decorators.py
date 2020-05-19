@@ -1,10 +1,61 @@
+from abc import ABC
+from functools import wraps
 import autorobot.extensions as extensions
 from .errors import AutoRobotInitError
 
 def requires_init(func):
+    '''Function decorator checking that ``autorobot`` was initialized and providing context.
+    
+    :param func func: The function to decorate
+    '''
+    @wraps(func)
     def wrapper(*args, **kwargs):
         if not extensions.app:
             raise(AutoRobotInitError, "Module `autoRobot` was not initialized.")
         app = extensions.app
         return func(*args, **kwargs)
     return wrapper
+
+
+def abstract_attributes(*names):
+    '''Class decorator to add abstract attributes.
+    '''
+
+    def func(cls, *names):
+        '''Function that extends the __init_subclass__ method of a class.
+        '''
+
+        # Add each attribute to the class with the value of NotImplemented
+        for name in names:
+            setattr(cls, name, NotImplemented)
+
+        # Save the original __init_subclass__ implementation
+        orig_init_subclass = cls.__init_subclass__
+
+        def new_init_subclass(cls, **kwargs):
+            '''New definition of __init_subclass__
+            '''
+
+            # The default implementation of __init_subclass__ takes no
+            # positional arguments, but a custom implementation does.
+            # If the user has not reimplemented __init_subclass__ then
+            # the first signature will fail and we try the second.
+            try:
+                orig_init_subclass(cls, **kwargs)
+            except TypeError:
+                orig_init_subclass(**kwargs)
+                
+            if not issubclass(cls, ABC):
+                # Check that each attribute is defined.
+                for name in names:
+                    if getattr(cls, name, NotImplemented) is NotImplemented:
+                        raise NotImplementedError(
+                            f"{name} must be a class attribute of {cls.__name__}."
+                        )
+
+        # Bind this new function to the __init_subclass__.
+        cls.__init_subclass__ = classmethod(new_init_subclass)
+
+        return cls
+
+    return lambda cls: func(cls, *names)
