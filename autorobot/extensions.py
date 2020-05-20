@@ -1,6 +1,7 @@
 import sys
-import numpy as np
 from abc import ABC
+import numpy as np
+
 
 from .constants import (
     _robot_dll_path,
@@ -133,6 +134,8 @@ class ExtendedNode(Capsule):
     _otype = IRobotNode
     
     def __init__(self, inst):
+        '''Constructor method.'''
+        
         super(ExtendedNode, self).__init__(inst)
         self.node = inst
     
@@ -147,6 +150,7 @@ class ExtendedNode(Capsule):
 
 @abstract_attributes('_otype', '_ctype', '_dtype', '_rtype')
 class ExtendedServer(Capsule, ABC):
+    
     def __init__(self, inst, app):
         super(ExtendedServer, self).__init__(inst)
         self.app = app
@@ -162,24 +166,25 @@ class ExtendedServer(Capsule, ABC):
             self.server.EndMultiOPeration()
             
     def get(self, n):
-        '''A method to retrieve objects from the server.
+        '''Returns the object with id number `n` from the server.
         
-        :param int n: The object number
+        :param int n: The object's number
+        
+        .. note:: The function casts the argument **n** to ``int`` before querying the server. 
         '''
         try:
-            return self._rtype(self._ctype(self.server.Get(n)))
+            return self._rtype(self._ctype(self.server.Get(int(n))))
         except Exception as e:
             raise AutoRobotValueError(
                 f"{self.__class__.__name__} couldn't get id `{n}`."
             ) from e
             
     def select(self, s, obj=True):
-        '''Returns an iterator of objects referred to in a selection string.
+        '''Returns an iterator of objects referred to by numbers in a selection string.
         
         :param str s: A valid selection string
-        :param bool obj: Whether to return objects or objects' numbers.
-        :return: An generator of the selected objects
-        :rtype: generator
+        :param bool obj: Whether to return the objects or their numbers.
+        :return: A generator of the selected objects
         '''
         sel = self.app.select.Create(self._dtype)
         sel.FromText(str(s))
@@ -231,7 +236,7 @@ class ExtendedCaseServer(ExtendedServer):
     _rtype = IRobotCase
     
     @staticmethod
-    def recast(case):
+    def cast(case):
         '''Recasts a load case object according to its type.
         
         :param IRobotCase case: The load case object
@@ -245,24 +250,25 @@ class ExtendedCaseServer(ExtendedServer):
         '''A method to retrieve load case objects from the server.
         
         :param int n: The case number
+        
+        .. note:: The function casts the argument **n** to ``int`` before querying the server. 
         '''
-        return self.recast(super(ExtendedCaseServer, self).get(n))
+        return self.cast(super(ExtendedCaseServer, self).get(n))
         
         
     def select(self, s, obj=True):
         '''Returns an iterator of load case objects referred to in a selection string.
         
         :param str s: A valid selection string
-        :param bool obj: Whether to return cases or cases' numbers.
-        :return: An generator of the selected load cases
-        :rtype: generator
+        :param bool obj: Whether to return case objects or cases' numbers
+        :return: A generator of the selected load cases
         '''
         it = super(ExtendedCaseServer, self).select(s, obj)
         if not obj:
             return it
         else:
             for c in it:
-                yield self.recast(c)
+                yield self.cast(c)
 
         
 class ExtendedNodeServer(ExtendedServer):
@@ -277,9 +283,8 @@ class ExtendedNodeServer(ExtendedServer):
         
         :param float x, y, z: Coordinates of the new node
         :param int num: The number for the new node
-        :param bool obj: Whether to return the object or its number
-        :return: The new node object or its number
-        :rtype: :py:class:`.ExtendedNode` or int
+        :param bool obj: Whether to return the node object or its number
+        :return: The new node object (as :py:class:`ExtendedNode`) or its number (as ``int``)
         '''
         num = num or self.FreeNumber
         self.Create(num, float(x), float(y), float(z))
@@ -291,7 +296,15 @@ class ExtendedSelectionFactory(Capsule):
    
         
 def initialize(visible=True, interactive=True):
+    '''Initialize a ``RobotApplication`` object.
+    
+    :param bool visible: Whether the application window is displayed
+    :param bool interactive: Whether the application window is displayed
+    
+    .. note:: A reference to the ``RobotApplication`` is stored in :py:data:`autorobot.extensions.app`.
+    '''
     _this.app = ExtendedRobotApp(visible, interactive)
     return _this.app
 
-_this.app = None
+#: A reference to the current ``RobotApplication`` instance
+app = None

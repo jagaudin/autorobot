@@ -14,11 +14,11 @@ from RobotOM import IRobotNode
 
 @requires_init
 def distance(node, other):
-    '''Returns the distance between to nodes or arrays.
+    '''Returns the distance between two nodes or arrays.
     
-    :param int node, other: Nodes' numbers (both args can also be node objects or numpy arrays)
-    :return: The distance between two nodes
-    :rtype: float
+    :param int node, other: Nodes' numbers
+    
+    .. tip:: The arguments **node** and **other** can also be :py:class:`.ExtendedNode`, ``IRobotNode`` or ``str``.
     '''
     if not all((isinstance(n, np.ndarray) for n in (node, other))):
         try:

@@ -29,6 +29,8 @@ author = 'Jacques Gaudin'
 # ones.
 extensions = [
     'sphinx.ext.autodoc',
+    'sphinx.ext.viewcode',
+    'sphinx.ext.coverage',
     'sphinx_rtd_theme',
 ]
 
