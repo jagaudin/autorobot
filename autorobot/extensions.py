@@ -7,6 +7,7 @@ from .constants import (
     _robot_dll_path,
     RCaseType,
     ROType,
+    RQuitOpt,
 )
 from .decorators import abstract_attributes
 from .errors import (
@@ -48,6 +49,8 @@ class ExtendedRobotApp:
         self.app = RobotApplication()
         if visible:
             self.show(interactive)
+        else:
+            self.hide()
     
     @property
     def bars(self):
@@ -77,13 +80,9 @@ class ExtendedRobotApp:
         '''
         return self.app.Project.Structure
     
-    def open(self, path):
-        '''Opens a file with given path.
-        
-        :param path: The path to the file
-        :type param: str or pathlib.Path
-        '''
-        self.app.Project.Open(str(path))
+    def close(self):
+        '''Closes the project.'''
+        self.Project.Close()
         
     def new(self, proj_type):
         '''Creates a new project.
@@ -96,6 +95,41 @@ class ExtendedRobotApp:
             raise AutoRobotProjError(
                 f"Couldn't create new project with '{proj_type}'."
             )
+            
+    def open(self, path):
+        '''Opens a file with given path (assuming rtd format)'''
+        self.app.Project.Open(str(path))
+        
+    def quit(self, save=None):
+        '''Quits the RobotApplication.
+        
+        :param bool save: Whether to:
+         * save the opened file (``True``)
+         * discard changes (``False``) 
+         * prompt the user (``None``)
+        '''
+        if save == None:
+            self.Quit(RQuitOpt.PROMPT)
+        elif save:
+            self.Quit(RQuitOpt.SAVE)
+        else:
+            self.Quit(RQuitOpt.DISCARD)
+            
+        _this.app = None
+        
+    def save(self):
+        '''Saves the project if the file name is known.
+        
+        :return: True if the save command was executed, False otherwise
+        '''
+        if hasattr(self.Project, 'Filename'):
+            return self.Project.Save() or True
+        print("*DID NOT SAVE* Filename is missing.")
+        return False
+            
+    def save_as(self, path):
+        '''Saves the project to path. The file format is rtd.'''
+        self.Project.SaveAs(str(path))
         
     def show(self, interactive=True):
         '''Makes the ``RobotApplication`` visible.
@@ -109,6 +143,7 @@ class ExtendedRobotApp:
         '''Hides the ``RobotApplication``.
         '''
         self.app.Visible = False
+        self.app.Interactive = False
 
     def __getattr__(self, name):
         if hasattr(self.app, name):

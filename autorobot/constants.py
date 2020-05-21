@@ -22,23 +22,26 @@ from RobotOM import (
     IRobotLoadRecordType,
     IRobotObjectType,
     IRobotProjectType,
+    IRobotQuitOption,
 )
 
 
 class RProjType(IntEnum):
     '''Aliases for common project types (others exist, see ``IRobotProjectType``).'''
-    #: ``IRobotProjectType.I_PT_BUILDING``
+    
     BUILDING = IRobotProjectType.I_PT_BUILDING
-    #: ``IRobotProjectType.I_PT_FRAME_2D``
     FRAME_2D = IRobotProjectType.I_PT_FRAME_2D
-    #: ``IRobotProjectType.I_PT_FRAME_3D``
     FRAME_3D = IRobotProjectType.I_PT_FRAME_3D
-    #: ``IRobotProjectType.I_PT_SHELL``   
     SHELL = IRobotProjectType.I_PT_SHELL
-    #: ``IRobotProjectType.I_PT_TRUSS_2D``
     TRUSS_2D = IRobotProjectType.I_PT_TRUSS_2D
-    #: ``IRobotProjectType.I_PT_TRUSS_3D``
     TRUSS_3D = IRobotProjectType.I_PT_TRUSS_3D
+    
+
+class RQuitOpt(IntEnum):
+    '''Aliases for quit options (see ``IRobotQuitOption``).'''
+    DISCARD = IRobotQuitOption.I_QO_DISCARD_CHANGES
+    PROMPT = IRobotQuitOption.I_QO_PROMPT_TO_SAVE_CHANGES
+    SAVE = IRobotQuitOption.I_QO_SAVE_CHANGES
 
     
 class ROType:
@@ -51,78 +54,51 @@ class ROType:
     
 class RCaseType(IntEnum):
     '''Aliases for case type (see ``IRobotCaseType``).'''
-    #: ``IRobotCaseType.I_CT_SIMPLE``
+    
     SIMPLE = IRobotCaseType.I_CT_SIMPLE
-    #: ``IRobotCaseType.I_CT_COMBINATION``
     COMB = IRobotCaseType.I_CT_COMBINATION
+    
+    
+class RLoadType:
+    '''Aliases for load record types (see ``IRobotLoadRecordType``).'''
+    
+    DEAD = IRobotLoadRecordType.I_LRT_DEAD
+    NODAL = IRobotLoadRecordType.I_LRT_NODE_FORCE
+    BAR_UDL = IRobotLoadRecordType.I_LRT_BAR_UNIFORM
+    BAR_PL = IRobotLoadRecordType.I_LRT_BAR_FORCE_CONCENTRATED
 
 
 class RBarUDLValues:
     '''Aliases for bars' uniform distributed loads (see ``IRobotBarUniformRecordValues``).'''
-    #: ``IRobotBarUniformRecordValues.I_BURV_PX``
+    
     FX = IRobotBarUniformRecordValues.I_BURV_PX
-    #: ``IRobotBarUniformRecordValues.I_BURV_PY``
     FY = IRobotBarUniformRecordValues.I_BURV_PY
-    #: ``IRobotBarUniformRecordValues.I_BURV_PZ``
     FZ = IRobotBarUniformRecordValues.I_BURV_PZ
-    #: ``IRobotBarUniformRecordValues.I_BURV_ALPHA``
     ALPHA = IRobotBarUniformRecordValues.I_BURV_ALPHA
-    #: ``IRobotBarUniformRecordValues.I_BURV_BETA``
     BETA = IRobotBarUniformRecordValues.I_BURV_BETA
-    #: ``IRobotBarUniformRecordValues.I_BURV_GAMMA``
     GAMMA = IRobotBarUniformRecordValues.I_BURV_GAMMA
-    #: ``IRobotBarUniformRecordValues.I_BURV_LOCAL``
     IS_LOC = IRobotBarUniformRecordValues.I_BURV_LOCAL
-    #: ``IRobotBarUniformRecordValues.I_BURV_PROJECTION``
     IS_PROJ = IRobotBarUniformRecordValues.I_BURV_PROJECTION
-    #: ``IRobotBarUniformRecordValues.I_BURV_RELATIVE``
     IS_REL = IRobotBarUniformRecordValues.I_BURV_RELATIVE
-    #: ``IRobotBarUniformRecordValues.I_BURV_OFFSET_Y``
     OFFSET_Y = IRobotBarUniformRecordValues.I_BURV_OFFSET_Y
-    #: ``IRobotBarUniformRecordValues.I_BURV_OFFSET_Z``
     OFFSET_Z = IRobotBarUniformRecordValues.I_BURV_OFFSET_Z
     
     
 class RBarPLValues:
     '''Aliases for bars' point loads (see ``IRobotBarForceConcentrateRecordValues``).'''
-    #: ``IRobotBarForceConcentrateRecordValues.I_BFCRV_X``
-    X = IRobotBarForceConcentrateRecordValues.I_BFCRV_X
-    #: ``IRobotBarForceConcentrateRecordValues.I_BFCRV_FX``
-    FX = IRobotBarForceConcentrateRecordValues.I_BFCRV_FX
-    #: ``IRobotBarForceConcentrateRecordValues.I_BFCRV_FY``
-    FY = IRobotBarForceConcentrateRecordValues.I_BFCRV_FY
-    #: ``IRobotBarForceConcentrateRecordValues.I_BFCRV_FZ``
-    FZ = IRobotBarForceConcentrateRecordValues.I_BFCRV_FZ
-    #: ``IRobotBarForceConcentrateRecordValues.I_BFCRV_CX``
-    CX = IRobotBarForceConcentrateRecordValues.I_BFCRV_CX
-    #: ``IRobotBarForceConcentrateRecordValues.I_BFCRV_CY``
-    CY = IRobotBarForceConcentrateRecordValues.I_BFCRV_CY
-    #: ``IRobotBarForceConcentrateRecordValues.I_BFCRV_CZ``
-    CZ = IRobotBarForceConcentrateRecordValues.I_BFCRV_CZ
-    #: ``IRobotBarForceConcentrateRecordValues.I_BFCRV_ALPHA``
-    ALPHA = IRobotBarForceConcentrateRecordValues.I_BFCRV_ALPHA
-    #: ``IRobotBarForceConcentrateRecordValues.I_BFCRV_BETA``
-    BETA = IRobotBarForceConcentrateRecordValues.I_BFCRV_BETA
-    #: ``IRobotBarForceConcentrateRecordValues.I_BFCRV_GAMMA``
-    GAMMA = IRobotBarForceConcentrateRecordValues.I_BFCRV_GAMMA
-    #: ``IRobotBarForceConcentrateRecordValues.I_BFCRV_GENERATE_CALC_NODE``
-    GEN_NODE = IRobotBarForceConcentrateRecordValues.I_BFCRV_GENERATE_CALC_NODE
-    #: ``IRobotBarForceConcentrateRecordValues.I_BFCRV_LOC``
-    IS_LOC = IRobotBarForceConcentrateRecordValues.I_BFCRV_LOC
-    #: ``IRobotBarForceConcentrateRecordValues.I_BFCRV_REL``
-    IS_REL = IRobotBarForceConcentrateRecordValues.I_BFCRV_REL
-    #: ``IRobotBarForceConcentrateRecordValues.I_BFCRV_OFFSET_Y``
-    OFFSET_Y = IRobotBarForceConcentrateRecordValues.I_BFCRV_OFFSET_Y
-    #: ``IRobotBarForceConcentrateRecordValues.I_BFCRV_OFFSET_Z``
-    OFFSET_Z = IRobotBarForceConcentrateRecordValues.I_BFCRV_OFFSET_Z
-
     
-class RLoadType:
-    #: ``IRobotLoadRecordType.I_LRT_DEAD``
-    DEAD = IRobotLoadRecordType.I_LRT_DEAD
-    #: ``IRobotLoadRecordType.I_LRT_NODE_FORCE``
-    NODAL = IRobotLoadRecordType.I_LRT_NODE_FORCE
-    #: ``IRobotLoadRecordType.I_LRT_BAR_UNIFORM``
-    BAR_UDL = IRobotLoadRecordType.I_LRT_BAR_UNIFORM
-    #: ``IRobotLoadRecordType.I_LRT_BAR_FORCE_CONCENTRATED``
-    BAR_PL = IRobotLoadRecordType.I_LRT_BAR_FORCE_CONCENTRATED
+    X = IRobotBarForceConcentrateRecordValues.I_BFCRV_X
+    FX = IRobotBarForceConcentrateRecordValues.I_BFCRV_FX
+    FY = IRobotBarForceConcentrateRecordValues.I_BFCRV_FY
+    FZ = IRobotBarForceConcentrateRecordValues.I_BFCRV_FZ
+    CX = IRobotBarForceConcentrateRecordValues.I_BFCRV_CX
+    CY = IRobotBarForceConcentrateRecordValues.I_BFCRV_CY
+    CZ = IRobotBarForceConcentrateRecordValues.I_BFCRV_CZ
+    ALPHA = IRobotBarForceConcentrateRecordValues.I_BFCRV_ALPHA
+    BETA = IRobotBarForceConcentrateRecordValues.I_BFCRV_BETA
+    GAMMA = IRobotBarForceConcentrateRecordValues.I_BFCRV_GAMMA
+    GEN_NODE = IRobotBarForceConcentrateRecordValues.I_BFCRV_GENERATE_CALC_NODE
+    IS_LOC = IRobotBarForceConcentrateRecordValues.I_BFCRV_LOC
+    IS_REL = IRobotBarForceConcentrateRecordValues.I_BFCRV_REL
+    OFFSET_Y = IRobotBarForceConcentrateRecordValues.I_BFCRV_OFFSET_Y
+    OFFSET_Z = IRobotBarForceConcentrateRecordValues.I_BFCRV_OFFSET_Z
