@@ -32,6 +32,6 @@ def distance(node, other):
             raise AutoRobotValueError(
                 f"Couldn't get distance between {node} and {other}."
             ) from e
-        node, other = (n.to_array() for n in (node, other))
+        node, other = (n.as_array() for n in (node, other))
         
     return sci_distance.euclidean(node, other)

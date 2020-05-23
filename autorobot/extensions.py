@@ -1,7 +1,7 @@
 import sys
 from abc import ABC
 import numpy as np
-
+import time
 
 from .constants import (
     _robot_dll_path,
@@ -13,6 +13,7 @@ from .decorators import abstract_attributes
 from .errors import (
     AutoRobotProjError,
     AutoRobotValueError,
+    AutoRobotIdError,
 )
 
 import clr
@@ -114,17 +115,19 @@ class ExtendedRobotApp:
             self.Quit(RQuitOpt.SAVE)
         else:
             self.Quit(RQuitOpt.DISCARD)
-            
+        
+        del self.app
         _this.app = None
+        # Now wait a second to avoid file permission issues
+        time.sleep(1)
         
     def save(self):
         '''Saves the project if the file name is known.
         
-        :return: True if the save command was executed, False otherwise
+        :return: ``True`` if the save command was executed, ``False`` otherwise
         '''
-        if hasattr(self.Project, 'Filename'):
+        if self.Project.FileName:
             return self.Project.Save() or True
-        print("*DID NOT SAVE* Filename is missing.")
         return False
             
     def save_as(self, path):
@@ -173,8 +176,16 @@ class ExtendedNode(Capsule):
         
         super(ExtendedNode, self).__init__(inst)
         self.node = inst
+        
+    def __int__(self):
+        '''Casts node to ``int``, returning the node's number.'''
+        return self.Number
     
-    def to_array(self):
+    def __str__(self):
+        '''Casts the node to ``str``.'''
+        return f'Node {self.Number}: {self.as_array()}'
+    
+    def as_array(self):
         '''Returns an array with the node's coordinates.
     
         :return: A numpy array of coordinates
@@ -198,7 +209,7 @@ class ExtendedServer(Capsule, ABC):
 
     def __exit__(self, exc_type,exc_value, traceback):
         if hasattr(self.server, 'EndMultiOperation'):
-            self.server.EndMultiOPeration()
+            self.server.EndMultiOperation()
             
     def get(self, n):
         '''Returns the object with id number `n` from the server.
@@ -238,16 +249,16 @@ class ExtendedBarServer(ExtendedServer):
     _ctype = IRobotBar
     _dtype = ROType.BAR
     _rtype = IRobotBar
-     
-    def create(self, start, end, num=None, obj=True):
+    
+    def create(self, start, end, num=None, obj=True, overwrite=False):
         '''Creates a new bar between ``start`` and ``end`` nodes.
 
-        :param start, end: The start and end nodes
-        :type start, end: IRobotNode or int
+        :param int start, end: The start and end nodes
         :param int num: The number of the new bar (optional)
         :param bool obj: Whether the bar is returned as an object (default: ``True``)
-        :return: The new bar or its number
-        :rtype: IRobotBar or int
+        :return: The new bar object or its number
+        
+        .. note:: This method casts the arguments **start** and **end** to ``int`` before creating the new bar.
         '''
         try:
             start, end = (
@@ -259,6 +270,12 @@ class ExtendedBarServer(ExtendedServer):
             ) from e
         if num is None:
             num = self.FreeNumber
+        num = int(num)
+        if self.Exist(num):
+            if overwrite:
+                self.Delete(num)
+            else:
+                raise AutoRobotIdError(f"Bar with id {num} already exists.")
         self.Create(num, start, end)
         return self.get(num) if obj else num
     
@@ -272,7 +289,7 @@ class ExtendedCaseServer(ExtendedServer):
     
     @staticmethod
     def cast(case):
-        '''Recasts a load case object according to its type.
+        '''Casts a load case object according to its type.
         
         :param IRobotCase case: The load case object
         '''
@@ -313,7 +330,7 @@ class ExtendedNodeServer(ExtendedServer):
     _dtype = ROType.NODE
     _rtype = ExtendedNode
     
-    def create(self, x, y, z, num=None, obj=True):
+    def create(self, x, y, z, num=None, obj=True, overwrite=False):
         '''Creates a new node from coordinates.
         
         :param float x, y, z: Coordinates of the new node
@@ -321,7 +338,14 @@ class ExtendedNodeServer(ExtendedServer):
         :param bool obj: Whether to return the node object or its number
         :return: The new node object (as :py:class:`ExtendedNode`) or its number (as ``int``)
         '''
-        num = num or self.FreeNumber
+        if num is None:
+            num = self.FreeNumber
+        num = int(num)
+        if self.Exist(num):
+            if overwrite:
+                self.Delete(num)
+            else:
+                raise AutoRobotIdError(f"Bar with id {num} already exists.")
         self.Create(num, float(x), float(y), float(z))
         return self.get(num) if obj else num
                

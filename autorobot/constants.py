@@ -43,25 +43,25 @@ class RQuitOpt(IntEnum):
     PROMPT = IRobotQuitOption.I_QO_PROMPT_TO_SAVE_CHANGES
     SAVE = IRobotQuitOption.I_QO_SAVE_CHANGES
 
-    
+
 class ROType:
     '''Aliases for object types (other exist see ``IRobotObjecttype``).'''
-    
+
     BAR = IRobotObjectType.I_OT_BAR
     CASE = IRobotObjectType.I_OT_CASE
     NODE = IRobotObjectType.I_OT_NODE
 
-    
+
 class RCaseType(IntEnum):
     '''Aliases for case type (see ``IRobotCaseType``).'''
-    
+
     SIMPLE = IRobotCaseType.I_CT_SIMPLE
     COMB = IRobotCaseType.I_CT_COMBINATION
-    
+
     
 class RLoadType:
     '''Aliases for load record types (see ``IRobotLoadRecordType``).'''
-    
+
     DEAD = IRobotLoadRecordType.I_LRT_DEAD
     NODAL = IRobotLoadRecordType.I_LRT_NODE_FORCE
     BAR_UDL = IRobotLoadRecordType.I_LRT_BAR_UNIFORM
@@ -70,7 +70,7 @@ class RLoadType:
 
 class RBarUDLValues:
     '''Aliases for bars' uniform distributed loads (see ``IRobotBarUniformRecordValues``).'''
-    
+
     FX = IRobotBarUniformRecordValues.I_BURV_PX
     FY = IRobotBarUniformRecordValues.I_BURV_PY
     FZ = IRobotBarUniformRecordValues.I_BURV_PZ
@@ -82,11 +82,11 @@ class RBarUDLValues:
     IS_REL = IRobotBarUniformRecordValues.I_BURV_RELATIVE
     OFFSET_Y = IRobotBarUniformRecordValues.I_BURV_OFFSET_Y
     OFFSET_Z = IRobotBarUniformRecordValues.I_BURV_OFFSET_Z
-    
-    
+
+
 class RBarPLValues:
     '''Aliases for bars' point loads (see ``IRobotBarForceConcentrateRecordValues``).'''
-    
+
     X = IRobotBarForceConcentrateRecordValues.I_BFCRV_X
     FX = IRobotBarForceConcentrateRecordValues.I_BFCRV_FX
     FY = IRobotBarForceConcentrateRecordValues.I_BFCRV_FY
