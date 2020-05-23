@@ -3,12 +3,10 @@ from scipy.spatial import distance as sci_distance
 
 import autorobot.extensions as extensions
 from .extensions import ExtendedNode
-from .constants import _robot_dll_path
 from .decorators import requires_init
 from .errors import AutoRobotValueError
 
-import clr
-clr.AddReference(_robot_dll_path)
+from .robotom import RobotOM  # NOQA F401
 from RobotOM import IRobotNode
 
 

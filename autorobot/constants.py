@@ -1,24 +1,13 @@
-import clr
-from pathlib import Path
 from enum import IntEnum
 
-from .errors import AutoRobotPathError
-
-# Searching for ``interop.RobotOM.dll``
-p = Path(r'C:\Program Files\Autodesk')
-suffix = r'System\EXE\interop.RobotOM.dll'
-
-_robot_dll_path = str(next(p.rglob(suffix), ''))
-
-try:
-    clr.AddReference(_robot_dll_path)
-except Exception as e:
-    raise(AutoRobotPathError(f"Couldn't find {p}\\*\\{suffix}")) from e
-
+from .robotom import RobotOM  # NOQA F401
 from RobotOM import (
     IRobotBarForceConcentrateRecordValues,
     IRobotBarUniformRecordValues,
+    IRobotCaseAnalizeType,
+    IRobotCaseNature,
     IRobotCaseType,
+    IRobotCombinationType,
     IRobotLoadRecordType,
     IRobotObjectType,
     IRobotProjectType,
@@ -52,11 +41,37 @@ class ROType:
     NODE = IRobotObjectType.I_OT_NODE
 
 
+class RCaseNature:
+    '''Aliases for load case case nature (see ``IRobotCaseNature``).'''
+    PERM = IRobotCaseNature.I_CN_PERMANENT
+    IMPOSED = IRobotCaseNature.I_CN_EXPLOATATION
+    WIND = IRobotCaseNature.I_CN_WIND
+    SNOW = IRobotCaseNature.I_CN_SNOW
+    ACC = IRobotCaseNature.I_CN_ACCIDENTAL
+
+
 class RCaseType(IntEnum):
     '''Aliases for case type (see ``IRobotCaseType``).'''
 
     SIMPLE = IRobotCaseType.I_CT_SIMPLE
     COMB = IRobotCaseType.I_CT_COMBINATION
+
+
+class RCombType:
+    '''Aliases for load combination type (see ``IRobotCombinationType``).'''
+    SLS = IRobotCombinationType.I_CBT_SLS
+    ULS = IRobotCombinationType.I_CBT_ULS
+
+
+class RAnalysisType:
+    '''Aliases for analysis type (see ``IRobotCaseAnalizeType``)
+
+    .. caution:: The typo is **in Robot API**, not this document.
+    '''
+    LINEAR = IRobotCaseAnalizeType.I_CAT_STATIC_LINEAR
+    NON_LIN = IRobotCaseAnalizeType.I_CAT_STATIC_NONLINEAR
+    COMB_LINEAR = IRobotCaseAnalizeType.I_CAT_COMB
+    COMB_NON_LIN = IRobotCaseAnalizeType.I_CAT_COMB_NONLINEAR
 
 
 class RLoadType:

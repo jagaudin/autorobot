@@ -3,6 +3,7 @@ from functools import wraps
 import autorobot.extensions as extensions
 from .errors import AutoRobotInitError
 
+
 def requires_init(func):
     '''Function decorator to provide the autorobot context to a function.'''
 
@@ -10,7 +11,7 @@ def requires_init(func):
     def wrapper(*args, **kwargs):
         if not extensions.app:
             raise(AutoRobotInitError, "Module `autoRobot` was not initialized.")
-        app = extensions.app
+        app = extensions.app  # NOQA F841
         return func(*args, **kwargs)
     return wrapper
 
@@ -48,7 +49,8 @@ def abstract_attributes(*names):
                     for name in names:
                         if getattr(cls, name, NotImplemented) is NotImplemented:
                             raise NotImplementedError(
-                                f"`{name}` must be a class attribute of `{cls.__name__}`."
+                                f"`{name}` must be a class attribute of "
+                                "`{cls.__name__}`."
                             )
 
             # Bind this new function to the __init_subclass__

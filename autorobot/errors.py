@@ -17,5 +17,6 @@ class AutoRobotValueError(BaseException):
     '''An exception raised when an invalid value is encountered.'''
     pass
 
+
 class AutoRobotIdError(BaseException):
     '''An exception raised when attempting to silently overwrite an object.'''

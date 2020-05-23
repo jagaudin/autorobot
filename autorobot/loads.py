@@ -1,19 +1,16 @@
 from .constants import (
-    _robot_dll_path,
     RBarPLValues,
     RBarUDLValues,
     RLoadType,
 )
-
-import clr
-clr.AddReference(_robot_dll_path)
+from .robotom import RobotOM  # NOQA F401
 from RobotOM import (
     IRobotLoadRecord,
 )
 
 
 def add_bar_udl(case, s, desc='', fx=0., fy=0., fz=0., alpha=0., beta=0., gamma=0.,
-              is_local=False, is_proj=False, is_relative=False, offset_y=0., offset_z=0.):
+                is_local=False, is_proj=False, is_relative=False, offset_y=0., offset_z=0.):
     '''Adds a uniformly distributed load on a selection of bars.
 
     :param IRobotCase case: The load case to be modified
@@ -51,7 +48,7 @@ def add_bar_udl(case, s, desc='', fx=0., fy=0., fz=0., alpha=0., beta=0., gamma=
 
 
 def add_bar_pl(case, s, desc='', x=0., fx=0., fy=0., fz=0., alpha=0., beta=0., gamma=0.,
-             is_local=False, is_relative=False, offset_y=0., offset_z=0.):
+               is_local=False, is_relative=False, offset_y=0., offset_z=0.):
     '''Adds a point load on a selection of bars.
 
     :param IRobotCase case: The load case to be modified

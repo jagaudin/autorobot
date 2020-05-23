@@ -84,7 +84,6 @@ class TestAppOperations(TestCase):
             rb.close()
             rb.quit(save=False)
 
-
     def test_show_hide(self):
         rb = ar.initialize(visible=False, interactive=False)
         with self.subTest(msg='show'):
@@ -202,6 +201,12 @@ class TestDataServers(TestCase):
             self.rb.cases,
             ar.extensions.ExtendedCaseServer
         )
+
+    def test_create_load_case(self):
+        pass
+
+    def test_create_combination(self):
+        pass
 
     # Node server tests
 

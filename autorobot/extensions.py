@@ -4,7 +4,7 @@ import numpy as np
 import time
 
 from .constants import (
-    _robot_dll_path,
+    RCaseNature,
     RCaseType,
     ROType,
     RQuitOpt,
@@ -15,10 +15,7 @@ from .errors import (
     AutoRobotValueError,
     AutoRobotIdError,
 )
-
-import clr
-clr.AddReference(_robot_dll_path)
-
+from .robotom import RobotOM  # NOQA F401
 from RobotOM import (
     IRobotBar,
     IRobotBarServer,
@@ -39,14 +36,15 @@ _this = sys.modules[__name__]
 
 class ExtendedRobotApp:
     '''This class encapsulates and extends ``RobotApplication``.
-    The attributes and methods of the underlying ``RobotApplication`` object can be accessed directly through an instance of this class
+
+    The attributes and methods of the underlying ``RobotApplication`` object can
+    be accessed directly through an instance of this class
 
     :param bool visible: Whether the new ``RobotApplication`` is visible (default: ``True``)
     :param bool interactive: Whether the new ``RobotApplication`` is interactive (default: ``True``)
     '''
     def __init__(self, visible=True, interactive=True):
-        '''Constructor method
-        '''
+        '''Constructor method'''
         self.app = RobotApplication()
         if visible:
             self.show(interactive)
@@ -55,20 +53,17 @@ class ExtendedRobotApp:
 
     @property
     def bars(self):
-        '''Gets the current project's bar server as an instance of :py:class:`.ExtendedBarServer`.
-        '''
+        '''Gets the current project's bar server as an instance of :py:class:`.ExtendedBarServer`.'''
         return ExtendedBarServer(self.app.Project.Structure.Bars, self)
 
     @property
     def cases(self):
-        '''Gets the current project's case server as an instance of :py:class:`.ExtendedCaseServer`.
-        '''
+        '''Gets the current project's case server as an instance of :py:class:`.ExtendedCaseServer`.'''
         return ExtendedCaseServer(self.app.Project.Structure.Cases, self)
 
     @property
     def nodes(self):
-        '''Gets the current project's node server as an instance of :py:class:`.ExtendedNodeServer`.
-        '''
+        '''Gets the current project's node server as an instance of :py:class:`.ExtendedNodeServer`.'''
         return ExtendedNodeServer(self.app.Project.Structure.Nodes, self)
 
     @property
@@ -77,8 +72,7 @@ class ExtendedRobotApp:
 
     @property
     def structure(self):
-        '''Get the current object structure as an instance of ``IRobotStructure``.
-        '''
+        '''Get the current structure as an instance of ``IRobotStructure``.'''
         return self.app.Project.Structure
 
     def close(self):
@@ -92,7 +86,7 @@ class ExtendedRobotApp:
         '''
         try:
             self.app.Project.New(proj_type)
-        except Exception as e:
+        except Exception:
             raise AutoRobotProjError(
                 f"Couldn't create new project with '{proj_type}'."
             )
@@ -109,7 +103,7 @@ class ExtendedRobotApp:
          * discard changes (``False``)
          * prompt the user (``None``)
         '''
-        if save == None:
+        if save is None:
             self.Quit(RQuitOpt.PROMPT)
         elif save:
             self.Quit(RQuitOpt.SAVE)
@@ -151,7 +145,8 @@ class ExtendedRobotApp:
     def __getattr__(self, name):
         if hasattr(self.app, name):
             return getattr(self.app, name)
-        raise AttributeError(f"{self.__class__.__name__} has not attribute '{name}'.")
+        raise AttributeError(
+            f"{self.__class__.__name__} has not attribute '{name}'.")
 
 
 @abstract_attributes('_otype')
@@ -159,12 +154,14 @@ class Capsule(ABC):
     def __init__(self, inst):
         self._inst = inst
         if not isinstance(inst, self._otype):
-            raise AutoRobotValueError(f"{inst} is not an instance of `{str(self._otype)}`.")
+            raise AutoRobotValueError(
+                f"{inst} is not an instance of `{str(self._otype)}`.")
 
     def __getattr__(self, name):
         if hasattr(self._inst, name):
             return getattr(self._inst, name)
-        raise AttributeError(f"{self.__class__.__name__} has not attribute '{name}'.")
+        raise AttributeError(
+            f"{self.__class__.__name__} has not attribute '{name}'.")
 
 
 class ExtendedNode(Capsule):
@@ -207,7 +204,7 @@ class ExtendedServer(Capsule, ABC):
             self.server.BeginMultiOperation()
         return self
 
-    def __exit__(self, exc_type,exc_value, traceback):
+    def __exit__(self, exc_type, exc_value, traceback):
         if hasattr(self.server, 'EndMultiOperation'):
             self.server.EndMultiOperation()
 
@@ -256,13 +253,15 @@ class ExtendedBarServer(ExtendedServer):
         :param int start, end: The start and end nodes
         :param int num: The number of the new bar (optional)
         :param bool obj: Whether the bar is returned as an object (default: ``True``)
+        :param bool overwrite: Whether to overwrite existing objects
         :return: The new bar object or its number
 
         .. note:: This method casts the arguments **start** and **end** to ``int`` before creating the new bar.
         '''
         try:
             start, end = (
-                n.Number if hasattr(n, 'Number') else int(n) for n in (start, end)
+                n.Number if hasattr(n, 'Number') else int(n)
+                for n in (start, end)
             )
         except Exception as e:
             raise AutoRobotValueError(
@@ -287,6 +286,14 @@ class ExtendedCaseServer(ExtendedServer):
     _dtype = ROType.CASE
     _rtype = IRobotCase
 
+    label_prefix = {
+        RCaseNature.PERM: 'G',
+        RCaseNature.IMPOSED: 'Q',
+        RCaseNature.WIND: 'W',
+        RCaseNature.SNOW: 'S',
+        RCaseNature.ACC: 'A',
+    }
+
     @staticmethod
     def cast(case):
         '''Casts a load case object according to its type.
@@ -298,6 +305,57 @@ class ExtendedCaseServer(ExtendedServer):
         elif case.Type == RCaseType.COMB:
             return IRobotCaseCombination(case)
 
+    def create_load_case(self, num, name, nature, analysis_type,
+                         overwrite=False):
+        '''Creates a new load case.
+
+        :param int num: The load case number
+        :param str name: Name of the load case
+        :param int nature: Nature of the load case (see `RCaseNature`)
+        :param int analysis_type: Type of analysis (see `RAnalysisType`)
+        :param bool overwrite: Whether to override if number conflicts with existing data
+        :return: The load case object (as a ``IRobotSimpleCase`` instance)
+        '''
+        if num is None:
+            num = self.FreeNumber
+        num = int(num)
+        if self.Exist(num):
+            if overwrite:
+                self.Delete(num)
+            else:
+                raise AutoRobotIdError(f"Case with id {num} already exists.")
+        case = IRobotSimpleCase(self.CreateSimple(
+            num, name, nature, analysis_type))
+        case.label = self.label_prefix[nature] + str(num)
+        return case
+
+    def create_combination(self, num, name, case_factors, comb_type, nature,
+                           analysis_type, overwrite=False):
+        '''Creates a new load case combination.
+
+        :param int num: The load case number
+        :param str name: Name of the combination
+        :param dict case_factors: A dict of (case, factor) pairs
+        :param int comb_type: The type of the combination (see `RCombType`)
+        :param int nature: Nature of the load case (see `RCaseNature`)
+        :param int analysis_type: Type of analysis (see `RAnalysisType`)
+        :param bool overwrite: Whether to overwrite if case id already exists
+        :return: The load combination object (as an ``IRobotCaseCombination`` instance)
+        '''
+        if num is None:
+            num = self.FreeNumber
+        num = int(num)
+        if self.Exist(num):
+            if overwrite:
+                self.Delete(num)
+            else:
+                raise AutoRobotIdError(f"Case with id {num} already exists.")
+        comb = IRobotCaseCombination(self.CreateCombination(
+            num, name, comb_type, nature, analysis_type))
+        for k, v in case_factors.items():
+            comb.CaseFactors.New(k, v)
+        return comb
+
     def get(self, n):
         '''A method to retrieve load case objects from the server.
 
@@ -306,7 +364,6 @@ class ExtendedCaseServer(ExtendedServer):
         .. note:: The function casts the argument **n** to ``int`` before querying the server.
         '''
         return self.cast(super(ExtendedCaseServer, self).get(n))
-
 
     def select(self, s, obj=True):
         '''Returns an iterator of load case objects referred to in a selection string.
@@ -336,6 +393,7 @@ class ExtendedNodeServer(ExtendedServer):
         :param float x, y, z: Coordinates of the new node
         :param int num: The number for the new node
         :param bool obj: Whether to return the node object or its number
+        :param bool overwrite: Whether to overwrite existing objects
         :return: The new node object (as :py:class:`ExtendedNode`) or its number (as ``int``)
         '''
         if num is None:
@@ -364,6 +422,7 @@ def initialize(visible=True, interactive=True):
     '''
     _this.app = ExtendedRobotApp(visible, interactive)
     return _this.app
+
 
 #: A reference to the current ``RobotApplication`` instance
 app = None
