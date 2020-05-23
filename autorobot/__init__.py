@@ -10,7 +10,7 @@ from .loads import (
     add_bar_udl,
     add_bar_pl,
 )
-    
+
 from .nodes import (
     distance,
 )

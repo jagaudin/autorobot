@@ -28,14 +28,14 @@ from RobotOM import (
 
 class RProjType(IntEnum):
     '''Aliases for common project types (others exist, see ``IRobotProjectType``).'''
-    
+
     BUILDING = IRobotProjectType.I_PT_BUILDING
     FRAME_2D = IRobotProjectType.I_PT_FRAME_2D
     FRAME_3D = IRobotProjectType.I_PT_FRAME_3D
     SHELL = IRobotProjectType.I_PT_SHELL
     TRUSS_2D = IRobotProjectType.I_PT_TRUSS_2D
     TRUSS_3D = IRobotProjectType.I_PT_TRUSS_3D
-    
+
 
 class RQuitOpt(IntEnum):
     '''Aliases for quit options (see ``IRobotQuitOption``).'''
@@ -58,7 +58,7 @@ class RCaseType(IntEnum):
     SIMPLE = IRobotCaseType.I_CT_SIMPLE
     COMB = IRobotCaseType.I_CT_COMBINATION
 
-    
+
 class RLoadType:
     '''Aliases for load record types (see ``IRobotLoadRecordType``).'''
 

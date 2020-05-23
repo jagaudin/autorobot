@@ -5,7 +5,7 @@ from .errors import AutoRobotInitError
 
 def requires_init(func):
     '''Function decorator to provide the autorobot context to a function.'''
-    
+
     @wraps(func)
     def wrapper(*args, **kwargs):
         if not extensions.app:
@@ -17,10 +17,10 @@ def requires_init(func):
 
 def abstract_attributes(*names):
     '''Class decorator to add abstract attributes.'''
-    
+
     def factory(cls):
         '''A function returning the result of ``extend_init_subclass``.'''
-        
+
         def extend_init_subclass(cls, *names):
             '''Function that extends the __init_subclass__ method of a class.'''
 
@@ -55,7 +55,7 @@ def abstract_attributes(*names):
             cls.__init_subclass__ = classmethod(new_init_subclass)
 
             return cls
-        
+
         return extend_init_subclass(cls, *names)
-        
+
     return factory

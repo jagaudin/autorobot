@@ -19,5 +19,3 @@ class AutoRobotValueError(BaseException):
 
 class AutoRobotIdError(BaseException):
     '''An exception raised when attempting to silently overwrite an object.'''
-
-

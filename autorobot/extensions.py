@@ -38,9 +38,9 @@ _this = sys.modules[__name__]
 
 
 class ExtendedRobotApp:
-    '''This class encapsulates and extends ``RobotApplication``. 
+    '''This class encapsulates and extends ``RobotApplication``.
     The attributes and methods of the underlying ``RobotApplication`` object can be accessed directly through an instance of this class
-    
+
     :param bool visible: Whether the new ``RobotApplication`` is visible (default: ``True``)
     :param bool interactive: Whether the new ``RobotApplication`` is interactive (default: ``True``)
     '''
@@ -52,42 +52,42 @@ class ExtendedRobotApp:
             self.show(interactive)
         else:
             self.hide()
-    
+
     @property
     def bars(self):
         '''Gets the current project's bar server as an instance of :py:class:`.ExtendedBarServer`.
         '''
         return ExtendedBarServer(self.app.Project.Structure.Bars, self)
-    
+
     @property
     def cases(self):
         '''Gets the current project's case server as an instance of :py:class:`.ExtendedCaseServer`.
         '''
         return ExtendedCaseServer(self.app.Project.Structure.Cases, self)
-    
+
     @property
     def nodes(self):
         '''Gets the current project's node server as an instance of :py:class:`.ExtendedNodeServer`.
         '''
         return ExtendedNodeServer(self.app.Project.Structure.Nodes, self)
-    
+
     @property
     def select(self):
         return ExtendedSelectionFactory(self.app.Project.Structure.Selections)
-    
+
     @property
     def structure(self):
         '''Get the current object structure as an instance of ``IRobotStructure``.
         '''
         return self.app.Project.Structure
-    
+
     def close(self):
         '''Closes the project.'''
         self.Project.Close()
-        
+
     def new(self, proj_type):
         '''Creates a new project.
-        
+
         :param int proj_type: The type of project to be created (see :py:class:`.constants.RProjType`)
         '''
         try:
@@ -96,17 +96,17 @@ class ExtendedRobotApp:
             raise AutoRobotProjError(
                 f"Couldn't create new project with '{proj_type}'."
             )
-            
+
     def open(self, path):
         '''Opens a file with given path (assuming rtd format)'''
         self.app.Project.Open(str(path))
-        
+
     def quit(self, save=None):
         '''Quits the RobotApplication.
-        
+
         :param bool save: Whether to:
          * save the opened file (``True``)
-         * discard changes (``False``) 
+         * discard changes (``False``)
          * prompt the user (``None``)
         '''
         if save == None:
@@ -115,33 +115,33 @@ class ExtendedRobotApp:
             self.Quit(RQuitOpt.SAVE)
         else:
             self.Quit(RQuitOpt.DISCARD)
-        
+
         del self.app
         _this.app = None
         # Now wait a second to avoid file permission issues
         time.sleep(1)
-        
+
     def save(self):
         '''Saves the project if the file name is known.
-        
+
         :return: ``True`` if the save command was executed, ``False`` otherwise
         '''
         if self.Project.FileName:
             return self.Project.Save() or True
         return False
-            
+
     def save_as(self, path):
         '''Saves the project to path. The file format is rtd.'''
         self.Project.SaveAs(str(path))
-        
+
     def show(self, interactive=True):
         '''Makes the ``RobotApplication`` visible.
-        
+
         :param bool interactive: Whether the ``RobotApplication`` is interactive (default: ``True``)
         '''
         self.app.Visible = True
         self.app.Interactive = interactive
-        
+
     def hide(self):
         '''Hides the ``RobotApplication``.
         '''
@@ -153,55 +153,55 @@ class ExtendedRobotApp:
             return getattr(self.app, name)
         raise AttributeError(f"{self.__class__.__name__} has not attribute '{name}'.")
 
-        
-@abstract_attributes('_otype')     
+
+@abstract_attributes('_otype')
 class Capsule(ABC):
     def __init__(self, inst):
         self._inst = inst
         if not isinstance(inst, self._otype):
             raise AutoRobotValueError(f"{inst} is not an instance of `{str(self._otype)}`.")
-        
+
     def __getattr__(self, name):
         if hasattr(self._inst, name):
             return getattr(self._inst, name)
         raise AttributeError(f"{self.__class__.__name__} has not attribute '{name}'.")
 
-        
+
 class ExtendedNode(Capsule):
-    
+
     _otype = IRobotNode
-    
+
     def __init__(self, inst):
         '''Constructor method.'''
-        
+
         super(ExtendedNode, self).__init__(inst)
         self.node = inst
-        
+
     def __int__(self):
         '''Casts node to ``int``, returning the node's number.'''
         return self.Number
-    
+
     def __str__(self):
         '''Casts the node to ``str``.'''
         return f'Node {self.Number}: {self.as_array()}'
-    
+
     def as_array(self):
         '''Returns an array with the node's coordinates.
-    
+
         :return: A numpy array of coordinates
         :rtype: numpy array
-        ''' 
+        '''
         return np.array([self.node.X, self.node.Y, self.node.Z])
 
 
 @abstract_attributes('_otype', '_ctype', '_dtype', '_rtype')
 class ExtendedServer(Capsule, ABC):
-    
+
     def __init__(self, inst, app):
         super(ExtendedServer, self).__init__(inst)
         self.app = app
         self.server = inst
-        
+
     def __enter__(self):
         if hasattr(self.server, 'BeginMultiOperation'):
             self.server.BeginMultiOperation()
@@ -210,13 +210,13 @@ class ExtendedServer(Capsule, ABC):
     def __exit__(self, exc_type,exc_value, traceback):
         if hasattr(self.server, 'EndMultiOperation'):
             self.server.EndMultiOperation()
-            
+
     def get(self, n):
         '''Returns the object with id number `n` from the server.
-        
+
         :param int n: The object's number
-        
-        .. note:: The function casts the argument **n** to ``int`` before querying the server. 
+
+        .. note:: The function casts the argument **n** to ``int`` before querying the server.
         '''
         try:
             return self._rtype(self._ctype(self.server.Get(int(n))))
@@ -224,10 +224,10 @@ class ExtendedServer(Capsule, ABC):
             raise AutoRobotValueError(
                 f"{self.__class__.__name__} couldn't get id `{n}`."
             ) from e
-            
+
     def select(self, s, obj=True):
         '''Returns an iterator of objects referred to by numbers in a selection string.
-        
+
         :param str s: A valid selection string
         :param bool obj: Whether to return the objects or their numbers.
         :return: A generator of the selected objects
@@ -241,15 +241,15 @@ class ExtendedServer(Capsule, ABC):
             col = IRobotCollection(self.GetMany(sel))
             for i in range(col.Count):
                 yield self._rtype(self._ctype(col.Get(i+1)))
-        
+
 
 class ExtendedBarServer(ExtendedServer):
-    
+
     _otype = IRobotBarServer
     _ctype = IRobotBar
     _dtype = ROType.BAR
     _rtype = IRobotBar
-    
+
     def create(self, start, end, num=None, obj=True, overwrite=False):
         '''Creates a new bar between ``start`` and ``end`` nodes.
 
@@ -257,7 +257,7 @@ class ExtendedBarServer(ExtendedServer):
         :param int num: The number of the new bar (optional)
         :param bool obj: Whether the bar is returned as an object (default: ``True``)
         :return: The new bar object or its number
-        
+
         .. note:: This method casts the arguments **start** and **end** to ``int`` before creating the new bar.
         '''
         try:
@@ -278,39 +278,39 @@ class ExtendedBarServer(ExtendedServer):
                 raise AutoRobotIdError(f"Bar with id {num} already exists.")
         self.Create(num, start, end)
         return self.get(num) if obj else num
-    
-        
+
+
 class ExtendedCaseServer(ExtendedServer):
-    
+
     _otype = IRobotCaseServer
     _ctype = IRobotCase
     _dtype = ROType.CASE
     _rtype = IRobotCase
-    
+
     @staticmethod
     def cast(case):
         '''Casts a load case object according to its type.
-        
+
         :param IRobotCase case: The load case object
         '''
         if case.Type == RCaseType.SIMPLE:
             return IRobotSimpleCase(case)
         elif case.Type == RCaseType.COMB:
             return IRobotCaseCombination(case)
-        
+
     def get(self, n):
         '''A method to retrieve load case objects from the server.
-        
+
         :param int n: The case number
-        
-        .. note:: The function casts the argument **n** to ``int`` before querying the server. 
+
+        .. note:: The function casts the argument **n** to ``int`` before querying the server.
         '''
         return self.cast(super(ExtendedCaseServer, self).get(n))
-        
-        
+
+
     def select(self, s, obj=True):
         '''Returns an iterator of load case objects referred to in a selection string.
-        
+
         :param str s: A valid selection string
         :param bool obj: Whether to return case objects or cases' numbers
         :return: A generator of the selected load cases
@@ -322,17 +322,17 @@ class ExtendedCaseServer(ExtendedServer):
             for c in it:
                 yield self.cast(c)
 
-        
+
 class ExtendedNodeServer(ExtendedServer):
-    
+
     _otype = IRobotNodeServer
     _ctype = IRobotNode
     _dtype = ROType.NODE
     _rtype = ExtendedNode
-    
+
     def create(self, x, y, z, num=None, obj=True, overwrite=False):
         '''Creates a new node from coordinates.
-        
+
         :param float x, y, z: Coordinates of the new node
         :param int num: The number for the new node
         :param bool obj: Whether to return the node object or its number
@@ -348,18 +348,18 @@ class ExtendedNodeServer(ExtendedServer):
                 raise AutoRobotIdError(f"Bar with id {num} already exists.")
         self.Create(num, float(x), float(y), float(z))
         return self.get(num) if obj else num
-               
+
 
 class ExtendedSelectionFactory(Capsule):
     _otype = IRobotSelectionFactory
-   
-        
+
+
 def initialize(visible=True, interactive=True):
     '''Initialize a ``RobotApplication`` object.
-    
+
     :param bool visible: Whether the application window is displayed
     :param bool interactive: Whether the application window is displayed
-    
+
     .. note:: A reference to the ``RobotApplication`` is stored in :py:data:`autorobot.extensions.app`.
     '''
     _this.app = ExtendedRobotApp(visible, interactive)

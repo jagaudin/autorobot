@@ -10,7 +10,7 @@ import autorobot as ar
 
 
 class TestAppOperations(TestCase):
-    
+
     def test_init_quit(self):
         rb = ar.initialize()
         with self.subTest(msg='rb.Visible'):
@@ -25,13 +25,13 @@ class TestAppOperations(TestCase):
             self.assertFalse(rb.Visible)
         with self.subTest(msg='rb.Interactive'):
             self.assertFalse(rb.Interactive)
-            
+
     def test_new_open_save_close(self):
         '''Tests new, open, save, close methods.'''
-        
+
         # Customize the __exit__ of the temp dir context to wait a bit
         __exit_orig__ = TemporaryDirectory.__exit__
-        
+
         def __exit_wait__(self, *args):
             # Wait for the file to unlink before exiting the context
             while True:
@@ -39,27 +39,27 @@ class TestAppOperations(TestCase):
                     return __exit_orig__(self, *args)
                 except PermissionError:
                     pass
-            
+
         TemporaryDirectory.__exit__ = __exit_wait__
-        
+
         with TemporaryDirectory() as d:
             path = os.path.join(d, 'test_save.rtd')
             rb = ar.initialize(visible=False, interactive=False)
             for pt in ar.RProjType:
                 with self.subTest(msg='new', proj_type=pt):
                     rb.new(pt)
-            
+
             with self.subTest(msg="save_As"):
                 rb.save_as(path)
                 self.assertTrue(os.path.exists(path))
-            
+
             with self.subTest(msg="close"):
                 rb.close()
                 # It would have been nice to test the close method but
                 # the event handler OnClose just doesn't work.
                 # See https://forums.autodesk.com/t5/robot-structural-analysis-forum/api-onclose-robot-event/td-p/5602676
             rb.quit(save=False)
-            
+
             rb = ar.initialize(visible=False, interactive=False)
             with self.subTest(msg="open"):
                 rb.open(path)
@@ -83,44 +83,44 @@ class TestAppOperations(TestCase):
                     self.assertAlmostEqual(c, 1.)
             rb.close()
             rb.quit(save=False)
-            
-            
+
+
     def test_show_hide(self):
         rb = ar.initialize(visible=False, interactive=False)
         with self.subTest(msg='show'):
             self.assertFalse(rb.Visible)
             rb.show()
             self.assertTrue(rb.Visible)
-            
+
         with self.subTest(msg='hide'):
             self.assertTrue(rb.Visible)
             rb.hide()
             self.assertFalse(rb.Visible)
         rb.quit(save=False)
 
-        
+
 class TestDataServers(TestCase):
-    
+
     @classmethod
     def setUpClass(cls):
         cls.rb = ar.initialize(visible=False, interactive=False)
         cls.rb.new(ar.RProjType.SHELL)
-        
+
     @classmethod
     def tearDownClass(cls):
         cls.rb.quit(save=False)
-        
+
     def tearDown(self):
         self.rb.structure.Clear()
-    
+
     # Bar server test
-    
+
     def test_bar_server(self):
         self.assertIsInstance(
-            self.rb.bars, 
+            self.rb.bars,
             ar.extensions.ExtendedBarServer
         )
-            
+
     def test_bar_create(self):
         with self.subTest(msg='bars.create (ExtendedNode)'):
             a1, a2 = random((3,)), random((3,))
@@ -132,7 +132,7 @@ class TestDataServers(TestCase):
             self.assertEqual(b.StartNode, n1.Number)
             self.assertEqual(b.EndNode, n2.Number)
             self.assertAlmostEqual(b.Length, np.sqrt(np.sum((a1 - a2) ** 2)))
-            
+
         with self.subTest(msg='bars.create (IRobotNode)'):
             a1, a2 = random((3,)), random((3,))
             n1 = self.rb.nodes.create(*a1)
@@ -142,8 +142,8 @@ class TestDataServers(TestCase):
             b = self.rb.bars.create(n1.node, n2.node)
             self.assertEqual(b.StartNode, n1.Number)
             self.assertEqual(b.EndNode, n2.Number)
-            self.assertAlmostEqual(b.Length, np.sqrt(np.sum((a1 - a2) ** 2))) 
-            
+            self.assertAlmostEqual(b.Length, np.sqrt(np.sum((a1 - a2) ** 2)))
+
         with self.subTest(msg='bars.create (int)'):
             a1, a2 = random((3,)), random((3,))
             n1 = self.rb.nodes.create(*a1, obj=False)
@@ -154,7 +154,7 @@ class TestDataServers(TestCase):
             self.assertEqual(b.StartNode, n1)
             self.assertEqual(b.EndNode, n2)
             self.assertAlmostEqual(b.Length, np.sqrt(np.sum((a1 - a2) ** 2)))
-        
+
         with self.subTest(msg='overwrite'):
             a1, a2 = random((3,)), random((3,))
             n = self.rb.nodes.create(*a1, obj=False)
@@ -166,13 +166,13 @@ class TestDataServers(TestCase):
             a = n.as_array()
             for i in range(len(a)):
                 self.assertAlmostEqual(a[i], a2[i])
-            
+
     def test_bar_get(self):
         n1 = self.rb.nodes.create(*random((3,)))
         n2 = self.rb.nodes.create(*random((3,)))
         b = self.rb.bars.create(n1, n2)
         self.assertEqual(self.rb.bars.get(b.Number).Number, b.Number)
-        
+
     def test_bar_select(self):
         ns = []
         for i in range(10):
@@ -191,26 +191,26 @@ class TestDataServers(TestCase):
             )
         with self.subTest(msg='bars.select all'):
             self.assertEqual(
-                len(list(self.rb.bars.select('all'))), 
+                len(list(self.rb.bars.select('all'))),
                 ar.RobotOM.IRobotCollection(self.rb.bars.GetAll()).Count
             )
-    
+
     # Case server test
-    
+
     def test_case_server(self):
         self.assertIsInstance(
-            self.rb.cases, 
+            self.rb.cases,
             ar.extensions.ExtendedCaseServer
         )
-    
+
     # Node server tests
-    
+
     def test_node_server(self):
         self.assertIsInstance(
-            self.rb.nodes, 
+            self.rb.nodes,
             ar.extensions.ExtendedNodeServer
         )
-            
-            
+
+
 if __name__ == '__main__':
     unittest.main()
