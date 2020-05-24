@@ -1,9 +1,18 @@
 Constants
 =========
 
-Some aliases for the Robot API enums.
+Some aliases for the Robot API enums. All the classes below are subclasses
+of `IntEnum <https://docs.python.org/3/library/enum.html#intenum>`_ which means
+they support iteration.
 
-.. tip:: The most-often used enums are imported at the top-level of the autorobot package for convenience, making them available as ``autorobot.ROType`` for example. Of course, these enums are also available as attributes of the ``constants`` submodule. By contrast, the less commonly used enums do not have top-level shortcuts and need to be imported from the ``constants`` submodule.
+.. tip::
+
+  The most-often used enums are imported at the top-level of the
+  autorobot package for convenience, making them available as
+  ``autorobot.ROType`` for example. Of course, these enums are also available
+  as attributes of the ``constants`` submodule. By contrast, the less
+  commonly used enums do not have top-level shortcuts and need to be imported
+  from the ``constants`` submodule.
 
 .. automodule:: autorobot.constants
 
@@ -91,3 +100,12 @@ Bar loads
 
 .. autoclass:: RBarPLValues
 .. autoclass:: RBarUDLValues
+
+
+.. _const_license:
+
+License
+-------
+
+.. autoclass:: RLicense
+.. autoclass:: RLicenseStatus

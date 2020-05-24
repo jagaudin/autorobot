@@ -13,6 +13,8 @@ class TestAppOperations(TestCase):
 
     def test_init_quit(self):
         rb = ar.initialize()
+        with self.subTest(msg='rb.has_license'):
+            self.assertTrue(rb.has_license)
         with self.subTest(msg='rb.Visible'):
             self.assertTrue(rb.Visible)
         with self.subTest(msg='rb.Interactive'):
@@ -57,7 +59,7 @@ class TestAppOperations(TestCase):
                 rb.close()
                 # It would have been nice to test the close method but
                 # the event handler OnClose just doesn't work.
-                # See https://forums.autodesk.com/t5/robot-structural-analysis-forum/api-onclose-robot-event/td-p/5602676
+                # See https://forums.autodesk.com/t5/robot-structural-analysis-forum/api-onclose-robot-event/td-p/5602676  # NOQA
             rb.quit(save=False)
 
             rb = ar.initialize(visible=False, interactive=False)
@@ -203,7 +205,32 @@ class TestDataServers(TestCase):
         )
 
     def test_create_load_case(self):
-        pass
+        with self.subTest(msg='cases.create_load_case'):
+            c = self.rb.cases.create_load_case(1, 'Dummy', ar.RCaseNature.PERM,
+                                               ar.RAnalysisType.LINEAR)
+            self.assertEqual(c.Name, 'Dummy')
+
+        with self.subTest(msg='cases.create_load_case (overwrite)'):
+            self.assertRaises(
+                ar.errors.AutoRobotIdError,
+                self.rb.cases.create_load_case, 1, 'Overwrite missing',
+                ar.RCaseNature.IMPOSED, ar.RAnalysisType.NON_LIN
+            )
+            c = self.rb.cases.create_load_case(
+                1, 'Overwrite present',
+                ar.RCaseNature.WIND, ar.RAnalysisType.NON_LIN, overwrite=True
+            )
+            self.assertEqual(c.Name, 'Overwrite present')
+
+        with self.subTest(msg='cases.create_load_case (no num)'):
+            c = self.rb.cases.create_load_case(
+                None, 'No num',
+                ar.RCaseNature.SNOW, ar.RAnalysisType.NON_LIN, overwrite=True
+            )
+            self.assertEqual(
+                c.Name,
+                'No num'
+            )
 
     def test_create_combination(self):
         pass

@@ -5,26 +5,27 @@ from .errors import AutoRobotInitError
 
 
 def requires_init(func):
-    '''Function decorator to provide the autorobot context to a function.'''
-
+    """Function decorator to provide the autorobot context to a function.
+    """
     @wraps(func)
     def wrapper(*args, **kwargs):
         if not extensions.app:
-            raise(AutoRobotInitError, "Module `autoRobot` was not initialized.")
+            raise(
+                AutoRobotInitError, "Module `autoRobot` was not initialized.")
         app = extensions.app  # NOQA F841
         return func(*args, **kwargs)
     return wrapper
 
 
 def abstract_attributes(*names):
-    '''Class decorator to add abstract attributes.'''
-
+    """Class decorator to add abstract attributes.
+    """
     def factory(cls):
-        '''A function returning the result of ``extend_init_subclass``.'''
-
+        """A function returning the result of ``extend_init_subclass``.
+        """
         def extend_init_subclass(cls, *names):
-            '''Function that extends the __init_subclass__ method of a class.'''
-
+            """Function that extends the __init_subclass__ method of a class.
+            """
             # Assign NotImplemented to each abstract attribute
             for name in names:
                 setattr(cls, name, NotImplemented)
@@ -33,8 +34,8 @@ def abstract_attributes(*names):
             orig_init_subclass = cls.__init_subclass__
 
             def new_init_subclass(cls, **kwargs):
-                '''New definition of __init_subclass__'''
-
+                """New definition of __init_subclass__
+                """
                 # The default implementation of __init_subclass__ takes no
                 # positional arguments, but a custom implementation does.
                 # If the user has not reimplemented __init_subclass__ then
@@ -44,12 +45,12 @@ def abstract_attributes(*names):
                 except TypeError:
                     orig_init_subclass(**kwargs)
 
-                # Check if ABC is in the class bases and check attributes if not
+                # If ABC is not in the class bases, check attributes' values
                 if ABC not in cls.__bases__:
-                    for name in names:
-                        if getattr(cls, name, NotImplemented) is NotImplemented:
+                    for n in names:
+                        if getattr(cls, n, NotImplemented) is NotImplemented:
                             raise NotImplementedError(
-                                f"`{name}` must be a class attribute of "
+                                f"`{n}` must be a class attribute of "
                                 "`{cls.__name__}`."
                             )
 

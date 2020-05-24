@@ -8,6 +8,8 @@ from RobotOM import (
     IRobotCaseNature,
     IRobotCaseType,
     IRobotCombinationType,
+    IRobotLicenseEntitlement,
+    IRobotLicenseEntitlementStatus,
     IRobotLoadRecordType,
     IRobotObjectType,
     IRobotProjectType,
@@ -16,8 +18,10 @@ from RobotOM import (
 
 
 class RProjType(IntEnum):
-    '''Aliases for common project types (others exist, see ``IRobotProjectType``).'''
-
+    """
+    Aliases for common project types. For more details, see
+    ``IRobotProjectType``.
+    """
     BUILDING = IRobotProjectType.I_PT_BUILDING
     FRAME_2D = IRobotProjectType.I_PT_FRAME_2D
     FRAME_3D = IRobotProjectType.I_PT_FRAME_3D
@@ -27,22 +31,28 @@ class RProjType(IntEnum):
 
 
 class RQuitOpt(IntEnum):
-    '''Aliases for quit options (see ``IRobotQuitOption``).'''
+    """
+    Aliases for quit options. For more details, see ``IRobotQuitOption``.
+    """
     DISCARD = IRobotQuitOption.I_QO_DISCARD_CHANGES
     PROMPT = IRobotQuitOption.I_QO_PROMPT_TO_SAVE_CHANGES
     SAVE = IRobotQuitOption.I_QO_SAVE_CHANGES
 
 
-class ROType:
-    '''Aliases for object types (other exist see ``IRobotObjecttype``).'''
-
+class ROType(IntEnum):
+    """
+    Aliases for object types. For more details, see ``IRobotObjecttype``.
+    """
     BAR = IRobotObjectType.I_OT_BAR
     CASE = IRobotObjectType.I_OT_CASE
     NODE = IRobotObjectType.I_OT_NODE
 
 
-class RCaseNature:
-    '''Aliases for load case case nature (see ``IRobotCaseNature``).'''
+class RCaseNature(IntEnum):
+    """
+    Aliases for load case case nature. For more details, see
+    ``IRobotCaseNature``.
+    """
     PERM = IRobotCaseNature.I_CN_PERMANENT
     IMPOSED = IRobotCaseNature.I_CN_EXPLOATATION
     WIND = IRobotCaseNature.I_CN_WIND
@@ -51,41 +61,51 @@ class RCaseNature:
 
 
 class RCaseType(IntEnum):
-    '''Aliases for case type (see ``IRobotCaseType``).'''
-
+    """
+    Aliases for case type. For more details, see ``IRobotCaseType``.
+    """
     SIMPLE = IRobotCaseType.I_CT_SIMPLE
     COMB = IRobotCaseType.I_CT_COMBINATION
 
 
-class RCombType:
-    '''Aliases for load combination type (see ``IRobotCombinationType``).'''
+class RCombType(IntEnum):
+    """
+    Aliases for load combination type. For more details, see
+    ``IRobotCombinationType``.
+    """
     SLS = IRobotCombinationType.I_CBT_SLS
     ULS = IRobotCombinationType.I_CBT_ULS
 
 
-class RAnalysisType:
-    '''Aliases for analysis type (see ``IRobotCaseAnalizeType``)
+class RAnalysisType(IntEnum):
+    """
+    Aliases for analysis type. For more details, see
+    ``IRobotCaseAnalizeType``.
 
     .. caution:: The typo is **in Robot API**, not this document.
-    '''
+    """
     LINEAR = IRobotCaseAnalizeType.I_CAT_STATIC_LINEAR
     NON_LIN = IRobotCaseAnalizeType.I_CAT_STATIC_NONLINEAR
     COMB_LINEAR = IRobotCaseAnalizeType.I_CAT_COMB
     COMB_NON_LIN = IRobotCaseAnalizeType.I_CAT_COMB_NONLINEAR
 
 
-class RLoadType:
-    '''Aliases for load record types (see ``IRobotLoadRecordType``).'''
-
+class RLoadType(IntEnum):
+    """
+    Aliases for load record types. For more details, see
+    ``IRobotLoadRecordType``.
+    """
     DEAD = IRobotLoadRecordType.I_LRT_DEAD
     NODAL = IRobotLoadRecordType.I_LRT_NODE_FORCE
     BAR_UDL = IRobotLoadRecordType.I_LRT_BAR_UNIFORM
     BAR_PL = IRobotLoadRecordType.I_LRT_BAR_FORCE_CONCENTRATED
 
 
-class RBarUDLValues:
-    '''Aliases for bars' uniform distributed loads (see ``IRobotBarUniformRecordValues``).'''
-
+class RBarUDLValues(IntEnum):
+    """
+    Aliases for bars' uniform distributed loads. For more details, see
+    ``IRobotBarUniformRecordValues``.
+    """
     FX = IRobotBarUniformRecordValues.I_BURV_PX
     FY = IRobotBarUniformRecordValues.I_BURV_PY
     FZ = IRobotBarUniformRecordValues.I_BURV_PZ
@@ -99,9 +119,11 @@ class RBarUDLValues:
     OFFSET_Z = IRobotBarUniformRecordValues.I_BURV_OFFSET_Z
 
 
-class RBarPLValues:
-    '''Aliases for bars' point loads (see ``IRobotBarForceConcentrateRecordValues``).'''
-
+class RBarPLValues(IntEnum):
+    """
+    Aliases for bars' point loads. For more details, see
+    ``IRobotBarForceConcentrateRecordValues``.
+    """
     X = IRobotBarForceConcentrateRecordValues.I_BFCRV_X
     FX = IRobotBarForceConcentrateRecordValues.I_BFCRV_FX
     FY = IRobotBarForceConcentrateRecordValues.I_BFCRV_FY
@@ -117,3 +139,20 @@ class RBarPLValues:
     IS_REL = IRobotBarForceConcentrateRecordValues.I_BFCRV_REL
     OFFSET_Y = IRobotBarForceConcentrateRecordValues.I_BFCRV_OFFSET_Y
     OFFSET_Z = IRobotBarForceConcentrateRecordValues.I_BFCRV_OFFSET_Z
+
+
+class RLicense(IntEnum):
+    """
+    Aliases for license entitlement. For more details see
+    ``IRobotLicenseEntitlement``.
+    """
+    LOCAL = IRobotLicenseEntitlement.I_LE_LOCAL_SOLVE
+    CLOUD = IRobotLicenseEntitlement.I_LE_CLOUD_SOLVE
+
+
+class RLicenseStatus(IntEnum):
+    """
+    Aliases for license status. For more details see
+    ``IRobotLicenseEntitlementStaus``
+    """
+    OK = IRobotLicenseEntitlementStatus.I_LES_ENTITLED

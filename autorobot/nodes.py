@@ -16,7 +16,10 @@ def distance(node, other):
 
     :param int node, other: Nodes' numbers
 
-    .. tip:: The arguments **node** and **other** can also be :py:class:`.ExtendedNode`, ``IRobotNode`` or ``str``.
+    .. tip::
+
+      The arguments **node** and **other** can also be
+      :py:class:`.ExtendedNode`, ``IRobotNode`` or ``str``.
     '''
     if not all((isinstance(n, np.ndarray) for n in (node, other))):
         try:

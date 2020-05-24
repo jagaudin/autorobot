@@ -1,22 +1,23 @@
 class AutoRobotInitError(BaseException):
-    '''An exception raised when the module was not initialized.'''
-    pass
+    """Raised when the module was not initialized."""
 
 
 class AutoRobotProjError(BaseException):
-    '''An exception raised when creating a new project failed.'''
-    pass
+    """Raised when creating a new project failed."""
 
 
 class AutoRobotPathError(BaseException):
-    '''An exception raised when the path to ``interop.RobotOM.dll`` is not valid.'''
-    pass
+    """Raised when the path to ``interop.RobotOM.dll`` is not valid."""
 
 
 class AutoRobotValueError(BaseException):
-    '''An exception raised when an invalid value is encountered.'''
-    pass
+    """Raised when an invalid value is encountered."""
 
 
 class AutoRobotIdError(BaseException):
-    '''An exception raised when attempting to silently overwrite an object.'''
+    """Raised when attempting to silently overwrite an object."""
+
+
+class AutoRobotLicenseError(BaseException):
+    """Raised when the license is not available."""
+    msg = "License error, check if it is available."

@@ -9,9 +9,11 @@ from RobotOM import (
 )
 
 
-def add_bar_udl(case, s, desc='', fx=0., fy=0., fz=0., alpha=0., beta=0., gamma=0.,
-                is_local=False, is_proj=False, is_relative=False, offset_y=0., offset_z=0.):
-    '''Adds a uniformly distributed load on a selection of bars.
+def add_bar_udl(case, s, desc='', fx=0., fy=0., fz=0.,
+                alpha=0., beta=0., gamma=0.,
+                is_local=False, is_proj=False, is_relative=False,
+                offset_y=0., offset_z=0.):
+    """Adds a uniformly distributed load on a selection of bars.
 
     :param IRobotCase case: The load case to be modified
     :param str s: A valid bar selection string
@@ -22,7 +24,7 @@ def add_bar_udl(case, s, desc='', fx=0., fy=0., fz=0., alpha=0., beta=0., gamma=
     :param bool is_proj: Whether the force is projected
     :param boll is_relative: Whether the position `x` is relative
     :param float offset_y, offset_z: Force vector offset from the bar
-    '''
+    """
     rec_num = case.Records.New(RLoadType.BAR_UDL)
     rec = IRobotLoadRecord(case.Records.Get(rec_num))
 
@@ -47,9 +49,10 @@ def add_bar_udl(case, s, desc='', fx=0., fy=0., fz=0., alpha=0., beta=0., gamma=
         rec.SetValue(k, v)
 
 
-def add_bar_pl(case, s, desc='', x=0., fx=0., fy=0., fz=0., alpha=0., beta=0., gamma=0.,
-               is_local=False, is_relative=False, offset_y=0., offset_z=0.):
-    '''Adds a point load on a selection of bars.
+def add_bar_pl(case, s, desc='', x=0., fx=0., fy=0., fz=0., alpha=0.,
+               beta=0., gamma=0., is_local=False, is_relative=False,
+               offset_y=0., offset_z=0.):
+    """Adds a point load on a selection of bars.
 
     :param IRobotCase case: The load case to be modified
     :param str s: A valid bar selection string
@@ -60,7 +63,7 @@ def add_bar_pl(case, s, desc='', x=0., fx=0., fy=0., fz=0., alpha=0., beta=0., g
     :param bool is_local: Whether the force is defined in local coordinates
     :param bool is_relative: Whether the position ``x`` is relative
     :param float offset_y, offset_z: Force vector offset from the bar
-    '''
+    """
     rec_num = case.Records.New(RLoadType.BAR_PL)
     rec = IRobotLoadRecord(case.Records.Get(rec_num))
 
