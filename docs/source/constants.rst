@@ -1,8 +1,8 @@
 Constants
 =========
 
-Some aliases for the Robot API enums. All the classes below are subclasses
-of `IntEnum <https://docs.python.org/3/library/enum.html#intenum>`_ which means
+Some aliases for the Robot API enums. All the classes below are subclasses of 
+`IntEnum <https://docs.python.org/3/library/enum.html#intenum>`_ which means
 they support iteration.
 
 .. tip::

@@ -3,7 +3,7 @@ from abc import ABC
 import numpy as np
 import time
 
-import autorobot.utils as utils
+from autorobot.synonyms import synonyms
 from .constants import (
     RCaseNature,
     RCaseType,
@@ -124,7 +124,7 @@ class ExtendedRobotApp:
                 app.new('SHELL')
         """
         try:
-            self.app.Project.New(utils.synonyms[proj_type])
+            self.app.Project.New(synonyms[proj_type])
         except Exception:
             raise AutoRobotProjError(
                 f"Couldn't create new project with '{proj_type}'."
@@ -211,7 +211,6 @@ class ExtendedNode(Capsule):
 
     def __init__(self, inst):
         """Constructor method."""
-
         super(ExtendedNode, self).__init__(inst)
         self.node = inst
 
@@ -395,9 +394,9 @@ class ExtendedCaseServer(ExtendedServer):
             else:
                 raise AutoRobotIdError(f"Case with id {num} already exists.")
         case = IRobotSimpleCase(
-            self.CreateSimple(num, name, utils.synonyms[nature],
-                              utils.synonyms[analysis_type]))
-        case.label = self.label_prefix[utils.synonyms[nature]] + str(num)
+            self.CreateSimple(num, name, synonyms[nature],
+                              synonyms[analysis_type]))
+        case.label = self.label_prefix[synonyms[nature]] + str(num)
         return case
 
     def create_combination(self, num, name, case_factors, comb_type, nature,
@@ -430,9 +429,8 @@ class ExtendedCaseServer(ExtendedServer):
             else:
                 raise AutoRobotIdError(f"Case with id {num} already exists.")
         comb = IRobotCaseCombination(
-            self.CreateCombination(num, name, utils.synonyms[comb_type],
-                                   utils.synonyms[nature],
-                                   utils.synonyms[analysis_type]))
+            self.CreateCombination(num, name, synonyms[comb_type],
+                                   synonyms[nature], synonyms[analysis_type]))
         for k, v in case_factors.items():
             comb.CaseFactors.New(k, v)
         return comb
@@ -494,6 +492,19 @@ class ExtendedNodeServer(ExtendedServer):
                 raise AutoRobotIdError(f"Bar with id {num} already exists.")
         self.Create(num, float(x), float(y), float(z))
         return self.get(num) if obj else num
+
+    def table(self, s):
+        '''Returns a 2d array with the nodes numbers and coordinates.
+
+        The returned array has four columns containing respectively the nodes'
+        number, the x, y and z coordinates.
+
+        :param str s: A valid selection string
+        :return: A 2d array with the nodes numbers and coordinates
+        '''
+        return np.stack(
+            [np.array([n.Number, n.X, n.Y, n.Z]) for n in self.select(s)]
+        )
 
 
 class ExtendedSelectionFactory(Capsule):

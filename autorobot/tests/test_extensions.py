@@ -1,10 +1,12 @@
 import os
+import time
 import unittest
 from unittest import TestCase
 from tempfile import TemporaryDirectory
 from itertools import combinations
 import numpy as np
 from numpy.random import random
+from numpy.testing import assert_array_equal, assert_array_almost_equal
 
 import autorobot as ar
 
@@ -51,6 +53,8 @@ class TestAppOperations(TestCase):
                 with self.subTest(msg='new', proj_type=pt):
                     rb.new(pt)
                     self.assertEqual(rb.Project.Type, pt)
+                # Wait for Robot to avoid throwing a server error
+                time.sleep(0.5)
 
             for pt in ('BUILDING',
                        'FRAME_2D',
@@ -62,8 +66,10 @@ class TestAppOperations(TestCase):
                     rb.new(pt)
                     self.assertEqual(
                         rb.Project.Type,
-                        ar.utils.synonyms[pt]
+                        ar.synonyms.synonyms[pt]
                     )
+                    # Wait for Robot to avoid throwing a server error
+                    time.sleep(0.5)
 
             with self.subTest(msg="save_As"):
                 rb.save_as(path)
@@ -359,18 +365,14 @@ class TestDataServers(TestCase):
             a = random((3,))
             n = self.rb.nodes.create(*a)
             self.assertIsInstance(n, ar.extensions.ExtendedNode)
-            diff = a - n.as_array()
-            for val in diff:
-                self.assertAlmostEqual(val, 0.)
+            assert_array_almost_equal(a, n.as_array())
 
         with self.subTest(msg='nodes.create (kwargs)'):
             a = random((3,))
             n = self.rb.nodes.create(*a, num=4, obj=False)
             self.assertIsInstance(n, int)
             self.assertEqual(self.rb.nodes.get(n).Number, 4)
-            diff = a - self.rb.nodes.get(n).as_array()
-            for val in diff:
-                self.assertAlmostEqual(val, 0.)
+            assert_array_almost_equal(a, self.rb.nodes.get(n).as_array())
 
         with self.subTest(msg='nodes.create (overwrite)'):
             a = random((3,))
@@ -380,18 +382,14 @@ class TestDataServers(TestCase):
             )
             n = self.rb.nodes.create(*a, num=4, overwrite=True)
             self.assertEqual(self.rb.nodes.get(n).Number, 4)
-            diff = a - n.as_array()
-            for val in diff:
-                self.assertAlmostEqual(val, 0.)
+            assert_array_almost_equal(a, n.as_array())
 
     def test_node_get(self):
         a = random((3,))
         n = self.rb.nodes.create(*a, num=4, obj=False)
         self.assertIsInstance(n, int)
         self.assertEqual(self.rb.nodes.get(n).Number, 4)
-        diff = a - self.rb.nodes.get(n).as_array()
-        for val in diff:
-            self.assertAlmostEqual(val, 0.)
+        assert_array_almost_equal(a, self.rb.nodes.get(n).as_array())
 
     def test_node_select(self):
         for i in range(1, 20):
@@ -406,6 +404,15 @@ class TestDataServers(TestCase):
                 len(list(self.rb.nodes.select('all'))),
                 ar.RobotOM.IRobotCollection(self.rb.nodes.GetAll()).Count
             )
+
+    def test_node_table(self):
+        a = random((10, 3))
+        for r in a:
+            self.rb.nodes.create(*r)
+        t = self.rb.nodes.table('2to8by3')
+        # Indexing excludes last value in numpy and starts at 0, hence 1:8:3
+        assert_array_almost_equal(t[:, 1:], a[1:8:3, :])
+        assert_array_equal(t[:, :1].flatten(), np.array([2, 5, 8]))
 
 
 class TestExtendedObjects(TestCase):

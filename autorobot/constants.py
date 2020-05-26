@@ -1,5 +1,4 @@
 from enum import IntEnum
-import numpy as np
 
 from .robotom import RobotOM  # NOQA F401
 from RobotOM import (

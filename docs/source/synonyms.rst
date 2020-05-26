@@ -24,25 +24,26 @@ This comes handy when creating load cases' combinations in particular.
   and accommodate specific needs in a script. ::
 
        import autorobot as ar
+       from autorobot.synonyms import synonyms
 
-       ar.utils.synonyms.update({
+       synonyms.update({
            'shell': ar.RProjType.SHELL  # Don't like all-capital words
            'RDA_ExcitDir': ar.RobotOM.IRobotDynamicAnalysisExcitationDirection  # Too long
        })
-       syn = ar.utils.synonyms
        ...
        # Casting to IRobotDynamicAnalysisExcitationDirection
-       exc_dir = syn['RDA_ExcitDir'](seismic_params.ExcitationDir)
+       exc_dir = synonyms['RDA_ExcitDir'](seismic_params.ExcitationDir)
 
   When frequently used, a bespoke synonym dictionary can be saved and loaded
   with the `json <https://docs.python.org/3/library/json.html>`_ module. ::
 
        import json
        import autorobot as ar
+       from autorobot.synonyms import synonyms
 
        with open('.\my_synonyms.json', 'r') as f:
            my_syn = json.load(f)
-       ar.utils.synonyms.update(my_syn)
+       synonyms.update(my_syn)
        ...
        with open('.\my_synonyms.json', 'w') as f:
            json.dump(my_syn, f, indent=2)
@@ -54,7 +55,7 @@ This comes handy when creating load cases' combinations in particular.
   `JSONDecoder <https://docs.python.org/3/library/json.html#json.JSONEncoder>`_
   could be used.
 
-.. autodata:: autorobot.utils.synonyms
+.. autodata:: autorobot.synonyms.synonyms
    :annotation:
 
    The predefined synonyms are:

@@ -10,7 +10,7 @@ Welcome to autoRobot's documentation!
    nodes
    loads
    constants
-   utils
+   synonyms
    decorators
    exceptions
 
