@@ -3,6 +3,7 @@ from abc import ABC
 import numpy as np
 import time
 
+import autorobot.utils as utils
 from .constants import (
     RCaseNature,
     RCaseType,
@@ -116,9 +117,14 @@ class ExtendedRobotApp:
         :param int proj_type:
           The type of project to be created.For more detail, see
           :py:class:`autorobot.RProjType`.
+
+        .. tip:: This method supports :ref:`about_synonyms` for the
+          **proj_type** arguments. For example: ::
+
+                app.new('SHELL')
         """
         try:
-            self.app.Project.New(proj_type)
+            self.app.Project.New(utils.synonyms[proj_type])
         except Exception:
             raise AutoRobotProjError(
                 f"Couldn't create new project with '{proj_type}'."
@@ -337,6 +343,20 @@ class ExtendedCaseServer(ExtendedServer):
         RCaseNature.SNOW: 'S',
         RCaseNature.ACC: 'A',
     }
+    """
+    A dictionary providing prefixes for labelling to load cases based on
+    their nature. The label is formed of the prefix and the case number. The
+    values can be changed to suit preferences. The default prefixes are:
+
+     * ``RCaseNature.PERM``: ``'G'``,
+     * ``RCaseNature.IMPOSED``: ``'Q'``,
+     * ``RCaseNature.WIND``: ``'W'``,
+     * ``RCaseNature.SNOW``: ``'S'``,
+     * ``RCaseNature.ACC``: ``'A'``,
+
+    .. caution:: There is a distinction between a load case *label* and its
+       *name*. The label of a load cases is usually shorter than its name.
+    """
 
     @staticmethod
     def cast(case):
@@ -360,6 +380,11 @@ class ExtendedCaseServer(ExtendedServer):
         :param bool overwrite:
            Whether to override if number conflicts with existing data
         :return: The load case object (as a ``IRobotSimpleCase`` instance)
+
+        .. tip:: This method supports :ref:`about_synonyms` for the
+          **nature** and **analysis_type** arguments. For example: ::
+
+                create_load_case(1, 'Load case', 'IMPOSED', 'LINEAR')
         """
         if num is None:
             num = self.FreeNumber
@@ -369,9 +394,10 @@ class ExtendedCaseServer(ExtendedServer):
                 self.Delete(num)
             else:
                 raise AutoRobotIdError(f"Case with id {num} already exists.")
-        case = IRobotSimpleCase(self.CreateSimple(
-            num, name, nature, analysis_type))
-        case.label = self.label_prefix[nature] + str(num)
+        case = IRobotSimpleCase(
+            self.CreateSimple(num, name, utils.synonyms[nature],
+                              utils.synonyms[analysis_type]))
+        case.label = self.label_prefix[utils.synonyms[nature]] + str(num)
         return case
 
     def create_combination(self, num, name, case_factors, comb_type, nature,
@@ -388,6 +414,12 @@ class ExtendedCaseServer(ExtendedServer):
         :return:
            The load combination object (as an ``IRobotCaseCombination``
            instance)
+
+        .. tip:: This method supports :ref:`about_synonyms` for the
+          **comb_type**, **nature** and **analysis_type** arguments.
+          For example: ::
+
+                create_combination(1, 'Comb', 'SLS', 'PERM', 'COMB_LINEAR')
         """
         if num is None:
             num = self.FreeNumber
@@ -397,8 +429,10 @@ class ExtendedCaseServer(ExtendedServer):
                 self.Delete(num)
             else:
                 raise AutoRobotIdError(f"Case with id {num} already exists.")
-        comb = IRobotCaseCombination(self.CreateCombination(
-            num, name, comb_type, nature, analysis_type))
+        comb = IRobotCaseCombination(
+            self.CreateCombination(num, name, utils.synonyms[comb_type],
+                                   utils.synonyms[nature],
+                                   utils.synonyms[analysis_type]))
         for k, v in case_factors.items():
             comb.CaseFactors.New(k, v)
         return comb

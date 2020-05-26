@@ -22,7 +22,7 @@ Objects
 .. autoclass:: ExtendedNode
   :members:
   :inherited-members:
-  
+
 
 .. _application:
 
@@ -32,12 +32,12 @@ Application
 .. autoclass:: ExtendedRobotApp
    :member-order: 'bysource'
    :members:
-   
+
 .. autodata:: app
   :annotation:
-   
 
-.. _servers: 
+
+.. _servers:
 
 Servers
 -------
@@ -47,7 +47,11 @@ Servers
 
 .. autoclass:: ExtendedCaseServer
   :members:
+  :exclude-members: label_prefix
   :inherited-members:
+
+  .. autoattribute:: label_prefix
+     :annotation:
 
 .. autoclass:: ExtendedNodeServer
   :members:

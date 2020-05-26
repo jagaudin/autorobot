@@ -2,7 +2,6 @@ from .extensions import initialize  # NOQA F401
 
 from .constants import (  # NOQA F401
     RProjType,
-    ROType,
     RCaseNature,
     RCaseType,
     RCombType,

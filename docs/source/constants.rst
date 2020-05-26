@@ -9,7 +9,7 @@ they support iteration.
 
   The most-often used enums are imported at the top-level of the
   autorobot package for convenience, making them available as
-  ``autorobot.ROType`` for example. Of course, these enums are also available
+  ``autorobot.RProjType`` for example. Of course, these enums are also available
   as attributes of the ``constants`` submodule. By contrast, the less
   commonly used enums do not have top-level shortcuts and need to be imported
   from the ``constants`` submodule.
@@ -20,16 +20,6 @@ they support iteration.
 
 Types
 -----
-
-.. autoclass:: autorobot.ROType
-   :no-members:
-
-   .. autoattribute:: BAR
-      :annotation:  = IRobotObjectType.I_OT_BAR
-   .. autoattribute:: CASE
-      :annotation:  = IRobotObjectType.I_OT_CASE
-   .. autoattribute:: NODE
-      :annotation:  = IRobotObjectType.I_OT_NODE
 
 .. autoclass:: autorobot.RProjType
    :no-members:
@@ -89,6 +79,16 @@ Types
       :annotation:  = IRobotCaseAnalizeType.I_CAT_COMB
    .. autoattribute:: COMB_NON_LIN
       :annotation:  = IRobotCaseAnalizeType.I_CAT_COMB_NONLINEAR
+
+.. autoclass:: ROType
+   :no-members:
+
+   .. autoattribute:: BAR
+      :annotation:  = IRobotObjectType.I_OT_BAR
+   .. autoattribute:: CASE
+      :annotation:  = IRobotObjectType.I_OT_CASE
+   .. autoattribute:: NODE
+      :annotation:  = IRobotObjectType.I_OT_NODE
 
 .. autoclass:: RLoadType
 

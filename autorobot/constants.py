@@ -1,4 +1,5 @@
 from enum import IntEnum
+import numpy as np
 
 from .robotom import RobotOM  # NOQA F401
 from RobotOM import (
@@ -41,7 +42,7 @@ class RQuitOpt(IntEnum):
 
 class ROType(IntEnum):
     """
-    Aliases for object types. For more details, see ``IRobotObjecttype``.
+    Aliases for object types. For more details, see ``IRobotObjectType``.
     """
     BAR = IRobotObjectType.I_OT_BAR
     CASE = IRobotObjectType.I_OT_CASE
