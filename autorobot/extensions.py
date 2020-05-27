@@ -329,6 +329,18 @@ class ExtendedBarServer(ExtendedServer):
         self.Create(num, start, end)
         return self.get(num) if obj else num
 
+    def table(self, s):
+        '''Returns a 2d array containing bar numbers and connected nodes.
+
+        :param str s: A valid selection string
+        :return:
+           A 2d array with the bars' number, start and end nodes.
+        '''
+        return np.stack([
+            np.array([b.Number, b.StartNode, b.EndNode])
+            for b in self.select(s)
+        ])
+
 
 class ExtendedCaseServer(ExtendedServer):
 

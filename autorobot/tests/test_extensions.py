@@ -195,9 +195,7 @@ class TestDataServers(TestCase):
         self.assertEqual(self.rb.bars.get(b.Number).Number, b.Number)
 
     def test_bar_select(self):
-        ns = []
-        for i in range(10):
-            ns.append(self.rb.nodes.create(*random((3,))))
+        ns = [self.rb.nodes.create(*random((3,))) for i in range(10)]
         with self.rb.bars as bars:
             for n1, n2 in combinations(ns, 2):
                 bars.create(n1, n2)
@@ -215,6 +213,18 @@ class TestDataServers(TestCase):
                 len(list(self.rb.bars.select('all'))),
                 ar.RobotOM.IRobotCollection(self.rb.bars.GetAll()).Count
             )
+
+    def test_bar_table(self):
+        ns = [
+            self.rb.nodes.create(*random((3,)), obj=False) for i in range(10)
+        ]
+        with self.rb.bars as bars:
+            for n1, n2 in combinations(ns, 2):
+                bars.create(n1, n2)
+        t = self.rb.bars.table('all')
+        a = np.stack([np.array([i + 1, *t])
+                     for i, t in enumerate(combinations(ns, 2))])
+        assert_array_equal(t, a.astype(int))
 
     # Case server test
 
