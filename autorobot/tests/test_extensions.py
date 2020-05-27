@@ -414,6 +414,25 @@ class TestDataServers(TestCase):
         assert_array_almost_equal(t[:, 1:], a[1:8:3, :])
         assert_array_equal(t[:, :1].flatten(), np.array([2, 5, 8]))
 
+    def test_node_from_array(self):
+        with self.subTest(msg='nodes.from_array 1d'):
+            a = random((3,))
+            n = self.rb.nodes.from_array(a)
+            assert_array_almost_equal(a, n.as_array())
+
+        with self.subTest(msg='nodes.from_array 2d 3cols'):
+            a = random((10, 3))
+            ns = self.rb.nodes.from_array(a)
+            assert_array_almost_equal(a, np.stack([n.as_array() for n in ns]))
+
+        with self.subTest(msg='nodes.from_array 2d 4cols'):
+            a = random((10, 3))
+            a = np.hstack([np.array([[i] for i in range(20, 30)]), a])
+            ns = self.rb.nodes.from_array(a)
+            assert_array_almost_equal(
+                a[:, 1:], np.stack([n.as_array() for n in ns]))
+            self.assertListEqual([n.Number for n in ns], list(range(20, 30)))
+
 
 class TestExtendedObjects(TestCase):
 

@@ -2,6 +2,8 @@ import sys
 from abc import ABC
 import numpy as np
 import time
+from collections.abc import Iterable
+from itertools import repeat
 
 from autorobot.synonyms import synonyms
 from .constants import (
@@ -505,6 +507,41 @@ class ExtendedNodeServer(ExtendedServer):
         return np.stack(
             [np.array([n.Number, n.X, n.Y, n.Z]) for n in self.select(s)]
         )
+
+    def from_array(self, a, num=None, obj=True, overwrite=False):
+        '''Returns a new node created from a coordinate array.
+
+        If the array has one dimension the first three values are used as
+        coordinates. If the array has two dimensions and three columns,
+        the data is used as coordinates. If the array has two dimensions
+        and more than three columns, the first columns is used as numbers
+        for the newly created nodes (and the argument **num** is ignored).
+
+        :param numpy.array a: An array-like object (1d or 2d)
+        :param num: The new number(s) for the node(s) (optional)
+        :type num: int or tuple
+        :param bool obj:
+           Whether to return the node object or its number (default: `True`)
+        :param bool overwrite: Whether to overwrite existing objects
+        :return: The new node object(s) or number(s)
+        '''
+        a = np.asarray(a)
+        if len(a.shape) == 1:
+            return self.create(*a[:3], num=num, obj=obj, overwrite=overwrite)
+        elif len(a.shape) > 2:
+            raise AutoRobotValueError("Array must be 1d or 2d.")
+
+        if a.shape[1] > 3:
+            # Use first column as numbers and remove it
+            num = iter(a[:, :1].flatten().astype(int))
+            a = a[:, 1:]
+        else:
+            num = iter(num) if isinstance(num, Iterable) else repeat(None)
+        new = []
+        for row in a:
+            new.append(self.create(*row[:3], num=next(num), obj=obj,
+                                   overwrite=overwrite))
+        return new
 
 
 class ExtendedSelectionFactory(Capsule):
