@@ -286,6 +286,15 @@ class ExtendedServer(Capsule, ABC):
             for i in range(col.Count):
                 yield self._rtype(self._ctype(col.Get(i+1)))
 
+    def delete(self, s):
+        """Deletes a sa selection of objects.
+
+        :param str s: A valid selction string
+        """
+        sel = self.app.select.Create(self._dtype)
+        sel.FromText(str(s))
+        self.DeleteMany(sel)
+
 
 class ExtendedBarServer(ExtendedServer):
 

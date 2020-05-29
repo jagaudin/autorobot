@@ -214,6 +214,14 @@ class TestDataServers(TestCase):
                 ar.RobotOM.IRobotCollection(self.rb.bars.GetAll()).Count
             )
 
+    def test_bar_delete(self):
+        ns = [self.rb.nodes.create(*random((3,))) for i in range(10)]
+        with self.rb.bars as bars:
+            for n1, n2 in combinations(ns, 2):
+                bars.create(n1, n2)
+        self.rb.bars.delete('all')
+        self.assertListEqual(list(self.rb.bars.select('all')), [])
+
     def test_bar_table(self):
         ns = [
             self.rb.nodes.create(*random((3,)), obj=False) for i in range(10)
@@ -362,6 +370,16 @@ class TestDataServers(TestCase):
                 ar.RobotOM.IRobotCollection(self.rb.cases.GetAll()).Count
             )
 
+    def test_case_delete(self):
+        with self.rb.cases as cases:
+            for i in range(1, 5):
+                cases.create_load_case(i, f'Case {i}', 'PERM', 'LINEAR')
+            for i in range(6, 10):
+                cases.create_combination(i, f'Comb {i}', {}, 'ULS', 'IMPOSED',
+                                         'COMB_NON_LIN')
+        self.rb.cases.delete('all')
+        self.assertListEqual(list(self.rb.cases.select('all')), [])
+
     # Node server tests
 
     def test_node_server(self):
@@ -414,6 +432,12 @@ class TestDataServers(TestCase):
                 len(list(self.rb.nodes.select('all'))),
                 ar.RobotOM.IRobotCollection(self.rb.nodes.GetAll()).Count
             )
+
+    def test_node_delete(self):
+        for i in range(1, 10):
+            self.rb.nodes.create(*random((3,)))
+        self.rb.nodes.delete('all')
+        self.assertListEqual(list(self.rb.nodes.select('all')), [])
 
     def test_node_table(self):
         a = random((10, 3))
