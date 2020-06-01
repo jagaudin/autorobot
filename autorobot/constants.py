@@ -8,6 +8,7 @@ from RobotOM import (
     IRobotCaseNature,
     IRobotCaseType,
     IRobotCombinationType,
+    IRobotLabelType,
     IRobotLicenseEntitlement,
     IRobotLicenseEntitlementStatus,
     IRobotLoadRecordType,
@@ -46,6 +47,16 @@ class ROType(IntEnum):
     BAR = IRobotObjectType.I_OT_BAR
     CASE = IRobotObjectType.I_OT_CASE
     NODE = IRobotObjectType.I_OT_NODE
+
+
+class RLabelType:
+    """
+    Aliases for label types. For more details, see ``IRobotLabelType``.
+    """
+    BAR_SECT = IRobotLabelType.I_LT_BAR_SECTION
+    BAR_MAT = IRobotLabelType.I_LT_BAR_MATERIAL
+    SUPPORT = IRobotLabelType.I_LT_SUPPORT
+    RELEASE = IRobotLabelType.I_LT_BAR_RELEASE
 
 
 class RCaseNature(IntEnum):

@@ -87,7 +87,7 @@ class ExtendedRobotApp:
         return ExtendedNodeServer(self.app.Project.Structure.Nodes, self)
 
     @property
-    def select(self):
+    def selections(self):
         """
         Gets the project's selection factory as an instance of
         :py:class:`.ExtendedSelectionFactory`.

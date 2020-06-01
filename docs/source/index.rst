@@ -8,6 +8,7 @@ Welcome to autoRobot's documentation!
    intro
    extensions
    nodes
+   sections
    loads
    constants
    synonyms

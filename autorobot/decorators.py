@@ -12,7 +12,6 @@ def requires_init(func):
         if not extensions.app:
             raise(
                 AutoRobotInitError, "Module `autoRobot` was not initialized.")
-        app = extensions.app  # NOQA F841
         return func(*args, **kwargs)
     return wrapper
 

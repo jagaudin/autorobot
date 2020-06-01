@@ -1,7 +1,7 @@
 Constants
 =========
 
-Some aliases for the Robot API enums. All the classes below are subclasses of 
+Some aliases for the Robot API enums. All the classes below are subclasses of
 `IntEnum <https://docs.python.org/3/library/enum.html#intenum>`_ which means
 they support iteration.
 
@@ -90,7 +90,29 @@ Types
    .. autoattribute:: NODE
       :annotation:  = IRobotObjectType.I_OT_NODE
 
+.. autoclass:: RLabelType
+   :no-members:
+
+   .. autoattribute:: BAR_SECT
+      :annotation:  = IRobotLabelType.I_LT_BAR_SECTION
+   .. autoattribute:: BAR_MAT
+      :annotation:  = IRobotLabelType.I_LT_BAR_MATERIAL
+   .. autoattribute:: SUPPORT
+      :annotation:  = IRobotLabelType.I_LT_SUPPORT
+   .. autoattribute:: RELEASE
+      :annotation:  = IRobotLabelType.I_LT_BAR_RELEASE
+
 .. autoclass:: RLoadType
+   :no-members:
+
+   .. autoattribute:: DEAD
+      :annotation:  = IRobotLoadRecordType.I_LRT_DEAD
+   .. autoattribute:: NODAL
+      :annotation:  = IRobotLoadRecordType.I_LRT_NODE_FORCE
+   .. autoattribute:: BAR_UDL
+      :annotation:  = IRobotLoadRecordType.I_LRT_BAR_UNIFORM
+   .. autoattribute:: BAR_PL
+      :annotation:  = IRobotLoadRecordType.I_LRT_BAR_FORCE_CONCENTRATED
 
 
 .. _const_bar_loads:
