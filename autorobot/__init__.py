@@ -1,4 +1,4 @@
-from .extensions import initialize  # NOQA F401
+from .app import initialize  # NOQA F401
 
 from .constants import (  # NOQA F401
     RProjType,
@@ -7,6 +7,7 @@ from .constants import (  # NOQA F401
     RCombType,
     RAnalysisType,
 )
+
 from .sections import (
     create_section,
     set_section,
@@ -14,6 +15,7 @@ from .sections import (
     get_section_db,
     list_sections,
 )
+
 from .loads import (  # NOQA F401
     add_bar_udl,
     add_bar_pl,

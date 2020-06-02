@@ -23,7 +23,7 @@ class TestAppOperations(TestCase):
             self.assertTrue(rb.Interactive)
         rb.quit(save=False)
         with self.subTest(msg='rb.quit'):
-            self.assertIsNone(ar.extensions.app)
+            self.assertIsNone(ar.app.app)
         rb = ar.initialize(visible=False, interactive=False)
         with self.subTest(msg='rb.Visible'):
             self.assertFalse(rb.Visible)
@@ -139,7 +139,7 @@ class TestDataServers(TestCase):
     def test_bar_server(self):
         self.assertIsInstance(
             self.rb.bars,
-            ar.extensions.ExtendedBarServer
+            ar.app.ExtendedBarServer
         )
 
     def test_bar_create(self):
@@ -147,8 +147,8 @@ class TestDataServers(TestCase):
             a1, a2 = random((3,)), random((3,))
             n1 = self.rb.nodes.create(*a1)
             n2 = self.rb.nodes.create(*a2)
-            self.assertIsInstance(n1, ar.extensions.ExtendedNode)
-            self.assertIsInstance(n2, ar.extensions.ExtendedNode)
+            self.assertIsInstance(n1, ar.nodes.ExtendedNode)
+            self.assertIsInstance(n2, ar.nodes.ExtendedNode)
             b = self.rb.bars.create(n1, n2)
             self.assertEqual(b.StartNode, n1.Number)
             self.assertEqual(b.EndNode, n2.Number)
@@ -239,7 +239,7 @@ class TestDataServers(TestCase):
     def test_case_server(self):
         self.assertIsInstance(
             self.rb.cases,
-            ar.extensions.ExtendedCaseServer
+            ar.app.ExtendedCaseServer
         )
 
     def test_create_load_case(self):
@@ -385,14 +385,14 @@ class TestDataServers(TestCase):
     def test_node_server(self):
         self.assertIsInstance(
             self.rb.nodes,
-            ar.extensions.ExtendedNodeServer
+            ar.nodes.ExtendedNodeServer
         )
 
     def test_node_create(self):
         with self.subTest(msg='nodes.create'):
             a = random((3,))
             n = self.rb.nodes.create(*a)
-            self.assertIsInstance(n, ar.extensions.ExtendedNode)
+            self.assertIsInstance(n, ar.nodes.ExtendedNode)
             assert_array_almost_equal(a, n.as_array())
 
         with self.subTest(msg='nodes.create (kwargs)'):
@@ -486,7 +486,7 @@ class TestExtendedObjects(TestCase):
     def test_extended_node_as_array(self):
         a = random((3,))
         n = self.rb.nodes.create(*a)
-        self.assertIsInstance(n, ar.extensions.ExtendedNode)
+        self.assertIsInstance(n, ar.nodes.ExtendedNode)
         diff = a - n.as_array()
         for val in diff:
             self.assertAlmostEqual(val, 0.)

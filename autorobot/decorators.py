@@ -1,6 +1,7 @@
 from abc import ABC
 from functools import wraps
-import autorobot.extensions as extensions
+
+import autorobot.app as app
 from .errors import AutoRobotInitError
 
 
@@ -9,7 +10,7 @@ def requires_init(func):
     """
     @wraps(func)
     def wrapper(*args, **kwargs):
-        if not extensions.app:
+        if not app.app:
             raise(
                 AutoRobotInitError, "Module `autoRobot` was not initialized.")
         return func(*args, **kwargs)

@@ -1,4 +1,4 @@
-import autorobot.extensions as extensions
+import autorobot.app as app
 
 from .constants import (
     RLabelType,
@@ -14,6 +14,7 @@ from RobotOM import (
     IRobotBarSectionType,
     IRobotLabel,
 )
+
 
 @requires_init
 def create_section(name, h, w=0., t=0., shape='round', is_solid=True,
@@ -70,7 +71,7 @@ def create_section(name, h, w=0., t=0., shape='round', is_solid=True,
         }
     }
 
-    labels = extensions.app.structure.Labels
+    labels = app.app.structure.Labels
     section = IRobotLabel(labels.Create(RLabelType.BAR_SECT, name))
     data = IRobotBarSectionData(section.Data)
     data.Type = shape_params[(shape, is_solid)]['type']
@@ -83,27 +84,33 @@ def create_section(name, h, w=0., t=0., shape='round', is_solid=True,
     data.CalcNonstdGeometry()
     labels.StoreWithName(section, name)
 
+
+@requires_init
 def set_section(s, name):
     """Sets the section for a selection of bars.
 
     :param str s: A valid selection string
     :param str name: The section name
     """
-    sel = extensions.app.selections.Create(ROType.BAR)
+    sel = app.selections.Create(ROType.BAR)
     sel.FromText(str(s))
-    with extensions.app.bars as bars:
+    with app.bars as bars:
         bars.SetLabel(sel, RLabelType.BAR_SECT, name)
 
+
+@requires_init
 def list_section_db(filter=lambda s: True):
     """Returns the list of section database names.
 
     :param function filter: A condition to filter the result
     :return: List of section database names
     """
-    db_list = extensions.app.Project.Preferences.SectionsFound
+    db_list = app.Project.Preferences.SectionsFound
     db_list = [db_list.Get(i) for i in range(1, db_list.Count + 1)]
     return [name for name in db_list if filter(name)]
 
+
+@requires_init
 def get_section_db(name):
     """Returns the section database with the given name.
 
@@ -112,9 +119,11 @@ def get_section_db(name):
        The section database with the given name as a ``IRobotSectionDatabase``
        instance.
     """
-    db_list = extensions.app.Project.Preferences.SectionsFound
+    db_list = app.Project.Preferences.SectionsFound
     return db_list.GetDatabase(db_list.Find(name))
 
+
+@requires_init
 def list_sections(db_name, filter=lambda s: True):
     """Returns the list of sections names in database.
 
@@ -126,12 +135,14 @@ def list_sections(db_name, filter=lambda s: True):
     names = [names.Get(i) for i in range(1, names.Count + 1)]
     return [name for name in names if filter(name)]
 
+
+@requires_init
 def load_section_from_db(name):
     """Loads a section from the database.
 
     :param str name: The name of the section
     """
-    labels = extensions.app.structure.Labels
+    labels = app.structure.Labels
     section = IRobotLabel(labels.Create(RLabelType.BAR_SECT, name))
     data = IRobotBarSectionData(section.Data)
     data.LoadFromDBase(name)
