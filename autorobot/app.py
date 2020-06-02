@@ -80,7 +80,7 @@ class ExtendedRobotApp:
     def selections(self):
         """
         Gets the project's selection factory as an instance of
-        :py:class:`.ExtendedSelectionFactory`.
+        ``IRobotSelectionFactory``.
         """
         return self.app.Project.Structure.Selections
 
@@ -191,7 +191,7 @@ def initialize(visible=True, interactive=True):
     .. note::
 
        A reference to the ``RobotApplication`` is stored in
-       :py:data:`autorobot.extensions.app`.
+       :py:data:`autorobot.app.app`.
     """
     _this.app = ExtendedRobotApp(visible, interactive)
     return _this.app

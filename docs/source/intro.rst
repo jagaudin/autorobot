@@ -41,3 +41,20 @@ import ``autorobot`` and initialize the module. ::
 
     import autorobot as r
     rb = ar.initialize()
+
+
+In order to focus on the model's data rather than the syntax, a layer of
+high-level methods is provided on top of the original functions.
+Some .Net objects are also encapsulated to provide additional functionality
+whilst maintaining access to all the original methods and attributes.
+
+For example, the following code is valid:  ::
+
+    import autorobot as ar
+    rb = ar.initialize()
+    rb.new(ar.RProjType.SHELL)
+    n = rb.nodes.create(2., 0., 0.)  # This returns an ExtendedNode instance
+    assert(n.X == 2.)  # ExtendedNode instance gives access to IRobotNodes fields and methods
+
+This is to say that the ``X`` attribute of the encapsulated ``IRobotNode``
+object is available through the :py:class:`.ExtendedNode` instance.

@@ -6,10 +6,12 @@ Welcome to autoRobot's documentation!
    :caption: Contents:
 
    intro
-   extensions
+   application
    nodes
+   bars
    sections
    loads
+   loadcases
    constants
    synonyms
    decorators

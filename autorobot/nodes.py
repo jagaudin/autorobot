@@ -74,7 +74,6 @@ class ExtendedNode(Capsule):
         """Returns an array with the node's coordinates.
 
         :return: A numpy array of coordinates
-        :rtype: numpy array
         """
         return np.array([self.node.X, self.node.Y, self.node.Z])
 
