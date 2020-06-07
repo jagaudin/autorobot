@@ -7,6 +7,7 @@ from .errors import (
 from .robotom import RobotOM  # NOQA F401
 from RobotOM import (
     IRobotCollection,
+    IRobotNamesArray,
 )
 
 
@@ -86,3 +87,67 @@ class ExtendedServer(Capsule, ABC):
         sel = self.app.selections.Create(self._dtype)
         sel.FromText(str(s))
         self.DeleteMany(sel)
+
+
+@abstract_attributes('_otype', '_dtype')
+class ExtendedLabel(Capsule, ABC):
+
+    @property
+    def data(self):
+        return self._dtype(self.Data)
+
+
+@abstract_attributes('_otype', '_ctype', '_ltype', '_dtype', '_rtype')
+class ExtendedLabelServer(Capsule, ABC):
+
+    def __init__(self, inst, app):
+        super(ExtendedLabelServer, self).__init__(inst)
+        self.app = app
+        self.server = inst
+
+    def get(self, name):
+        """Returns the label with name **name** from the server.
+
+        :param str name: The name of the label
+        """
+        try:
+            return self._rtype(
+                self._ctype(self.server.Get(self._ltype, str(name))))
+        except Exception as e:
+            raise AutoRobotValueError(
+                f"{self.__class__.__name__} couldn't get id `{name}`."
+            ) from e
+
+    def get_names(self, func=lambda s: True):
+        """Returns the names available in the model
+
+        :param function func: A filter function
+        :return: The list of material names in the structure
+        """
+        names = IRobotNamesArray(self.GetAvailableNames())
+        names = [names.Get(i) for i in range(1, names.Count + 1)]
+        return [name for name in names if func(name)]
+
+    def load(self, name):
+        """Loads a label from the database.
+
+        :param str name: The name to search in the database.
+        """
+        label = self._ctype(self.Create(self._ltype, name))
+        data = self._dtype(label.Data)
+        data.LoadFromDBase(name)
+        self.Store(label)
+
+    def delete(self, name):
+        """Deletes a label from the structure.
+
+        :param str name: The name of the label to delete
+        """
+        self.Delete(self._ltype, name)
+
+    def exist(name):
+        """Checks whether a label with the given name exists in the structure.
+
+        :param str name: The name of the label
+        """
+        return self.Exist(self._ltype, name)

@@ -54,6 +54,10 @@ def distance(node, other):
 
 
 class ExtendedNode(Capsule):
+    """
+    This class is an extension for ``IRobotNode`` providing the
+    mehtods listed below in addition to the methods of the original object.
+    """
 
     _otype = IRobotNode
 
@@ -79,6 +83,10 @@ class ExtendedNode(Capsule):
 
 
 class ExtendedNodeServer(ExtendedServer):
+    """
+    This class is an extension for ``IRobotNodeServer`` providing
+    additional functions for the management of nodes. 
+    """
 
     _otype = IRobotNodeServer
     _ctype = IRobotNode

@@ -95,12 +95,26 @@ Types
 
    .. autoattribute:: BAR_SECT
       :annotation:  = IRobotLabelType.I_LT_BAR_SECTION
-   .. autoattribute:: BAR_MAT
-      :annotation:  = IRobotLabelType.I_LT_BAR_MATERIAL
+   .. autoattribute:: MAT
+      :annotation:  = IRobotLabelType.I_LT_MATERIAL
    .. autoattribute:: SUPPORT
       :annotation:  = IRobotLabelType.I_LT_SUPPORT
    .. autoattribute:: RELEASE
       :annotation:  = IRobotLabelType.I_LT_BAR_RELEASE
+
+.. autoclass:: RMatType
+   :no-members:
+
+   .. autoattribute:: STEEL
+      :annotation:  = IRobotMaterialType.I_MT_STEEL
+   .. autoattribute:: ALUM
+      :annotation:  = IRobotMaterialType.I_MT_ALUMINIUM
+   .. autoattribute:: TIMBER
+      :annotation:  = IRobotMaterialType.I_MT_TIMBER
+   .. autoattribute:: CONCRETE
+      :annotation:  = IRobotMaterialType.I_MT_CONCRETE
+   .. autoattribute:: OTHER
+      :annotation:  = IRobotMaterialType.I_MT_OTHER
 
 .. autoclass:: RLoadType
    :no-members:

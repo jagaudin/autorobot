@@ -20,6 +20,10 @@ from RobotOM import (
 
 
 class ExtendedCaseServer(ExtendedServer):
+    """
+    This class is an extension for ``IRobotCaseServer`` providing
+    additional functions for the management of load cases.
+    """
 
     _otype = IRobotCaseServer
     _ctype = IRobotCase

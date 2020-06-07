@@ -9,6 +9,7 @@ Welcome to autoRobot's documentation!
    application
    nodes
    bars
+   materials
    sections
    loads
    loadcases

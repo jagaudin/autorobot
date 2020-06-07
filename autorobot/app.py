@@ -3,6 +3,7 @@ import time
 
 from .bars import ExtendedBarServer
 from .cases import ExtendedCaseServer
+from .materials import ExtendedMaterialServer
 from .nodes import ExtendedNodeServer
 
 from .constants import (
@@ -67,6 +68,14 @@ class ExtendedRobotApp:
         :py:class:`.ExtendedCaseServer`.
         """
         return ExtendedCaseServer(self.app.Project.Structure.Cases, self)
+
+    @property
+    def materials(self):
+        """
+        Gets the material label server as an instance of
+        :py:class:`.ExtendedMaterialServer`
+        """
+        return ExtendedMaterialServer(self.app.Project.Structure.Labels, self)
 
     @property
     def nodes(self):

@@ -12,6 +12,7 @@ from RobotOM import (
     IRobotLicenseEntitlement,
     IRobotLicenseEntitlementStatus,
     IRobotLoadRecordType,
+    IRobotMaterialType,
     IRobotObjectType,
     IRobotProjectType,
     IRobotQuitOption,
@@ -54,7 +55,7 @@ class RLabelType:
     Aliases for label types. For more details, see ``IRobotLabelType``.
     """
     BAR_SECT = IRobotLabelType.I_LT_BAR_SECTION
-    BAR_MAT = IRobotLabelType.I_LT_BAR_MATERIAL
+    MAT = IRobotLabelType.I_LT_MATERIAL
     SUPPORT = IRobotLabelType.I_LT_SUPPORT
     RELEASE = IRobotLabelType.I_LT_BAR_RELEASE
 
@@ -110,6 +111,19 @@ class RLoadType(IntEnum):
     NODAL = IRobotLoadRecordType.I_LRT_NODE_FORCE
     BAR_UDL = IRobotLoadRecordType.I_LRT_BAR_UNIFORM
     BAR_PL = IRobotLoadRecordType.I_LRT_BAR_FORCE_CONCENTRATED
+
+
+class RMatType(IntEnum):
+    """
+    Aliases for material type. For more details, see
+    ``IRobotMaterialType``.
+    """
+    STEEL = IRobotMaterialType.I_MT_STEEL
+    ALUM = IRobotMaterialType.I_MT_ALUMINIUM
+    TIMBER = IRobotMaterialType.I_MT_TIMBER
+    CONCRETE = IRobotMaterialType.I_MT_CONCRETE
+    OTHER = IRobotMaterialType.I_MT_OTHER
+
 
 
 class RBarUDLValues(IntEnum):
