@@ -76,6 +76,16 @@ class ExtendedMaterialServer(ExtendedLabelServer):
     _dtype = IRobotMaterialData
     _rtype = ExtendedMaterialLabel
 
+    def load(self, name):
+        """Loads a material from the database.
+
+        :param str name: The name to search in the database.
+        """
+        label = self._ctype(self.Create(self._ltype, name))
+        data = self._dtype(label.Data)
+        data.LoadFromDBase(name)
+        self.Store(label)
+
     def get_names_db(self, func=lambda s: True):
         '''Returns the list of material names in database.
 

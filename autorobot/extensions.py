@@ -128,15 +128,6 @@ class ExtendedLabelServer(Capsule, ABC):
         names = [names.Get(i) for i in range(1, names.Count + 1)]
         return [name for name in names if func(name)]
 
-    def load(self, name):
-        """Loads a label from the database.
-
-        :param str name: The name to search in the database.
-        """
-        label = self._ctype(self.Create(self._ltype, name))
-        data = self._dtype(label.Data)
-        data.LoadFromDBase(name)
-        self.Store(label)
 
     def delete(self, name):
         """Deletes a label from the structure.
