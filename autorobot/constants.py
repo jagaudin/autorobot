@@ -125,7 +125,6 @@ class RMatType(IntEnum):
     OTHER = IRobotMaterialType.I_MT_OTHER
 
 
-
 class RBarUDLValues(IntEnum):
     """
     Aliases for bars' uniform distributed loads. For more details, see

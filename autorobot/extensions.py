@@ -124,7 +124,7 @@ class ExtendedLabelServer(Capsule, ABC):
         :param function func: A filter function
         :return: The list of material names in the structure
         """
-        names = IRobotNamesArray(self.GetAvailableNames())
+        names = IRobotNamesArray(self.GetAvailableNames(self._ltype))
         names = [names.Get(i) for i in range(1, names.Count + 1)]
         return [name for name in names if func(name)]
 
@@ -145,7 +145,7 @@ class ExtendedLabelServer(Capsule, ABC):
         """
         self.Delete(self._ltype, name)
 
-    def exist(name):
+    def exist(self, name):
         """Checks whether a label with the given name exists in the structure.
 
         :param str name: The name of the label

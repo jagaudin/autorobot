@@ -85,7 +85,7 @@ class ExtendedNode(Capsule):
 class ExtendedNodeServer(ExtendedServer):
     """
     This class is an extension for ``IRobotNodeServer`` providing
-    additional functions for the management of nodes. 
+    additional functions for the management of nodes.
     """
 
     _otype = IRobotNodeServer

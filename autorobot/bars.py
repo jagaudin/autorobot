@@ -23,7 +23,7 @@ from RobotOM import (
 class ExtendedBarServer(ExtendedServer):
     """
     This class is an extension for ``IRobotBarServer`` providing
-    additional functions for the management of bars. 
+    additional functions for the management of bars.
     """
 
     _otype = IRobotBarServer

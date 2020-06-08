@@ -63,7 +63,7 @@ class TestAppOperations(TestCase):
                     self.assertEqual(
                         rb.Project.Type, ar.synonyms.synonyms[pt])
                     # Wait for Robot to avoid throwing a server error
-                    # time.sleep(.5)
+                    time.sleep(.5)
 
             with self.subTest(msg="save_As"):
                 rb.save_as(path)

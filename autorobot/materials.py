@@ -67,7 +67,7 @@ class ExtendedMaterialLabel(ExtendedLabel):
 class ExtendedMaterialServer(ExtendedLabelServer):
     """
     This class is an extension for ``IRobotLabelServer`` providing
-    additional functions for the management of material labels. 
+    additional functions for the management of material labels.
     """
 
     _otype = IRobotLabelServer
@@ -85,4 +85,4 @@ class ExtendedMaterialServer(ExtendedLabelServer):
         db = self.app.Project.Preferences.Materials
         names = IRobotNamesArray(db.GetAll())
         names = [names.Get(i) for i in range(1, names.Count + 1)]
-        return [name for name in names if cond(name)]
+        return [name for name in names if func(name)]
