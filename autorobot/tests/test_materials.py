@@ -79,17 +79,15 @@ class TestMaterialServer(unittest.TestCase):
 
     def test_get_names_db(self):
         with self.subTest(msg='all names'):
-            all_names = self.rb.materials.get_names_db()
-            self.assertIn('STEEL', all_names)
-            self.assertIn('CONCR', all_names)
-            self.assertIn('ALUM', all_names)
-            self.assertIn('TIMBER', all_names)
+            all_names = [n.lower() for n in self.rb.materials.get_names_db()]
+            self.assertIn('steel', all_names)
+
         with self.subTest(msg='filter'):
             name = self.rb.materials.get_names_db(
-                lambda s: s.startswith('CONCR')
+                lambda s: s.startswith('C25')
             )
             self.assertEqual(len(name), 1)
-            self.assertEqual(name[0], 'CONCR')
+            self.assertEqual(name[0][:3], 'C25')
 
     def test_load(self):
         self.rb.materials.load('STEEL')
