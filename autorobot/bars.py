@@ -77,3 +77,11 @@ class ExtendedBarServer(ExtendedServer):
             np.array([b.Number, b.StartNode, b.EndNode])
             for b in self.select(s)
         ])
+
+    def set_section(self, s, name):
+        """Sets the section label for the given bars.
+
+        :param str s: A selection string
+        :param str name: The name of the section label
+        """
+        self.app.sections.set(s, name)

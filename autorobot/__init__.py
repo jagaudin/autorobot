@@ -8,14 +8,6 @@ from .constants import (  # NOQA F401
     RAnalysisType,
 )
 
-from .sections import (
-    create_section,
-    set_section,
-    list_section_db,
-    get_section_db,
-    list_sections,
-)
-
 from .loads import (  # NOQA F401
     add_bar_udl,
     add_bar_pl,

@@ -119,10 +119,10 @@ class ExtendedLabelServer(Capsule, ABC):
             ) from e
 
     def get_names(self, func=lambda s: True):
-        """Returns the names available in the model
+        """Returns the names available in the current stucture.
 
         :param function func: A filter function
-        :return: The list of material names in the structure
+        :return: The list of label names in the structure
         """
         names = IRobotNamesArray(self.GetAvailableNames(self._ltype))
         names = [names.Get(i) for i in range(1, names.Count + 1)]

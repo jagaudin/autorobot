@@ -16,8 +16,8 @@ from RobotOM import (
 
 class ExtendedMaterialLabel(ExtendedLabel):
     """
-    This class is an extension for ``IRobotLabel`` providing the
-    mehtods listed below in addition to the methods of the original object.
+    This class is an extension for ``IRobotLabel`` providing new
+    mehtods in addition to the methods of the original object.
     """
 
     _otype = IRobotLabel
@@ -83,10 +83,11 @@ class ExtendedMaterialServer(ExtendedLabelServer):
         """
         label = self._ctype(self.Create(self._ltype, name))
         data = self._dtype(label.Data)
-        data.LoadFromDBase(name)
-        self.Store(label)
+        success = data.LoadFromDBase(name)
+        if success:
+            self.Store(label)
 
-    def get_names_db(self, func=lambda s: True):
+    def get_db_names(self, func=lambda s: True):
         '''Returns the list of material names in database.
 
         :param function func: A filter function

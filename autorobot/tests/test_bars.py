@@ -119,6 +119,17 @@ class TestBarServers(unittest.TestCase):
                      for i, t in enumerate(combinations(ns, 2))])
         assert_array_equal(t, a.astype(int))
 
+    def test_bar_set_section(self):
+        self.rb.sections.create('Rnd10', 10)
+        n1 = self.rb.nodes.create(*random((3,)))
+        n2 = self.rb.nodes.create(*random((3,)))
+        b = self.rb.bars.create(n1, n2)
+        self.rb.bars.set_section('all', 'Rnd10')
+        for b in self.rb.bars.select('all'):
+            label = ar.RobotOM.IRobotLabel(
+                b.GetLabel(ar.RobotOM.IRobotLabelType.I_LT_BAR_SECTION))
+            self.assertEqual(label.Name, 'Rnd10')
+
 
 if __name__ == '__main__':
     unittest.main()

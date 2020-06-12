@@ -77,9 +77,9 @@ class TestMaterialServer(unittest.TestCase):
             ar.materials.ExtendedMaterialServer
         )
 
-    def test_get_names_db(self):
+    def test_get_db_names(self):
         with self.subTest(msg='all names'):
-            all_names = [n.lower() for n in self.rb.materials.get_names_db()]
+            all_names = [n.lower() for n in self.rb.materials.get_db_names()]
             self.assertIn('steel', all_names)
 
         with self.subTest(msg='filter'):
