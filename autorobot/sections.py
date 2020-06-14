@@ -11,11 +11,16 @@ from .extensions import (
     ExtendedLabelServer,
 )
 
+from .errors import (
+    AutoRobotValueError,
+)
+
 from .robotom import RobotOM  # NOQA F401
 from RobotOM import (
     IRobotNamesArray,
     IRobotBarSectionData,
     IRobotBarSectionDataValue,
+    IRobotBarSectionNonstdData,
     IRobotBarSectionNonstdDataValue,
     IRobotBarSectionShapeType,
     IRobotBarSectionType,
@@ -35,27 +40,72 @@ class ExtendedSectionLabel(ExtendedLabel):
 
     @property
     def IX(self):
-        return self.data.GetValue(IRObotBarSectionDataValue.I_BSDV_IX)
+        """Torsion constant of the section."""
+        return self.data.GetValue(IRobotBarSectionDataValue.I_BSDV_IX)
 
     @property
     def IY(self):
-        return self.data.GetValue(IRObotBarSectionDataValue.I_BSDV_IY)
+        """Second moment of area in the Y axis."""
+        return self.data.GetValue(IRobotBarSectionDataValue.I_BSDV_IY)
 
     @property
     def IZ(self):
-        return self.data.GetValue(IRObotBarSectionDataValue.I_BSDV_IZ)
+        """Second moment of area in the Z axis."""
+        return self.data.GetValue(IRobotBarSectionDataValue.I_BSDV_IZ)
 
     @property
-    def height(self):
-        return self.data.GetValue(IRObotBarSectionDataValue.I_BSDV_D)
+    def d(self):
+        """Depth or diameter of the section."""
+        if self.data.NonstdCount > 1:
+            raise AutoRobotValueError("Can't get depth of tapered section.")
+        elif self.data.NonstdCount == 1:
+            ns_data = IRobotBarSectionNonstdData(self.data.GetNonstd(1))
+            if self.data.Type == IRobotBarSectionType.I_BST_NS_TUBE:
+                return ns_data.GetValue(
+                    IRobotBarSectionNonstdDataValue.I_BSNDV_TUBE_D)
+            elif self.data.Type == IRobotBarSectionType.I_BST_NS_RECT:
+                return ns_data.GetValue(
+                    IRobotBarSectionNonstdDataValue.I_BSNDV_RECT_H)
+        else:
+            return self.data.GetValue(IRobotBarSectionDataValue.I_BSDV_D)
 
     @property
-    def width(self):
-        return self.data.GetValue(IRObotBarSectionDataValue.I_BSDV_BF)
+    def b(self):
+        """Width of the section."""
+        if self.data.NonstdCount > 1:
+            raise AutoRobotValueError("Can't get width of tapered section.")
+        elif self.data.NonstdCount == 1:
+            ns_data = IRobotBarSectionNonstdData(self.data.GetNonstd(1))
+            if self.data.Type == IRobotBarSectionType.I_BST_NS_TUBE:
+                return ns_data.GetValue(
+                    IRobotBarSectionNonstdDataValue.I_BSNDV_TUBE_D)
+            elif self.data.Type == IRobotBarSectionType.I_BST_NS_RECT:
+                return ns_data.GetValue(
+                    IRobotBarSectionNonstdDataValue.I_BSNDV_RECT_B)
+        else:
+            return self.data.GetValue(IRobotBarSectionDataValue.I_BSDV_BF)
+
+    @property
+    def t(self):
+        """Thickness of the section."""
+        if self.data.NonstdCount > 1:
+            raise AutoRobotValueError(
+                "Can't get thickness of tapered section.")
+        elif self.data.NonstdCount == 1:
+            ns_data = IRobotBarSectionNonstdData(self.data.GetNonstd(1))
+            if self.data.Type == IRobotBarSectionType.I_BST_NS_TUBE:
+                return ns_data.GetValue(
+                    IRobotBarSectionNonstdDataValue.I_BSNDV_TUBE_T)
+            elif self.data.Type == IRobotBarSectionType.I_BST_NS_RECT:
+                return ns_data.GetValue(
+                    IRobotBarSectionNonstdDataValue.I_BSNDV_RECT_T)
+        else:
+            return self.data.GetValue(IRobotBarSectionDataValue.I_BSDV_TF)
 
     @property
     def weight(self):
-        return self.data.GetValue(IRObotBarSectionDataValue.I_BSDV_WEIGHT)
+        """"Linear weight of the section."""
+        return self.data.GetValue(IRobotBarSectionDataValue.I_BSDV_WEIGHT)
 
 
 class ExtendedSectionServer(ExtendedLabelServer):
@@ -154,7 +204,7 @@ class ExtendedSectionServer(ExtendedLabelServer):
     def db_list(self, func=lambda s: True):
         """Returns the list of section database names.
 
-        :param function filter: A condition to filter the result
+        :param function func: A condition to filter the result
         :return: List of section database names
         """
         db_list = self.app.Project.Preferences.SectionsFound
@@ -176,7 +226,7 @@ class ExtendedSectionServer(ExtendedLabelServer):
         """Returns the list of sections names in database.
 
         :param str db_name: The name of the database to use for lookup
-        :param function filter: A condition to filter the result
+        :param function func: A condition to filter the result
         :return: List of section names
         """
         db = self.get_db(db_name)

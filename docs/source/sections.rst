@@ -2,7 +2,23 @@ Bar Sections
 ============
 
 **AutoRobot** provides the following functions to manage the section database
-and custom section sizes.
+and custom bar sections.
 
-.. automodule:: autorobot.sections
-   :members:
+.. _section_label:
+
+Section label
+-------------
+
+.. autoclass:: autorobot.sections.ExtendedSectionLabel
+  :members:
+  :inherited-members:
+
+
+.. _section_server:
+
+Section server
+--------------
+
+.. autoclass:: autorobot.sections.ExtendedSectionServer
+  :members:
+  :inherited-members:
