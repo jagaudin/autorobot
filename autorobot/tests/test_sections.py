@@ -1,4 +1,5 @@
 import unittest
+from random import sample
 import numpy as np
 from numpy.random import random
 
@@ -114,13 +115,40 @@ class TestSectionServer(unittest.TestCase):
             self.assertEqual(label.Name, 'Rnd10')
 
     def test_section_db_list(self):
-        pass
+        with self.subTest(msg='no filter'):
+            self.assertIn('AISC', self.rb.sections.db_list())
+            self.assertIn('EURO', self.rb.sections.db_list())
+        with self.subTest(msg='filter'):
+            dbs = self.rb.sections.db_list(lambda s: False)
+            self.assertEqual(len(dbs), 0)
 
     def test_section_get_db(self):
-        pass
+        name = self.rb.sections.db_list()[0]
+        db = self.rb.sections.get_db(name)
+        self.assertIsInstance(db, ar.RobotOM.IRobotSectionDatabase)
 
     def test_section_get_db_names(self):
-        pass
+        with self.subTest(msg='no filter'):
+            db_name = self.rb.sections.db_list()[0]
+            names = self.rb.sections.get_db_names(db_name)
+            for name in sample(names, 10):
+                self.rb.sections.load(name, db_name)
+                self.assertTrue(self.rb.sections.exist(name))
+                self.rb.sections.delete(name)
+        with self.subTest(msg='filter'):
+            names = self.rb.sections.get_db_names(db_name, lambda s: False)
+            self.assertEqual(len(names), 0)
 
     def test_section_load(self):
-        pass
+        with self.subTest(msg='no database'):
+            db_name = self.rb.sections.db_list()[0]
+            name = self.rb.sections.get_db_names(db_name)[0]
+            self.rb.sections.load(name)
+            self.assertTrue(self.rb.sections.exist(name))
+            self.rb.sections.delete(name)
+        with self.subTest(msg='no database'):
+            db_name = self.rb.sections.db_list()[0]
+            name = self.rb.sections.get_db_names(db_name)[0]
+            self.rb.sections.load(name, db_name)
+            self.assertTrue(self.rb.sections.exist(name))
+            self.rb.sections.delete(name)

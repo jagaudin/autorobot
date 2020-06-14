@@ -83,11 +83,8 @@ class TestMaterialServer(unittest.TestCase):
             self.assertIn('steel', all_names)
 
         with self.subTest(msg='filter'):
-            name = self.rb.materials.get_names_db(
-                lambda s: s.startswith('C25')
-            )
-            self.assertEqual(len(name), 1)
-            self.assertEqual(name[0][:3], 'C25')
+            names = self.rb.materials.get_names_db(lambda s: False)
+            self.assertEqual(len(names), 0)
 
     def test_load(self):
         self.rb.materials.load('STEEL')

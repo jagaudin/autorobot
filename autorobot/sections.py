@@ -219,8 +219,8 @@ class ExtendedSectionServer(ExtendedLabelServer):
            The section database with the given name as a
            ``IRobotSectionDatabase`` instance.
         """
-        db_list = app.Project.Preferences.SectionsFound
-        return db_list.GetDatabase(db_list.Find(name))
+        db_list = self.app.Project.Preferences.SectionsFound
+        return db_list.GetDatabase(db_list.Find(str(name)))
 
     def get_db_names(self, db_name, func=lambda s: True):
         """Returns the list of sections names in database.
@@ -232,7 +232,7 @@ class ExtendedSectionServer(ExtendedLabelServer):
         db = self.get_db(db_name)
         names = IRobotNamesArray(db.GetAll())
         names = [names.Get(i) for i in range(1, names.Count + 1)]
-        return [name for name in names if filter(name)]
+        return [name for name in names if func(name)]
 
     def load(self, name, db_name=''):
         """Loads a section from a database.
@@ -247,4 +247,4 @@ class ExtendedSectionServer(ExtendedLabelServer):
         else:
             success = data.LoadFromDBase(name)
         if success:
-            labels.Store(label)
+            self.Store(label)
