@@ -92,16 +92,16 @@ class TestMaterialServer(unittest.TestCase):
         self.rb.materials.delete('STEEL')
 
     def test_exist(self):
-        self.assertFalse(self.rb.materials.exist('CONCR'))
-        self.rb.materials.load('CONCR')
-        self.assertTrue(self.rb.materials.exist('CONCR'))
-        self.rb.materials.delete('CONCR')
+        self.assertFalse(self.rb.materials.exist('STEEL'))
+        self.rb.materials.load('STEEL')
+        self.assertTrue(self.rb.materials.exist('STEEL'))
+        self.rb.materials.delete('STEEL')
 
     def test_delete(self):
-        self.rb.materials.load('TIMBER')
-        self.assertTrue(self.rb.materials.exist('TIMBER'))
-        self.rb.materials.delete('TIMBER')
-        self.assertFalse(self.rb.materials.exist('TIMBER'))
+        self.rb.materials.load('STEEL')
+        self.assertTrue(self.rb.materials.exist('STEEL'))
+        self.rb.materials.delete('STEEL')
+        self.assertFalse(self.rb.materials.exist('STEEL'))
 
     def test_get(self):
         self.rb.materials.load('STEEL')
@@ -112,7 +112,7 @@ class TestMaterialServer(unittest.TestCase):
 
     def test_get_names(self):
         default_mat = self.rb.materials.get_names()
-        mat = ['STEEL', 'CONCR', 'ALUM', 'TIMBER']
+        mat = ['STEEL', 'ALUM']
         for m in mat:
             self.rb.materials.load(m)
         mat.extend(default_mat)
@@ -120,7 +120,7 @@ class TestMaterialServer(unittest.TestCase):
             names = self.rb.materials.get_names()
             self.assertSetEqual(set(names), set(mat))
         with self.subTest(msg='filter'):
-            names = self.rb.materials.get_names(lambda s: s.endswith('R'))
-            self.assertSetEqual(set(names), {'CONCR', 'TIMBER'})
+            names = self.rb.materials.get_names(lambda s: False)
+            self.assertEqual(len(names), 0)
         for m in mat:
             self.rb.materials.delete(m)

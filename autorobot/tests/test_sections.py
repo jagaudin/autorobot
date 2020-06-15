@@ -6,6 +6,36 @@ from numpy.random import random
 import autorobot as ar
 
 
+class TestExtendedSection(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        cls.rb = ar.initialize(visible=False, interactive=False)
+        cls.rb.new(ar.RProjType.SHELL)
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.rb.quit(save=False)
+
+    def test_properties(self):
+        self.rb.sections.load('UB 305x165x40')
+        ub = self.rb.sections.get('UB 305x165x40')
+        with self.subTest(msg='IX'):
+            self.assertAlmostEqual(ub.IX, 1.47e-7)
+        with self.subTest(msg='IY'):
+            self.assertAlmostEqual(ub.IY, 8.5e-5)
+        with self.subTest(msg='IZ'):
+            self.assertAlmostEqual(ub.IZ, 7.64e-6)
+        with self.subTest(msg='d'):
+            self.assertAlmostEqual(ub.d, 3.034e-1)
+        with self.subTest(msg='b'):
+            self.assertAlmostEqual(ub.b, 1.65e-1)
+        with self.subTest(msg='t'):
+            self.assertAlmostEqual(ub.t, 1.02e-2)
+        with self.subTest(msg='weight'):
+            self.assertAlmostEqual(ub.weight, 3.95207995e2)
+
+
 class TestSectionServer(unittest.TestCase):
 
     @classmethod
@@ -161,7 +191,18 @@ class TestSectionServer(unittest.TestCase):
         self.rb.sections.delete('HP 12x63')
 
     def test_get_names(self):
-        pass
+        default_sect = self.rb.sections.get_names()
+        self.assertGreater(len(default_sect), 0)
+        sect = ['HP 12x63']
+        self.rb.sections.load(sect[0])
+        sect.extend(default_sect)
+        with self.subTest(msg='all'):
+            names = self.rb.sections.get_names()
+            self.assertSetEqual(set(names), set(sect))
+        with self.subTest(msg='filter'):
+            names = self.rb.sections.get_names(lambda s: False)
+            self.assertEqual(len(names), 0)
+        self.rb.sections.delete('HP 12x63')
 
     def test_delete(self):
         self.rb.sections.load('HP 12x63')
