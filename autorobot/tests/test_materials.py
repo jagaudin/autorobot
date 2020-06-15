@@ -1,7 +1,6 @@
 import unittest
 
 import autorobot as ar
-from autorobot.materials import ExtendedMaterialLabel
 
 
 class TestExtendedMaterialLabel(unittest.TestCase):
@@ -83,7 +82,7 @@ class TestMaterialServer(unittest.TestCase):
             self.assertIn('steel', all_names)
 
         with self.subTest(msg='filter'):
-            names = self.rb.materials.get_names_db(lambda s: False)
+            names = self.rb.materials.get_db_names(lambda s: False)
             self.assertEqual(len(names), 0)
 
     def test_load(self):

@@ -1,10 +1,7 @@
-import autorobot.app as app
-
 from .constants import (
     RLabelType,
     ROType,
 )
-from .decorators import requires_init
 
 from .extensions import (
     ExtendedLabel,
@@ -134,6 +131,7 @@ class ExtendedSectionServer(ExtendedLabelServer):
            (see **unit**).
         :param str shape: `'rect'` or `'round'`
         :param bool is_solid: Whether the section is solid
+        :param str material: The material for the section
         :param float unit:
            The unit of section dimension relative to model unit (e.g. mm
            for a model in m: 1e-3)

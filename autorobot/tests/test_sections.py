@@ -20,7 +20,7 @@ class TestSectionServer(unittest.TestCase):
     def tearDownClass(cls):
         cls.rb.quit(save=False)
 
-    def test_section_create(self):
+    def test_create(self):
         params = [
             ['Rnd Solid', random()],
             ['Rnd Hollow', random() + 1, 0., random(), 'round', False],
@@ -103,7 +103,7 @@ class TestSectionServer(unittest.TestCase):
                 self.assertAlmostEqual(
                     (label.IZ * 1e12 - prop[5]) / prop[3], 0., delta=5e-3)
 
-    def test_section_set(self):
+    def test_set(self):
         self.rb.sections.create('Rnd10', 10.)
         n1 = self.rb.nodes.create(*random((3,)))
         n2 = self.rb.nodes.create(*random((3,)))
@@ -114,7 +114,7 @@ class TestSectionServer(unittest.TestCase):
                 b.GetLabel(ar.RobotOM.IRobotLabelType.I_LT_BAR_SECTION))
             self.assertEqual(label.Name, 'Rnd10')
 
-    def test_section_db_list(self):
+    def test_db_list(self):
         with self.subTest(msg='no filter'):
             self.assertIn('AISC', self.rb.sections.db_list())
             self.assertIn('EURO', self.rb.sections.db_list())
@@ -122,12 +122,12 @@ class TestSectionServer(unittest.TestCase):
             dbs = self.rb.sections.db_list(lambda s: False)
             self.assertEqual(len(dbs), 0)
 
-    def test_section_get_db(self):
+    def test_get_db(self):
         name = self.rb.sections.db_list()[0]
         db = self.rb.sections.get_db(name)
         self.assertIsInstance(db, ar.RobotOM.IRobotSectionDatabase)
 
-    def test_section_get_db_names(self):
+    def test_get_db_names(self):
         with self.subTest(msg='no filter'):
             db_name = self.rb.sections.db_list()[0]
             names = self.rb.sections.get_db_names(db_name)
@@ -139,7 +139,7 @@ class TestSectionServer(unittest.TestCase):
             names = self.rb.sections.get_db_names(db_name, lambda s: False)
             self.assertEqual(len(names), 0)
 
-    def test_section_load(self):
+    def test_load(self):
         with self.subTest(msg='no database'):
             db_name = self.rb.sections.db_list()[0]
             name = self.rb.sections.get_db_names(db_name)[0]
@@ -152,3 +152,25 @@ class TestSectionServer(unittest.TestCase):
             self.rb.sections.load(name, db_name)
             self.assertTrue(self.rb.sections.exist(name))
             self.rb.sections.delete(name)
+
+    def test_get(self):
+        self.rb.sections.load('HP 12x63')
+        hp_1263 = self.rb.sections.get('HP 12x63')
+        self.assertIsInstance(hp_1263, ar.sections.ExtendedSectionLabel)
+        self.assertEqual(hp_1263.data.Name, 'HP 12x63')
+        self.rb.sections.delete('HP 12x63')
+
+    def test_get_names(self):
+        pass
+
+    def test_delete(self):
+        self.rb.sections.load('HP 12x63')
+        self.assertTrue(self.rb.sections.exist('HP 12x63'))
+        self.rb.sections.delete('HP 12x63')
+        self.assertFalse(self.rb.sections.exist('HP 12x63'))
+
+    def test_exist(self):
+        self.assertFalse(self.rb.sections.exist('HP 12x63'))
+        self.rb.sections.load('HP 12x63')
+        self.assertTrue(self.rb.sections.exist('HP 12x63'))
+        self.rb.sections.delete('HP 12x63')

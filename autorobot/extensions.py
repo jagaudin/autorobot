@@ -128,7 +128,6 @@ class ExtendedLabelServer(Capsule, ABC):
         names = [names.Get(i) for i in range(1, names.Count + 1)]
         return [name for name in names if func(name)]
 
-
     def delete(self, name):
         """Deletes a label from the structure.
 
