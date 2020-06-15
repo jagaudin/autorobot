@@ -21,7 +21,6 @@ from .robotom import RobotOM  # NOQA F401
 from RobotOM import (
     IRobotNode,
     IRobotNodeServer,
-
 )
 
 
@@ -34,7 +33,8 @@ def distance(node, other):
     .. tip::
 
       The arguments **node** and **other** can also be
-      :py:class:`.ExtendedNode`, ``IRobotNode`` or ``str``.
+      :py:class:`.ExtendedNode`, ``IRobotNode``, ``str`` or
+      a 1D ``numpy.ndarray``.
     '''
     if not all((isinstance(n, np.ndarray) for n in (node, other))):
         try:
@@ -80,6 +80,49 @@ class ExtendedNode(Capsule):
         :return: A numpy array of coordinates
         """
         return np.array([self.node.X, self.node.Y, self.node.Z])
+
+    def dist_to(self, other):
+        """Returns the distance between the node and another.
+
+        :param int other:
+            The number of the other node. See :py:func:`.distance`
+            for more details.
+        """
+        return distance(self, other)
+
+    def closest(self, s, count=1, obj=False):
+        """Returns the n-closest nodes amongst a selection.
+
+        :param str s: A valid selection string
+        :param int count:
+           Number of closest points. `-1` sorts the whole selection
+           from closest to farthest
+        :param bool obj:
+           Whether the function returns objects, or just object numbers.
+        :return:
+            The unique closest node as an instance of
+            :py:class:`.ExtendedNode`, its number or a n-list
+            of nodes or numbers sorted from closest to farthest.
+        """
+        with app.app.nodes as nodes:
+            coords = nodes.table(str(s))
+            n = self.as_array()
+            distances = (
+                sci_distance.cdist(n[None, :], coords[:, -3:]).flatten())
+
+            if count == 1:
+                id_min = np.argmin(distances)
+                node_num = coords[id_min, 0]
+                return nodes.get(node_num) if obj else node_num
+
+            if count == -1:
+                res = coords[distances.argsort(), 0]
+            else:
+                res = coords[distances.argsort()[:count], 0]
+            if obj:
+                return [nodes.get(i) for i in res]
+            else:
+                return [int(i) for i in res]
 
 
 class ExtendedNodeServer(ExtendedServer):

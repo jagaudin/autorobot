@@ -20,11 +20,31 @@ class TestExtendedNode(unittest.TestCase):
     def tearDown(self):
         self.rb.structure.Clear()
 
-    def test_extended_node_as_array(self):
+    def test_as_array(self):
         a = random((3,))
         n = self.rb.nodes.create(*a)
         self.assertIsInstance(n, ar.nodes.ExtendedNode)
         assert_array_almost_equal(a, n.as_array())
+
+    def test_dist_to(self):
+        a = random((3,))
+        b = random((3,))
+        node = self.rb.nodes.create(*a)
+        other = self.rb.nodes.create(*b)
+        self.assertAlmostEqual(node.dist_to(other), np.linalg.norm(b - a))
+
+    def test_closest(self):
+        ns = [self.rb.nodes.create(*random((3,))) for i in range(10)]
+        n = ns.pop()
+        ns_sorted = [p.Number for p in sorted(ns, key=lambda p: n.dist_to(p))]
+        self.assertSequenceEqual(n.closest('1to9', count=-1), ns_sorted)
+        self.assertEqual(n.closest('1to9'), ns_sorted[0])
+        self.assertEqual(n.closest('1to9', obj=True).Number, ns_sorted[0])
+        self.assertSequenceEqual(n.closest('1to9', count=3), ns_sorted[:3])
+        self.assertSequenceEqual(
+            [p.Number for p in n.closest('1to9', count=3, obj=True)],
+            ns_sorted[:3]
+        )
 
 
 class TestNodeServer(unittest.TestCase):
@@ -41,13 +61,13 @@ class TestNodeServer(unittest.TestCase):
     def tearDown(self):
         self.rb.structure.Clear()
 
-    def test_node_server(self):
+    def test_server(self):
         self.assertIsInstance(
             self.rb.nodes,
             ar.nodes.ExtendedNodeServer
         )
 
-    def test_node_create(self):
+    def test_create(self):
         with self.subTest(msg='nodes.create'):
             a = random((3,))
             n = self.rb.nodes.create(*a)
@@ -71,14 +91,14 @@ class TestNodeServer(unittest.TestCase):
             self.assertEqual(self.rb.nodes.get(n).Number, 4)
             assert_array_almost_equal(a, n.as_array())
 
-    def test_node_get(self):
+    def test_get(self):
         a = random((3,))
         n = self.rb.nodes.create(*a, num=4, obj=False)
         self.assertIsInstance(n, int)
         self.assertEqual(self.rb.nodes.get(n).Number, 4)
         assert_array_almost_equal(a, self.rb.nodes.get(n).as_array())
 
-    def test_node_select(self):
+    def test_select(self):
         for i in range(1, 20):
             self.rb.nodes.create(*random((3,)))
         with self.subTest(msg='nodes.select range'):
@@ -92,13 +112,13 @@ class TestNodeServer(unittest.TestCase):
                 ar.RobotOM.IRobotCollection(self.rb.nodes.GetAll()).Count
             )
 
-    def test_node_delete(self):
+    def test_delete(self):
         for i in range(1, 10):
             self.rb.nodes.create(*random((3,)))
         self.rb.nodes.delete('all')
         self.assertListEqual(list(self.rb.nodes.select('all')), [])
 
-    def test_node_table(self):
+    def test_table(self):
         a = random((10, 3))
         for r in a:
             self.rb.nodes.create(*r)
@@ -107,7 +127,7 @@ class TestNodeServer(unittest.TestCase):
         assert_array_almost_equal(t[:, 1:], a[1:8:3, :])
         assert_array_equal(t[:, :1].flatten(), np.array([2, 5, 8]))
 
-    def test_node_from_array(self):
+    def test_from_array(self):
         with self.subTest(msg='nodes.from_array 1d'):
             a = random((3,))
             n = self.rb.nodes.from_array(a)
