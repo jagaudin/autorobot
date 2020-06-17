@@ -88,11 +88,11 @@ class ExtendedMaterialServer(ExtendedLabelServer):
             self.Store(label)
 
     def get_db_names(self, func=lambda s: True):
-        '''Returns the list of material names in database.
+        """Returns the list of material names in database.
 
         :param function func: A filter function
         :return: The list of material names in the database
-        '''
+        """
         db = self.app.Project.Preferences.Materials
         names = IRobotNamesArray(db.GetAll())
         names = [names.Get(i) for i in range(1, names.Count + 1)]

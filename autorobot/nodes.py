@@ -26,7 +26,7 @@ from RobotOM import (
 
 @requires_init
 def distance(node, other):
-    '''Returns the distance between two nodes or arrays.
+    """Returns the distance between two nodes or arrays.
 
     :param int node, other: Nodes' numbers
 
@@ -35,7 +35,7 @@ def distance(node, other):
       The arguments **node** and **other** can also be
       :py:class:`.ExtendedNode`, ``IRobotNode``, ``str`` or
       a 1D ``numpy.ndarray``.
-    '''
+    """
     if not all((isinstance(n, np.ndarray) for n in (node, other))):
         try:
             node, other = (
@@ -159,20 +159,20 @@ class ExtendedNodeServer(ExtendedServer):
         return self.get(num) if obj else num
 
     def table(self, s):
-        '''Returns a 2d array with the nodes numbers and coordinates.
+        """Returns a 2d array with the nodes numbers and coordinates.
 
         The returned array has four columns containing respectively the nodes'
         number, the x, y and z coordinates.
 
         :param str s: A valid selection string
         :return: A 2d array with the nodes numbers and coordinates
-        '''
+        """
         return np.stack(
             [np.array([n.Number, n.X, n.Y, n.Z]) for n in self.select(s)]
         )
 
     def from_array(self, a, num=None, obj=True, overwrite=False):
-        '''Returns a new node created from a coordinate array.
+        """Returns a new node created from a coordinate array.
 
         If the array has one dimension the first three values are used as
         coordinates. If the array has two dimensions and three columns,
@@ -187,7 +187,7 @@ class ExtendedNodeServer(ExtendedServer):
            Whether to return the node object or its number (default: `True`)
         :param bool overwrite: Whether to overwrite existing objects
         :return: The new node object(s) or number(s)
-        '''
+        """
         a = np.asarray(a)
         if len(a.shape) == 1:
             return self.create(*a[:3], num=num, obj=obj, overwrite=overwrite)

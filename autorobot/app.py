@@ -6,6 +6,7 @@ from .cases import ExtendedCaseServer
 from .materials import ExtendedMaterialServer
 from .nodes import ExtendedNodeServer
 from .sections import ExtendedSectionServer
+from .supports import ExtendedSupportServer
 
 from .constants import (
     RLicense,
@@ -74,7 +75,7 @@ class ExtendedRobotApp:
     def materials(self):
         """
         Gets the material label server as an instance of
-        :py:class:`.ExtendedMaterialServer`
+        :py:class:`.ExtendedMaterialServer`.
         """
         return ExtendedMaterialServer(self.app.Project.Structure.Labels, self)
 
@@ -82,9 +83,17 @@ class ExtendedRobotApp:
     def sections(self):
         """
         Gets the section label server as an instance of
-        :py:class:`.ExtendedSectionServer`
+        :py:class:`.ExtendedSectionServer`.
         """
         return ExtendedSectionServer(self.app.Project.Structure.Labels, self)
+
+    @property
+    def supports(self):
+        """
+        Gets the supports label server as an instance of
+        :py:class:`.ExtendedSupportServer`.
+        """
+        return ExtendedSupportServer(self.app.Project.Structure.Labels, self)
 
     @property
     def nodes(self):
