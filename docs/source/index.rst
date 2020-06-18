@@ -11,6 +11,7 @@ Welcome to autoRobot's documentation!
    bars
    materials
    sections
+   supports
    loads
    loadcases
    constants

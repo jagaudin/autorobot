@@ -1,7 +1,7 @@
 Bar Sections
 ============
 
-**AutoRobot** provides the following functions to manage the section database
+**AutoRobot** provides the following objects to manage the section databases
 and custom bar sections.
 
 .. _section_label:
