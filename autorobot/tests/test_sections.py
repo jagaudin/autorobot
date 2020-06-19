@@ -118,8 +118,7 @@ class TestSectionServer(unittest.TestCase):
         ]
         for param, prop in zip(params, props):
             with self.subTest(name=param[0]):
-                self.rb.sections.create(*param)
-                label = self.rb.sections.get(param[0])
+                label = self.rb.sections.create(*param)
                 self.assertIsInstance(label, ar.sections.ExtendedSectionLabel)
                 self.assertAlmostEqual(label.d * 1e3, prop[0])
                 self.assertAlmostEqual(label.b * 1e3, prop[1])

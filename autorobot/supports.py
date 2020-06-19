@@ -34,7 +34,7 @@ class ExtendedSupportLabel(ExtendedLabel):
         Whether the X-direction degree of freedom is fixed
         (**True**) or free (**False**).
         """
-        return self.data.UX
+        return bool(self.data.UX)
 
     @property
     def UY(self):
@@ -42,7 +42,7 @@ class ExtendedSupportLabel(ExtendedLabel):
         Whether the Y-direction degree of freedom is fixed
         (**True**) or free (**False**).
         """
-        return self.data.UY
+        return bool(self.data.UY)
 
     @property
     def UZ(self):
@@ -50,7 +50,7 @@ class ExtendedSupportLabel(ExtendedLabel):
         Whether the Z-direction degree of freedom is fixed
         (**True**) or free (**False**).
         """
-        return self.data.UZ
+        return bool(self.data.UZ)
 
     @property
     def RX(self):
@@ -58,7 +58,7 @@ class ExtendedSupportLabel(ExtendedLabel):
         Whether the X-axis rotation degree of freedom is fixed
         (**True**) or free (**False**).
         """
-        return self.data.RX
+        return bool(self.data.RX)
 
     @property
     def RY(self):
@@ -66,7 +66,7 @@ class ExtendedSupportLabel(ExtendedLabel):
         Whether the Y-axis rotation degree of freedom is fixed
         (**True**) or free (**False**).
         """
-        return self.data.RY
+        return bool(self.data.RY)
 
     @property
     def RZ(self):
@@ -74,7 +74,7 @@ class ExtendedSupportLabel(ExtendedLabel):
         Whether the Z-axis rotation degree of freedom is fixed
         (**True**) or free (**False**).
         """
-        return self.data.RZ
+        return bool(self.data.RZ)
 
 
 class ExtendedSupportServer(ExtendedLabelServer):
@@ -179,3 +179,4 @@ class ExtendedSupportServer(ExtendedLabelServer):
             data.Gamma = 0.
 
         self.StoreWithName(label, name)
+        return self.get(name)

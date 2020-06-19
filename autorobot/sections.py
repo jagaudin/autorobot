@@ -187,6 +187,7 @@ class ExtendedSectionServer(ExtendedLabelServer):
 
         data.CalcNonstdGeometry()
         self.StoreWithName(label, name)
+        return self.get(name)
 
     def set(self, s, name):
         """Sets the section for a selection of bars.
