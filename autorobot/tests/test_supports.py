@@ -73,5 +73,20 @@ class TestSupportServer(unittest.TestCase):
             self.rb.supports.delete('units')
 
         with self.subTest(msg='nodes'):
+            v = self.n2.as_array() - self.n1.as_array()
+            v_norm = v / np.linalg.norm(v)
+            alpha = np.arctan2(v_norm[1], v_norm[0])
+            beta = np.arccos(v_norm[2])
+            gamma = 0.
             label = self.rb.supports.create(
                 'nodes', '111111', node=self.n1, orient_node=self.n2)
+            self.assertEqual(label.Name, 'nodes')
+            self.assertTrue(label.UX)
+            self.assertTrue(label.UY)
+            self.assertTrue(label.UZ)
+            self.assertTrue(label.RX)
+            self.assertTrue(label.RY)
+            self.assertTrue(label.RZ)
+            self.assertAlmostEqual(label.data.Alpha, alpha)
+            self.assertAlmostEqual(label.data.Beta, beta)
+            self.assertAlmostEqual(label.data.Gamma, gamma)

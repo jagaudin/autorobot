@@ -54,7 +54,7 @@ class TestAppOperations(TestCase):
                     rb.new(pt)
                     self.assertEqual(rb.Project.Type, pt)
                 # Wait for Robot to avoid throwing a server error
-                time.sleep(0.5)
+                time.sleep(.5)
 
             for pt in ('BUILDING', 'FRAME_2D', 'FRAME_3D', 'SHELL',
                        'TRUSS_2D', 'TRUSS_3D'):
