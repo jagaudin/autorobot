@@ -20,12 +20,9 @@ class TestSupportServer(unittest.TestCase):
 
     def test_create(self):
         with self.subTest(msg='angles'):
-            alpha, beta, gamma =  180 * random((3,))
+            alpha, beta, gamma = 180 * random((3,))
             label = self.rb.supports.create(
-                'angles', '101010',
-                alpha = alpha,
-                beta = beta,
-                gamma = gamma
+                'angles', '101010', alpha=alpha, beta=beta, gamma=gamma
             )
             self.assertEqual(label.Name, 'angles')
             self.assertTrue(label.UX)
@@ -41,15 +38,15 @@ class TestSupportServer(unittest.TestCase):
 
         with self.subTest(msg='units'):
             elasticity = random((6,))
-            alpha, beta, gamma, unit_force, unit_angle  = random((5,))
+            alpha, beta, gamma, unit_force, unit_angle = random((5,))
             label = self.rb.supports.create(
                 'units', '010101',
-                elasticity = elasticity,
-                alpha = alpha,
-                beta = beta,
-                gamma = gamma,
-                unit_force = unit_force,
-                unit_angle = unit_angle,
+                elasticity=elasticity,
+                alpha=alpha,
+                beta=beta,
+                gamma=gamma,
+                unit_force=unit_force,
+                unit_angle=unit_angle,
             )
             self.assertEqual(label.Name, 'units')
             self.assertFalse(label.UX)
@@ -90,3 +87,12 @@ class TestSupportServer(unittest.TestCase):
             self.assertAlmostEqual(label.data.Alpha, alpha)
             self.assertAlmostEqual(label.data.Beta, beta)
             self.assertAlmostEqual(label.data.Gamma, gamma)
+            self.rb.supports.delete('nodes')
+
+    def test_set(self):
+        self.rb.supports.create('test_set', '111111')
+        self.rb.supports.set('all', 'test_set')
+        for n in self.rb.nodes.select('all'):
+            label = ar.RobotOM.IRobotLabel(
+                n.GetLabel(ar.RobotOM.IRobotLabelType.I_LT_SUPPORT))
+            self.assertEqual(label.Name, 'test_set')

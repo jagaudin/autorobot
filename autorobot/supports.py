@@ -1,7 +1,10 @@
 import numpy as np
 
 import autorobot.app as app
-from .constants import RLabelType
+from .constants import (
+    RLabelType,
+    ROType,
+)
 
 from .extensions import (
     ExtendedLabel,
@@ -10,7 +13,7 @@ from .extensions import (
 from .nodes import ExtendedNode
 from .errors import AutoRobotValueError
 
-from .robotom import RobotOM
+from .robotom import RobotOM  # NOQA F401
 from RobotOM import (
     IRobotLabel,
     IRobotLabelServer,
@@ -18,6 +21,7 @@ from RobotOM import (
     IRobotNodeSupportData,
     IRobotNodeSupportFixingDirection,
 )
+
 
 class ExtendedSupportLabel(ExtendedLabel):
     """
@@ -180,3 +184,14 @@ class ExtendedSupportServer(ExtendedLabelServer):
 
         self.StoreWithName(label, name)
         return self.get(name)
+
+    def set(self, s, name):
+        """Sets a support for a selection of nodes.
+
+        :param str s: A valid selection string
+        :param str name: The section name
+        """
+        sel = self.app.selections.Create(ROType.NODE)
+        sel.FromText(str(s))
+        with self.app.nodes as nodes:
+            nodes.SetLabel(sel, RLabelType.SUPPORT, name)
