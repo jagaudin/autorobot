@@ -186,22 +186,22 @@ class TestSectionServer(unittest.TestCase):
         self.rb.sections.load('HP 12x63')
         hp_1263 = self.rb.sections.get('HP 12x63')
         self.assertIsInstance(hp_1263, ar.sections.ExtendedSectionLabel)
-        self.assertEqual(hp_1263.data.Name, 'HP 12x63')
+        self.assertEqual(hp_1263.Name, 'HP 12x63')
         self.rb.sections.delete('HP 12x63')
 
     def test_get_names(self):
-        default_sect = self.rb.sections.get_names()
-        self.assertGreater(len(default_sect), 0)
-        sect = ['HP 12x63']
-        self.rb.sections.load(sect[0])
-        sect.extend(default_sect)
+        sect = self.rb.sections.get_names()
+        self.assertGreater(len(sect), 0)
+        new_sect = 'HP 12x63'
+        self.rb.sections.load(new_sect)
+        sect.append(new_sect)
         with self.subTest(msg='all'):
             names = self.rb.sections.get_names()
             self.assertSetEqual(set(names), set(sect))
         with self.subTest(msg='filter'):
             names = self.rb.sections.get_names(lambda s: False)
             self.assertEqual(len(names), 0)
-        self.rb.sections.delete('HP 12x63')
+        self.rb.sections.delete(new_sect)
 
     def test_delete(self):
         self.rb.sections.load('HP 12x63')

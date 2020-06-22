@@ -96,3 +96,37 @@ class TestSupportServer(unittest.TestCase):
             label = ar.RobotOM.IRobotLabel(
                 n.GetLabel(ar.RobotOM.IRobotLabelType.I_LT_SUPPORT))
             self.assertEqual(label.Name, 'test_set')
+        self.rb.supports.delete('test_set')
+
+    def test_get(self):
+        self.rb.supports.create('test_get', '000111')
+        label = self.rb.supports.get('test_get')
+        self.assertIsInstance(label, ar.supports.ExtendedSupportLabel)
+        self.assertEqual(label.Name, 'test_get')
+        self.rb.sections.delete('test_get')
+
+    def test_get_names(self):
+        supports = self.rb.supports.get_names()
+        self.assertGreater(len(supports), 0)
+        new_support = 'test_get_names'
+        self.rb.supports.create(new_support, '110000')
+        supports.append(new_support)
+        with self.subTest(msg='all'):
+            names = self.rb.supports.get_names()
+            self.assertSetEqual(set(names), set(supports))
+        with self.subTest(msg='filter'):
+            names = self.rb.supports.get_names(lambda s: False)
+            self.assertEqual(len(names), 0)
+        self.rb.supports.delete(new_support)
+
+    def test_delete(self):
+        self.rb.supports.create('test_delete', '001111')
+        self.assertTrue(self.rb.supports.exist('test_delete'))
+        self.rb.supports.delete('test_delete')
+        self.assertFalse(self.rb.supports.exist('test_delete'))
+
+    def test_exist(self):
+        self.assertFalse(self.rb.supports.exist('test_exist'))
+        self.rb.supports.create('test_exist', '100000')
+        self.assertTrue(self.rb.supports.exist('test_exist'))
+        self.rb.supports.delete('test_exist')

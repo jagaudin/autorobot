@@ -205,3 +205,11 @@ class ExtendedNodeServer(ExtendedServer):
             new.append(self.create(*row[:3], num=next(num), obj=obj,
                                    overwrite=overwrite))
         return new
+
+    def set_support(self, s, name):
+        """Sets the support label for the given nodes.
+
+        :param str s: A valid selection string
+        :param str name: The name of the support label
+        """
+        self.app.supports.set(s, name)

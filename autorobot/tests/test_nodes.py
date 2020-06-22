@@ -146,6 +146,14 @@ class TestNodeServer(unittest.TestCase):
                 a[:, 1:], np.stack([n.as_array() for n in ns]))
             self.assertListEqual([n.Number for n in ns], list(range(20, 30)))
 
+    def test_set_support(self):
+        self.rb.supports.create('test_set', '111111')
+        self.rb.nodes.set_support('all', 'test_set')
+        for n in self.rb.nodes.select('all'):
+            label = ar.RobotOM.IRobotLabel(
+                n.GetLabel(ar.RobotOM.IRobotLabelType.I_LT_SUPPORT))
+            self.assertEqual(label.Name, 'test_set')
+
 
 if __name__ == '__main__':
     unittest.main()
