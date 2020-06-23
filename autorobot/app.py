@@ -7,6 +7,7 @@ from .materials import ExtendedMaterialServer
 from .nodes import ExtendedNodeServer
 from .sections import ExtendedSectionServer
 from .supports import ExtendedSupportServer
+from .releases import ExtendedReleaseServer
 
 from .constants import (
     RLicense,
@@ -94,6 +95,14 @@ class ExtendedRobotApp:
         :py:class:`.ExtendedSupportServer`.
         """
         return ExtendedSupportServer(self.app.Project.Structure.Labels, self)
+
+    @property
+    def releases(self):
+        """
+        Gets the releases label server as an instance of
+        :py:class:`.ExtendedReleaseServer`.
+        """
+        return ExtendedReleaseServer(self.app.Project.Structure.Labels, self)
 
     @property
     def nodes(self):

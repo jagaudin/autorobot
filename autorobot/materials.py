@@ -3,7 +3,10 @@ from .extensions import (
     ExtendedLabelServer,
 )
 
-from .constants import RLabelType
+from .constants import (
+    RLabelType,
+    ROType,
+)
 
 from .robotom import RobotOM  # NOQA F401
 from RobotOM import (
@@ -86,6 +89,18 @@ class ExtendedMaterialServer(ExtendedLabelServer):
         success = data.LoadFromDBase(name)
         if success:
             self.Store(label)
+            return self.get(name)
+
+    def set(self, s, name):
+        """Sets the material for a selection of bars.
+
+        :param str s: A valid selection string
+        :param str name: The material name
+        """
+        sel = self.app.selections.Create(ROType.BAR)
+        sel.FromText(str(s))
+        with self.app.bars as bars:
+            bars.SetLabel(sel, self._ltype, str(name))
 
     def get_db_names(self, func=lambda s: True):
         """Returns the list of material names in database.

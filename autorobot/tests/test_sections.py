@@ -18,8 +18,7 @@ class TestExtendedSection(unittest.TestCase):
         cls.rb.quit(save=False)
 
     def test_properties(self):
-        self.rb.sections.load('UB 305x165x40')
-        ub = self.rb.sections.get('UB 305x165x40')
+        ub = self.rb.sections.load('UB 305x165x40')
         with self.subTest(msg='IX'):
             self.assertAlmostEqual(ub.IX, 1.47e-7)
         with self.subTest(msg='IY'):
@@ -34,6 +33,10 @@ class TestExtendedSection(unittest.TestCase):
             self.assertAlmostEqual(ub.t, 1.02e-2)
         with self.subTest(msg='weight'):
             self.assertAlmostEqual(ub.weight, 3.95207995e2)
+
+    def test_str(self):
+        label = self.rb.sections.load('UB 305x165x40')
+        self.assertEqual(str(label), label.Name)
 
 
 class TestSectionServer(unittest.TestCase):

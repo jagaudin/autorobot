@@ -194,4 +194,4 @@ class ExtendedSupportServer(ExtendedLabelServer):
         sel = self.app.selections.Create(ROType.NODE)
         sel.FromText(str(s))
         with self.app.nodes as nodes:
-            nodes.SetLabel(sel, RLabelType.SUPPORT, name)
+            nodes.SetLabel(sel, self._ltype, str(name))

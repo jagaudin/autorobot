@@ -5,6 +5,48 @@ from numpy.random import random
 import autorobot as ar
 
 
+class TestExtendedSupport(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        cls.rb = ar.initialize(visible=False, interactive=False)
+        cls.rb.new(ar.RProjType.SHELL)
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.rb.quit(save=False)
+
+    def test_properties(self):
+        label = self.rb.supports.create('test_properties', '000000')
+        with self.subTest(msg='UX'):
+            self.assertFalse(label.UX)
+        with self.subTest(msg='UY'):
+            self.assertFalse(label.UY)
+        with self.subTest(msg='UZ'):
+            self.assertFalse(label.UZ)
+        with self.subTest(msg='RX'):
+            self.assertFalse(label.RX)
+        with self.subTest(msg='RY'):
+            self.assertFalse(label.RY)
+        with self.subTest(msg='RZ'):
+            self.assertFalse(label.RZ)
+        self.rb.supports.delete('test_properties')
+        label = self.rb.supports.create('test_properties', '111111')
+        with self.subTest(msg='UX'):
+            self.assertTrue(label.UX)
+        with self.subTest(msg='UY'):
+            self.assertTrue(label.UY)
+        with self.subTest(msg='UZ'):
+            self.assertTrue(label.UZ)
+        with self.subTest(msg='RX'):
+            self.assertTrue(label.RX)
+        with self.subTest(msg='RY'):
+            self.assertTrue(label.RY)
+        with self.subTest(msg='RZ'):
+            self.assertTrue(label.RZ)
+        self.rb.supports.delete('test_properties')
+
+
 class TestSupportServer(unittest.TestCase):
 
     @classmethod

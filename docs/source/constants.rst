@@ -116,6 +116,16 @@ Types
    .. autoattribute:: OTHER
       :annotation:  = IRobotMaterialType.I_MT_OTHER
 
+.. autoclass:: RReleaseValues
+   :no-members:
+
+   .. autoattribute:: NONE
+      :annotation:  = IRobotBarEndReleaseValue.I_BERV_NONE
+   .. autoattribute:: STD
+      :annotation:  = IRobotBarEndReleaseValue.I_BERV_STD
+   .. autoattribute:: FIXED
+      :annotation:  = IRobotBarEndReleaseValue.I_BERV_FIXED
+
 .. autoclass:: RLoadType
    :no-members:
 

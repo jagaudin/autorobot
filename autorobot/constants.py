@@ -2,6 +2,7 @@ from enum import IntEnum
 
 from .robotom import RobotOM  # NOQA F401
 from RobotOM import (
+    IRobotBarEndReleaseValue,
     IRobotBarForceConcentrateRecordValues,
     IRobotBarUniformRecordValues,
     IRobotCaseAnalizeType,
@@ -123,6 +124,16 @@ class RMatType(IntEnum):
     TIMBER = IRobotMaterialType.I_MT_TIMBER
     CONCRETE = IRobotMaterialType.I_MT_CONCRETE
     OTHER = IRobotMaterialType.I_MT_OTHER
+
+
+class RReleaseValues(IntEnum):
+    """
+    Aliases for bar end releases' values. For more details, see
+    ``IRobotBarEndReleaseValue``.
+    """
+    NONE = IRobotBarEndReleaseValue.I_BERV_NONE
+    STD = IRobotBarEndReleaseValue.I_BERV_STD
+    FIXED = IRobotBarEndReleaseValue.I_BERV_FIXED
 
 
 class RBarUDLValues(IntEnum):

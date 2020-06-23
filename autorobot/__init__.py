@@ -1,11 +1,12 @@
 from .app import initialize  # NOQA F401
 
 from .constants import (  # NOQA F401
-    RProjType,
+    RAnalysisType,
     RCaseNature,
     RCaseType,
     RCombType,
-    RAnalysisType,
+    RLabelType,
+    RProjType,
 )
 
 from .loads import (  # NOQA F401

@@ -198,7 +198,7 @@ class ExtendedSectionServer(ExtendedLabelServer):
         sel = self.app.selections.Create(ROType.BAR)
         sel.FromText(str(s))
         with self.app.bars as bars:
-            bars.SetLabel(sel, RLabelType.BAR_SECT, name)
+            bars.SetLabel(sel, self._ltype, str(name))
 
     def db_list(self, func=lambda s: True):
         """Returns the list of section database names.
@@ -247,3 +247,4 @@ class ExtendedSectionServer(ExtendedLabelServer):
             success = data.LoadFromDBase(name)
         if success:
             self.Store(label)
+            return self.get(name)

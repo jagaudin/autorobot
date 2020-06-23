@@ -96,6 +96,9 @@ class ExtendedLabel(Capsule, ABC):
     def data(self):
         return self._dtype(self.Data)
 
+    def __str__(self):
+        return self.Name
+
 
 @abstract_attributes('_otype', '_ctype', '_ltype', '_dtype', '_rtype')
 class ExtendedLabelServer(Capsule, ABC):

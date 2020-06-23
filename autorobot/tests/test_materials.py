@@ -1,4 +1,5 @@
 import unittest
+from numpy.random import random
 
 import autorobot as ar
 
@@ -55,6 +56,9 @@ class TestExtendedMaterialLabel(unittest.TestCase):
             self.steel_s275.data,
             ar.RobotOM.IRobotMaterialData(self.steel_s275.Data))
 
+    def test_str(self):
+        self.assertEqual(str(self.steel_s275), self.steel_s275.Name)
+
 
 class TestMaterialServer(unittest.TestCase):
 
@@ -90,6 +94,17 @@ class TestMaterialServer(unittest.TestCase):
         self.assertTrue(self.rb.structure.Labels.Exist(
             ar.RobotOM.IRobotLabelType.I_LT_MATERIAL, 'STEEL'))
         self.rb.materials.delete('STEEL')
+
+    def test_set(self):
+        self.rb.materials.load('STEEL')
+        n1 = self.rb.nodes.create(*random((3,)))
+        n2 = self.rb.nodes.create(*random((3,)))
+        b = self.rb.bars.create(n1, n2)
+        self.rb.materials.set('all', 'STEEL')
+        for b in self.rb.bars.select('all'):
+            label = ar.RobotOM.IRobotLabel(
+                b.GetLabel(ar.RobotOM.IRobotLabelType.I_LT_MATERIAL))
+            self.assertEqual(label.Name, 'STEEL')
 
     def test_exist(self):
         self.assertFalse(self.rb.materials.exist('STEEL'))
