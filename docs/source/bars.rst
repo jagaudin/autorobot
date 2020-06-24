@@ -5,8 +5,12 @@ Bars
 
 .. _bar_object:
 
-Extended bar class
-------------------
+Bar object
+----------
+
+.. autoclass:: autorobot.bars.ExtendedBar
+  :members:
+  :inherited-members:
 
 
 .. _bar_server:
@@ -17,9 +21,3 @@ Bar server
 .. autoclass:: autorobot.bars.ExtendedBarServer
   :members:
   :inherited-members:
-
-
-.. _bar_functions:
-
-Functions
----------

@@ -7,6 +7,39 @@ from numpy.testing import assert_array_equal
 import autorobot as ar
 
 
+class TestExtendedBar(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        cls.rb = ar.initialize(visible=False, interactive=False)
+        cls.rb.new(ar.RProjType.SHELL)
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.rb.quit(save=False)
+
+    def tearDown(self):
+        self.rb.structure.Clear()
+
+    def test_properties(self):
+        a1, a2 = random((3,)), random((3,))
+        n1 = self.rb.nodes.create(*a1)
+        n2 = self.rb.nodes.create(*a2)
+        b = self.rb.bars.create(n1, n2)
+        sect = self.rb.sections.load('UB 305x165x40')
+        mat = self.rb.materials.load('STEEL')
+        release = self.rb.releases.create('UX-UZ', '011111', '110111')
+        self.rb.bars.set_section(b.Number, sect)
+        self.rb.bars.set_material(b.Number, mat)
+        self.rb.bars.set_release(b.Number, release)
+        with self.subTest(msg='section'):
+            self.assertEqual(b.section.Name, 'UB 305x165x40')
+        with self.subTest(msg='material'):
+            self.assertEqual(b.material.Name, 'STEEL')
+        with self.subTest(msg='release'):
+            self.assertEqual(b.release.Name, 'UX-UZ')
+
+
 class TestBarServers(unittest.TestCase):
 
     @classmethod
@@ -21,13 +54,13 @@ class TestBarServers(unittest.TestCase):
     def tearDown(self):
         self.rb.structure.Clear()
 
-    def test_bar_server(self):
+    def test_server(self):
         self.assertIsInstance(
             self.rb.bars,
             ar.app.ExtendedBarServer
         )
 
-    def test_bar_create(self):
+    def test_create(self):
         with self.subTest(msg='bars.create (ExtendedNode)'):
             a1, a2 = random((3,)), random((3,))
             n1 = self.rb.nodes.create(*a1)
@@ -73,13 +106,13 @@ class TestBarServers(unittest.TestCase):
             for i in range(len(a)):
                 self.assertAlmostEqual(a[i], a2[i])
 
-    def test_bar_get(self):
+    def test_get(self):
         n1 = self.rb.nodes.create(*random((3,)))
         n2 = self.rb.nodes.create(*random((3,)))
         b = self.rb.bars.create(n1, n2)
         self.assertEqual(self.rb.bars.get(b.Number).Number, b.Number)
 
-    def test_bar_select(self):
+    def test_select(self):
         ns = [self.rb.nodes.create(*random((3,))) for i in range(10)]
         with self.rb.bars as bars:
             for n1, n2 in combinations(ns, 2):
@@ -99,7 +132,7 @@ class TestBarServers(unittest.TestCase):
                 ar.RobotOM.IRobotCollection(self.rb.bars.GetAll()).Count
             )
 
-    def test_bar_delete(self):
+    def test_delete(self):
         ns = [self.rb.nodes.create(*random((3,))) for i in range(10)]
         with self.rb.bars as bars:
             for n1, n2 in combinations(ns, 2):
@@ -107,7 +140,7 @@ class TestBarServers(unittest.TestCase):
         self.rb.bars.delete('all')
         self.assertListEqual(list(self.rb.bars.select('all')), [])
 
-    def test_bar_table(self):
+    def test_table(self):
         ns = [
             self.rb.nodes.create(*random((3,)), obj=False) for i in range(10)
         ]
@@ -119,7 +152,7 @@ class TestBarServers(unittest.TestCase):
                      for i, t in enumerate(combinations(ns, 2))])
         assert_array_equal(t, a.astype(int))
 
-    def test_bar_set_section(self):
+    def test_set_section(self):
         self.rb.sections.create('Rnd10', 10)
         n1 = self.rb.nodes.create(*random((3,)))
         n2 = self.rb.nodes.create(*random((3,)))
@@ -129,6 +162,28 @@ class TestBarServers(unittest.TestCase):
             label = ar.RobotOM.IRobotLabel(
                 b.GetLabel(ar.RobotOM.IRobotLabelType.I_LT_BAR_SECTION))
             self.assertEqual(label.Name, 'Rnd10')
+
+    def test_set_material(self):
+        self.rb.materials.load('STEEL')
+        n1 = self.rb.nodes.create(*random((3,)))
+        n2 = self.rb.nodes.create(*random((3,)))
+        b = self.rb.bars.create(n1, n2)
+        self.rb.bars.set_material('all', 'STEEL')
+        for b in self.rb.bars.select('all'):
+            label = ar.RobotOM.IRobotLabel(
+                b.GetLabel(ar.RobotOM.IRobotLabelType.I_LT_MATERIAL))
+            self.assertEqual(label.Name, 'STEEL')
+
+    def test_set_release(self):
+        self.rb.releases.create('UX-UZ', '011111', '110111')
+        n1 = self.rb.nodes.create(*random((3,)))
+        n2 = self.rb.nodes.create(*random((3,)))
+        b = self.rb.bars.create(n1, n2)
+        self.rb.bars.set_release('all', 'UX-UZ')
+        for b in self.rb.bars.select('all'):
+            label = ar.RobotOM.IRobotLabel(
+                b.GetLabel(ar.RobotOM.IRobotLabelType.I_LT_BAR_RELEASE))
+            self.assertEqual(label.Name, 'UX-UZ')
 
 
 if __name__ == '__main__':
