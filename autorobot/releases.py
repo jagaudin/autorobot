@@ -32,6 +32,7 @@ class ExtendedReleaseLabel(ExtendedLabel):
         """Start node release."""
         return self.data.StartNode
 
+    @property
     def end(self):
         """End node release."""
         return self.data.EndNode
