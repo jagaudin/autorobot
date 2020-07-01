@@ -9,6 +9,7 @@ from RobotOM import (
     IRobotCaseNature,
     IRobotCaseType,
     IRobotCombinationType,
+    IRobotDeadRecordValues,
     IRobotLabelType,
     IRobotLicenseEntitlement,
     IRobotLicenseEntitlementStatus,
@@ -134,6 +135,18 @@ class RReleaseValues(IntEnum):
     NONE = IRobotBarEndReleaseValue.I_BERV_NONE
     STD = IRobotBarEndReleaseValue.I_BERV_STD
     FIXED = IRobotBarEndReleaseValue.I_BERV_FIXED
+
+
+class RDeadValues(IntEnum):
+    """
+    Aliases for dead loads values. For more details, see
+    ``IRobotDeadRecordValues``.
+    """
+    X = IRobotDeadRecordValues.I_DRV_X
+    Y = IRobotDeadRecordValues.I_DRV_Y
+    Z = IRobotDeadRecordValues.I_DRV_Z
+    COEFF = IRobotDeadRecordValues.I_DRV_COEFF
+    ENTIRE_STRUCT = IRobotDeadRecordValues.I_DRV_ENTIRE_STRUCTURE
 
 
 class RBarUDLValues(IntEnum):

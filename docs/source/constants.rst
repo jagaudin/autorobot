@@ -144,6 +144,7 @@ Types
 Bar loads
 ---------
 
+.. autoclass:: RDeadValues
 .. autoclass:: RBarPLValues
 .. autoclass:: RBarUDLValues
 

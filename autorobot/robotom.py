@@ -17,4 +17,5 @@ try:
 except Exception as e:
     raise(AutoRobotPathError(f"Couldn't find {p}\\*\\{suffix}")) from e
 
+clr.setPreload(True)
 import RobotOM  # NOQA F401 F402

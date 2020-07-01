@@ -9,11 +9,6 @@ from .constants import (  # NOQA F401
     RProjType,
 )
 
-from .loads import (  # NOQA F401
-    add_bar_udl,
-    add_bar_pl,
-)
-
 from .nodes import (  # NOQA F401
     distance,
 )
