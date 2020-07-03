@@ -12,7 +12,6 @@ Welcome to autoRobot's documentation!
    materials
    sections
    supports
-   loads
    loadcases
    constants
    synonyms

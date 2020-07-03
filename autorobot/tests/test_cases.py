@@ -32,7 +32,23 @@ class TestExtendedSimpleCase(unittest.TestCase):
         self.rb.cases.delete('all')
 
     def test_add_self_weight(self):
-        pass
+        case = self.rb.cases.create_case(1, 'case 1', 'PERM', 'LINEAR')
+        with self.subTest(msg='all'):
+            n1 = self.rb.nodes.create(*random((3,)))
+            n2 = self.rb.nodes.create(*random((3,)))
+            other_bar = self.rb.bars.create(n1, n2)
+            case.add_self_weight(desc='sw')
+            rec = case.get(1)
+            sel_str = rec.Objects.ToText().strip()
+            all_bar_str = (
+                self.rb.selections.CreateFull(ar.constants.ROType.BAR)
+                .ToText().strip()
+            )
+            self.assertEqual(sel_str, all_bar_str)
+            self.assertEqual(rec.GetValue(ar.constants.RDeadValues.COEFF), 1.)
+            self.assertEqual(rec.Description, 'sw')
+            case.Records.Delete(1)
+        self.rb.cases.delete('all')
 
     def test_add_bar_udl(self):
         pass

@@ -70,6 +70,7 @@ class ExtendedSimpleCase(Capsule):
         rec.Objects.FromText(str(s))
         rec.Description = desc
         rec.SetValue(RDeadValues.Z, -1.)
+        rec.SetValue(RDeadValues.COEFF, factor)
         if s.lower() == 'all':
             rec.SetValue(RDeadValues.ENTIRE_STRUCT, True)
 
@@ -215,7 +216,7 @@ class ExtendedCaseServer(ExtendedServer):
         .. tip:: This method supports :ref:`about_synonyms` for the
           **nature** and **analysis_type** arguments. For example: ::
 
-                create_load_case(1, 'Load case', 'IMPOSED', 'LINEAR')
+                create_case(1, 'Load case', 'IMPOSED', 'LINEAR')
         """
         if num is None:
             num = self.FreeNumber
