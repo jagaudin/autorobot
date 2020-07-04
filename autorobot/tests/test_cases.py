@@ -1,4 +1,5 @@
 import unittest
+import time
 from numpy.random import random
 
 import autorobot as ar
@@ -9,20 +10,24 @@ class TestExtendedSimpleCase(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.rb = ar.initialize(visible=False, interactive=False)
+        time.sleep(2)
         cls.rb.new(ar.RProjType.SHELL)
-        n1 = cls.rb.nodes.create(*random((3,)))
-        n2 = cls.rb.nodes.create(*random((3,)))
-        cls.b = cls.rb.bars.create(n1, n2)
 
     @classmethod
     def tearDownClass(cls):
         cls.rb.quit(save=False)
 
+    def tearDown(self):
+        self.rb.structure.Clear()
+
     def test_loads(self):
+        n1 = self.rb.nodes.create(*random((3,)))
+        n2 = self.rb.nodes.create(*random((3,)))
+        bar = self.rb.bars.create(n1, n2)
         case = self.rb.cases.create_case(1, 'case 1', 'PERM', 'LINEAR')
         case.add_self_weight(desc='sw')
-        case.add_bar_udl(self.b.Number, fx=random(), desc='udl')
-        case.add_bar_pl(self.b.Number, x=.5, fx=1, is_relative=True, desc='pl')
+        case.add_bar_udl(bar.Number, fx=random(), desc='udl')
+        case.add_bar_pl(bar.Number, x=.5, fx=1, is_relative=True, desc='pl')
         loads = case.loads
         self.assertEqual(len(loads), 3)
         self.assertSetEqual(
@@ -32,11 +37,14 @@ class TestExtendedSimpleCase(unittest.TestCase):
         self.rb.cases.delete('all')
 
     def test_add_self_weight(self):
+        n1 = self.rb.nodes.create(*random((3,)))
+        n2 = self.rb.nodes.create(*random((3,)))
+        self.rb.bars.create(n1, n2)
+        n1 = self.rb.nodes.create(*random((3,)))
+        n2 = self.rb.nodes.create(*random((3,)))
+        other_bar = self.rb.bars.create(n1, n2)
         case = self.rb.cases.create_case(1, 'case 1', 'PERM', 'LINEAR')
         with self.subTest(msg='all'):
-            n1 = self.rb.nodes.create(*random((3,)))
-            n2 = self.rb.nodes.create(*random((3,)))
-            other_bar = self.rb.bars.create(n1, n2)
             case.add_self_weight(desc='sw')
             rec = case.get(1)
             sel_str = rec.Objects.ToText().strip()
@@ -47,20 +55,137 @@ class TestExtendedSimpleCase(unittest.TestCase):
             self.assertEqual(sel_str, all_bar_str)
             self.assertEqual(rec.GetValue(ar.constants.RDeadValues.COEFF), 1.)
             self.assertEqual(rec.Description, 'sw')
-            case.Records.Delete(1)
+            self.assertEqual(
+                rec.GetValue(ar.constants.RDeadValues.ENTIRE_STRUCT), True)
+            case.delete(1)
+        with self.subTest(msg='factor'):
+            factor = random()
+            case.add_self_weight(s=str(other_bar.Number), factor=factor,
+                                 desc='sw fact')
+            rec = case.get(1)
+            sel_str = rec.Objects.ToText().strip()
+            self.assertEqual(sel_str, str(other_bar.Number))
+            self.assertEqual(
+                rec.GetValue(ar.constants.RDeadValues.COEFF), factor)
+            self.assertEqual(rec.Description, 'sw fact')
+            self.assertEqual(
+                rec.GetValue(ar.constants.RDeadValues.ENTIRE_STRUCT), False)
+            case.delete(1)
         self.rb.cases.delete('all')
 
     def test_add_bar_udl(self):
-        pass
+        n1 = self.rb.nodes.create(*random((3,)))
+        n2 = self.rb.nodes.create(*random((3,)))
+        bar = self.rb.bars.create(n1, n2)
+        case = self.rb.cases.create_case(1, 'case 1', 'PERM', 'LINEAR')
+        fx, fy, fz, alpha, beta, gamma, offset_y, offset_z = random((8,))
+        case.add_bar_udl(bar.Number, fx=fx, fy=fy, fz=fz,
+                         alpha=alpha, beta=beta, gamma=gamma,
+                         offset_y=offset_y, offset_z=offset_z,
+                         unit=10., unit_angle=1.5, desc='udl')
+        rec = case.get(1)
+        sel_str = rec.Objects.ToText().strip()
+        self.assertEqual(sel_str, str(bar.Number))
+        self.assertEqual(
+            rec.GetValue(ar.constants.RBarUDLValues.FX), fx * 10.)
+        self.assertEqual(
+            rec.GetValue(ar.constants.RBarUDLValues.FY), fy * 10.)
+        self.assertEqual(
+            rec.GetValue(ar.constants.RBarUDLValues.FZ), fz * 10.)
+        self.assertEqual(
+            rec.GetValue(ar.constants.RBarUDLValues.ALPHA), alpha * 1.5)
+        self.assertEqual(
+            rec.GetValue(ar.constants.RBarUDLValues.BETA), beta * 1.5)
+        self.assertEqual(
+            rec.GetValue(ar.constants.RBarUDLValues.GAMMA), gamma * 1.5)
+        self.assertEqual(
+            rec.GetValue(ar.constants.RBarUDLValues.IS_LOC), False)
+        self.assertEqual(
+            rec.GetValue(ar.constants.RBarUDLValues.IS_PROJ), False)
+        self.assertEqual(
+            rec.GetValue(ar.constants.RBarUDLValues.IS_REL), False)
+        self.assertEqual(
+            rec.GetValue(ar.constants.RBarUDLValues.OFFSET_Y), offset_y)
+        self.assertEqual(
+            rec.GetValue(ar.constants.RBarUDLValues.OFFSET_Z), offset_z)
+        self.assertEqual(rec.Description, 'udl')
+        self.rb.cases.delete('all')
 
     def test_add_bar_pl(self):
-        pass
+        n1 = self.rb.nodes.create(*random((3,)))
+        n2 = self.rb.nodes.create(*random((3,)))
+        bar = self.rb.bars.create(n1, n2)
+        case = self.rb.cases.create_case(1, 'case 1', 'PERM', 'LINEAR')
+        x, fx, fy, fz, alpha, beta, gamma, offset_y, offset_z = random((9,))
+        case.add_bar_pl(bar.Number, x=x, fx=fx, fy=fy, fz=fz,
+                        alpha=alpha, beta=beta, gamma=gamma,
+                        is_relative=True,
+                        offset_y=offset_y, offset_z=offset_z,
+                        unit=10., unit_angle=1.5, desc='pl')
+        rec = case.get(1)
+        sel_str = rec.Objects.ToText().strip()
+        self.assertEqual(sel_str, str(bar.Number))
+        self.assertEqual(rec.GetValue(ar.constants.RBarPLValues.X), x)
+        self.assertEqual(
+            rec.GetValue(ar.constants.RBarPLValues.FX), fx * 10.)
+        self.assertEqual(
+            rec.GetValue(ar.constants.RBarPLValues.FY), fy * 10.)
+        self.assertEqual(
+            rec.GetValue(ar.constants.RBarPLValues.FZ), fz * 10.)
+        self.assertEqual(
+            rec.GetValue(ar.constants.RBarPLValues.ALPHA), alpha * 1.5)
+        self.assertEqual(
+            rec.GetValue(ar.constants.RBarPLValues.BETA), beta * 1.5)
+        self.assertEqual(
+            rec.GetValue(ar.constants.RBarPLValues.GAMMA), gamma * 1.5)
+        self.assertEqual(
+            rec.GetValue(ar.constants.RBarPLValues.IS_LOC), False)
+        self.assertEqual(
+            rec.GetValue(ar.constants.RBarPLValues.IS_REL), True)
+        self.assertEqual(
+            rec.GetValue(ar.constants.RBarPLValues.OFFSET_Y), offset_y)
+        self.assertEqual(
+            rec.GetValue(ar.constants.RBarPLValues.OFFSET_Z), offset_z)
+        self.assertEqual(rec.Description, 'pl')
+        self.rb.cases.delete('all')
 
     def test_delete(self):
-        pass
+        n1 = self.rb.nodes.create(*random((3,)))
+        n2 = self.rb.nodes.create(*random((3,)))
+        bar = self.rb.bars.create(n1, n2)
+        case = self.rb.cases.create_case(1, 'case 1', 'PERM', 'LINEAR')
+        case.add_self_weight(desc='sw')
+        case.add_bar_udl(bar.Number, fx=random(), desc='udl')
+        case.add_bar_pl(bar.Number, x=.5, fx=1, is_relative=True, desc='pl')
+        self.assertEqual(len(case.loads), 3)
+        case.delete(2)
+        self.assertEqual(len(case.loads), 2)
+        self.assertSetEqual(
+            set(['sw', 'pl']),
+            set([d['Description'] for d in case.loads])
+        )
+        case.delete(1)
+        self.assertEqual(len(case.loads), 1)
+        self.assertSetEqual(
+            set(['pl']),
+            set([d['Description'] for d in case.loads])
+        )
+        case.delete(1)
+        self.assertEqual(len(case.loads), 0)
+        self.rb.cases.delete('all')
 
     def test_get(self):
-        pass
+        n1 = self.rb.nodes.create(*random((3,)))
+        n2 = self.rb.nodes.create(*random((3,)))
+        bar = self.rb.bars.create(n1, n2)
+        case = self.rb.cases.create_case(1, 'case 1', 'PERM', 'LINEAR')
+        case.add_self_weight(desc='sw')
+        case.add_bar_udl(bar.Number, fx=random(), desc='udl')
+        case.add_bar_pl(bar.Number, x=.5, fx=1, is_relative=True, desc='pl')
+        for i, desc in zip(range(1, 4), ['sw', 'udl', 'pl']):
+            load = case.get(i)
+            self.assertEqual(load.Description, desc)
+        self.rb.cases.delete('all')
 
 
 class TestCaseServer(unittest.TestCase):
@@ -68,6 +193,7 @@ class TestCaseServer(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.rb = ar.initialize(visible=False, interactive=False)
+        time.sleep(2)
         cls.rb.new(ar.RProjType.SHELL)
 
     @classmethod

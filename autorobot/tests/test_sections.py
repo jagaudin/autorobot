@@ -1,4 +1,5 @@
 import unittest
+import time
 from random import sample
 import numpy as np
 from numpy.random import random
@@ -11,6 +12,7 @@ class TestExtendedSection(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.rb = ar.initialize(visible=False, interactive=False)
+        time.sleep(2)
         cls.rb.new(ar.RProjType.SHELL)
 
     @classmethod
@@ -44,6 +46,7 @@ class TestSectionServer(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.rb = ar.initialize(visible=False, interactive=False)
+        time.sleep(2)
         cls.rb.new(ar.RProjType.SHELL)
         n1 = cls.rb.nodes.create(*random((3,)))
         n2 = cls.rb.nodes.create(*random((3,)))

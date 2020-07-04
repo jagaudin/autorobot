@@ -1,4 +1,5 @@
 import unittest
+import time
 from numpy.random import random
 
 import autorobot as ar
@@ -9,6 +10,7 @@ class TestExtendedRelease(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.rb = ar.initialize(visible=False, interactive=False)
+        time.sleep(2)
         cls.rb.new(ar.RProjType.SHELL)
 
     @classmethod
@@ -38,6 +40,7 @@ class TestExtendedReleaseServer(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.rb = ar.initialize(visible=False, interactive=False)
+        time.sleep(2)
         cls.rb.new(ar.RProjType.SHELL)
         n1 = cls.rb.nodes.create(*random((3,)))
         n2 = cls.rb.nodes.create(*random((3,)))

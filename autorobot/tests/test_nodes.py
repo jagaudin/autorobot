@@ -1,4 +1,5 @@
 import unittest
+import time
 import numpy as np
 from numpy.random import random
 from numpy.testing import assert_array_equal, assert_array_almost_equal
@@ -11,6 +12,7 @@ class TestExtendedNode(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.rb = ar.initialize(visible=False, interactive=False)
+        time.sleep(2)
         cls.rb.new(ar.RProjType.SHELL)
 
     @classmethod
@@ -52,6 +54,7 @@ class TestNodeServer(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.rb = ar.initialize(visible=False, interactive=False)
+        time.sleep(2)
         cls.rb.new(ar.RProjType.SHELL)
 
     @classmethod

@@ -51,6 +51,7 @@ class TestAppOperations(TestCase):
             rb = ar.initialize(visible=False, interactive=False)
             for pt in ar.RProjType:
                 with self.subTest(msg='new', proj_type=pt):
+                    time.sleep(2)
                     rb.new(pt)
                     self.assertEqual(rb.Project.Type, pt)
                 # Wait for Robot to avoid throwing a server error
@@ -59,6 +60,7 @@ class TestAppOperations(TestCase):
             for pt in ('BUILDING', 'FRAME_2D', 'FRAME_3D', 'SHELL',
                        'TRUSS_2D', 'TRUSS_3D'):
                 with self.subTest(msg='new (synomyms)', proj_type=pt):
+                    time.sleep(2)
                     rb.new(pt)
                     self.assertEqual(
                         rb.Project.Type, ar.synonyms.synonyms[pt])
@@ -78,6 +80,7 @@ class TestAppOperations(TestCase):
 
             rb = ar.initialize(visible=False, interactive=False)
             with self.subTest(msg="open"):
+                time.sleep(2)
                 rb.open(path)
                 self.assertEqual(rb.Project.FileName, path)
             rb.nodes.create(0., 0., 0.)
@@ -85,6 +88,7 @@ class TestAppOperations(TestCase):
             rb.quit(save=False)
 
             rb = ar.initialize(visible=False, interactive=False)
+            time.sleep(2)
             rb.open(path)
             with self.subTest(msg="save"):
                 assert_array_almost_equal(
@@ -93,6 +97,7 @@ class TestAppOperations(TestCase):
             rb.quit(save=True)
 
             rb = ar.initialize(visible=False, interactive=False)
+            time.sleep(2)
             rb.open(path)
             with self.subTest(msg="quit save"):
                 assert_array_almost_equal(

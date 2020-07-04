@@ -1,3 +1,5 @@
+import numpy as np
+
 from .constants import (
     RBarPLValues,
     RBarUDLValues,
@@ -77,7 +79,8 @@ class ExtendedSimpleCase(Capsule):
     def add_bar_udl(self, s, fx=0., fy=0., fz=0.,
                     alpha=0., beta=0., gamma=0.,
                     is_local=False, is_proj=False, is_relative=False,
-                    offset_y=0., offset_z=0., unit=1e3, desc=''):
+                    offset_y=0., offset_z=0.,
+                    unit=1e3, unit_angle=np.pi / 180, desc=''):
         """Adds a uniformly distributed load on a selection of bars.
 
         :param str s: A valid bar selection string
@@ -89,6 +92,7 @@ class ExtendedSimpleCase(Capsule):
         :param boll is_relative: Whether the position `x` is relative
         :param float offset_y, offset_z: Force vector offset from the bar
         :param float unit: A multiplication factor for the force input
+        :param float unit_angle: A multiplication factor for angle input
         """
         rec = IRobotLoadRecord(self.Records.Create(RLoadType.BAR_UDL))
         rec.Objects.FromText(str(s))
@@ -97,9 +101,9 @@ class ExtendedSimpleCase(Capsule):
             RBarUDLValues.FX: fx * unit,
             RBarUDLValues.FY: fy * unit,
             RBarUDLValues.FZ: fz * unit,
-            RBarUDLValues.ALPHA: alpha,
-            RBarUDLValues.BETA: beta,
-            RBarUDLValues.GAMMA: gamma,
+            RBarUDLValues.ALPHA: alpha * unit_angle,
+            RBarUDLValues.BETA: beta * unit_angle,
+            RBarUDLValues.GAMMA: gamma * unit_angle,
             RBarUDLValues.IS_LOC: is_local,
             RBarUDLValues.IS_PROJ: is_proj,
             RBarUDLValues.IS_REL: is_relative,
@@ -109,9 +113,10 @@ class ExtendedSimpleCase(Capsule):
         for k, v in rec_values.items():
             rec.SetValue(k, v)
 
-    def add_bar_pl(self, s, desc='', x=0., fx=0., fy=0., fz=0., alpha=0.,
+    def add_bar_pl(self, s, x=0., fx=0., fy=0., fz=0., alpha=0.,
                    beta=0., gamma=0., is_local=False, is_relative=False,
-                   offset_y=0., offset_z=0.):
+                   offset_y=0., offset_z=0.,
+                   unit=1e3, unit_angle=np.pi / 180, desc=''):
         """Adds a point load on a selection of bars.
 
         :param str s: A valid bar selection string
@@ -122,18 +127,20 @@ class ExtendedSimpleCase(Capsule):
         :param bool is_local: Whether the force is defined in local coordinates
         :param bool is_relative: Whether the position ``x`` is relative
         :param float offset_y, offset_z: Force vector offset from the bar
+        :param float unit: A multiplication factor for the force input
+        :param float unit_angle: A multiplication factor for angle input
         """
         rec = IRobotLoadRecord(self.Records.Create(RLoadType.BAR_PL))
         rec.Objects.FromText(str(s))
         rec.Description = desc
         rec_values = {
             RBarPLValues.X: x,
-            RBarPLValues.FX: fx * 1e3,
-            RBarPLValues.FY: fy * 1e3,
-            RBarPLValues.FZ: fz * 1e3,
-            RBarPLValues.ALPHA: alpha,
-            RBarPLValues.BETA: beta,
-            RBarPLValues.GAMMA: gamma,
+            RBarPLValues.FX: fx * unit,
+            RBarPLValues.FY: fy * unit,
+            RBarPLValues.FZ: fz * unit,
+            RBarPLValues.ALPHA: alpha * unit_angle,
+            RBarPLValues.BETA: beta * unit_angle,
+            RBarPLValues.GAMMA: gamma * unit_angle,
             RBarPLValues.IS_LOC: is_local,
             RBarPLValues.IS_REL: is_relative,
             RBarPLValues.OFFSET_Y: offset_y,

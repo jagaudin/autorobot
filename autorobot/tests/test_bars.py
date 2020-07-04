@@ -1,4 +1,5 @@
 import unittest
+import time
 from itertools import combinations
 import numpy as np
 from numpy.random import random
@@ -12,6 +13,7 @@ class TestExtendedBar(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.rb = ar.initialize(visible=False, interactive=False)
+        time.sleep(2)
         cls.rb.new(ar.RProjType.SHELL)
 
     @classmethod
@@ -45,6 +47,7 @@ class TestBarServers(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.rb = ar.initialize(visible=False, interactive=False)
+        time.sleep(2)
         cls.rb.new(ar.RProjType.SHELL)
 
     @classmethod

@@ -1,4 +1,5 @@
 import unittest
+import time
 from numpy.random import random
 
 import autorobot as ar
@@ -9,6 +10,7 @@ class TestExtendedMaterialLabel(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.rb = ar.initialize(visible=False, interactive=False)
+        time.sleep(2)
         cls.rb.new(ar.RProjType.SHELL)
         cls.rb.materials.load('S275')
         cls.steel_s275 = cls.rb.materials.get('S275')
@@ -65,6 +67,7 @@ class TestMaterialServer(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.rb = ar.initialize(visible=False, interactive=False)
+        time.sleep(2)
         cls.rb.new(ar.RProjType.SHELL)
 
     @classmethod
