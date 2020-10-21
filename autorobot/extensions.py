@@ -27,7 +27,8 @@ class Capsule(ABC):
             f"{self.__class__.__name__} has not attribute '{name}'.")
 
     def __setattr__(self, name, value):
-        if hasattr(self, '_inst') and hasattr(self._inst, name):
+        if (hasattr(self, '_inst') and
+                hasattr(self._inst, name) and name not in dir(self)):
             setattr(self._inst, name, value)
         else:
             super().__setattr__(name, value)

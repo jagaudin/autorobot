@@ -56,6 +56,17 @@ class TestExtendedNode(unittest.TestCase):
         n.X, n.Y, n.Z = b
         assert_array_almost_equal(b, n.as_array())
 
+    def test_non_override_internal_attribute(self):
+        a = random((3,))
+        n = self.rb.nodes.create(*a)
+        n.test = 'ExtendedNode'
+        n.node.test = 'IRobotNode'
+        self.assertEqual(n.test, 'ExtendedNode')
+        self.assertEqual(n.node.test, 'IRobotNode')
+        n.test = 'updated'
+        self.assertEqual(n.test, 'updated')
+        self.assertEqual(n.node.test, 'IRobotNode')
+
 
 class TestNodeServer(unittest.TestCase):
 
