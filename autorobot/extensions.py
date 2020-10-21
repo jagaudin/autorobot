@@ -20,10 +20,17 @@ class Capsule(ABC):
                 f"{inst} is not an instance of `{str(self._otype)}`.")
 
     def __getattr__(self, name):
-        if hasattr(self._inst, name):
+        # Called when the default attribute access fails
+        if name != '_inst' and hasattr(self._inst, name):
             return getattr(self._inst, name)
         raise AttributeError(
             f"{self.__class__.__name__} has not attribute '{name}'.")
+
+    def __setattr__(self, name, value):
+        if hasattr(self, '_inst') and hasattr(self._inst, name):
+            setattr(self._inst, name, value)
+        else:
+            super().__setattr__(name, value)
 
 
 @abstract_attributes('_otype', '_ctype', '_dtype', '_rtype')

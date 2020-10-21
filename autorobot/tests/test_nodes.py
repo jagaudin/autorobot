@@ -48,6 +48,14 @@ class TestExtendedNode(unittest.TestCase):
             ns_sorted[:3]
         )
 
+    def test_coords_read_write(self):
+        a = random((3,))
+        n = self.rb.nodes.create(*a)
+        assert_array_almost_equal(a, n.as_array())
+        b = random((3,))
+        n.X, n.Y, n.Z = b
+        assert_array_almost_equal(b, n.as_array())
+
 
 class TestNodeServer(unittest.TestCase):
 
