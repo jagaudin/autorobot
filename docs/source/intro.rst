@@ -39,7 +39,7 @@ Usage
 **autoRobot** aims at simplifying RSA automation scripts. To use it, just
 import ``autorobot`` and initialize the module. ::
 
-    import autorobot as r
+    import autorobot as ar
     rb = ar.initialize()
 
 
