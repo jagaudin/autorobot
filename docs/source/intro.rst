@@ -3,7 +3,7 @@ Introduction
 
 **autoRobot** presents a collection of extensions and a set of high-level
 functions that can be used to automate Robot Structural Analyis (RSA) through
-sits API.
+its API.
 
 RSA presents a COM interface written for the .Net environment. This API can be
 accessed through `Python.Net <https://github.com/pythonnet/pythonnet>`_ module.

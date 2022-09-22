@@ -101,7 +101,7 @@ class ExtendedSectionLabel(ExtendedLabel):
 
     @property
     def weight(self):
-        """"Linear weight of the section."""
+        """Linear weight of the section."""
         return self.data.GetValue(IRobotBarSectionDataValue.I_BSDV_WEIGHT)
 
 
