@@ -1,3 +1,6 @@
+import clr
+from System.Runtime.InteropServices import COMException
+
 class AutoRobotInitError(BaseException):
     """Raised when the module was not initialized."""
 

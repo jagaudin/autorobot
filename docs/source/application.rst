@@ -7,7 +7,6 @@ Extended *RobotApplication* class
 ---------------------------------
 
 .. autoclass:: autorobot.app.ExtendedRobotApp
-   :member-order: 'bysource'
    :members:
 
 

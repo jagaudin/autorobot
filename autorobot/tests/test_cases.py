@@ -36,6 +36,32 @@ class TestExtendedSimpleCase(unittest.TestCase):
         )
         self.rb.cases.delete('all')
 
+    def test_get_record_value(self):
+        n1 = self.rb.nodes.create(*random((3,)))
+        n2 = self.rb.nodes.create(*random((3,)))
+        bar = self.rb.bars.create(n1, n2)
+        case = self.rb.cases.create_case(1, 'case 1', 'PERM', 'LINEAR')
+        factor = random()
+        case.add_self_weight(factor=factor, desc='sw fact')
+        rec = case.get(1)
+        self.assertEqual(
+            case.get_record_value(rec, ar.constants.RDeadValues.COEFF), factor)
+
+    def test_set_record_value(self):
+        n1 = self.rb.nodes.create(*random((3,)))
+        n2 = self.rb.nodes.create(*random((3,)))
+        bar = self.rb.bars.create(n1, n2)
+        case = self.rb.cases.create_case(1, 'case 1', 'PERM', 'LINEAR')
+        factor = random()
+        case.add_self_weight(desc='sw')
+        rec = case.get(1)
+        self.assertEqual(
+            case.get_record_value(rec, ar.constants.RDeadValues.COEFF), 1.)
+        case.set_record_value(rec, ar.constants.RDeadValues.COEFF, factor)
+        self.assertEqual(
+            case.get_record_value(rec, ar.constants.RDeadValues.COEFF), factor)
+
+
     def test_add_self_weight(self):
         n1 = self.rb.nodes.create(*random((3,)))
         n2 = self.rb.nodes.create(*random((3,)))
@@ -53,10 +79,15 @@ class TestExtendedSimpleCase(unittest.TestCase):
                 .ToText().strip()
             )
             self.assertEqual(sel_str, all_bar_str)
-            self.assertEqual(rec.GetValue(ar.constants.RDeadValues.COEFF), 1.)
+            self.assertEqual(
+                case.get_record_value(rec, ar.constants.RDeadValues.COEFF), 1.)
             self.assertEqual(rec.Description, 'sw')
             self.assertEqual(
-                rec.GetValue(ar.constants.RDeadValues.ENTIRE_STRUCT), True)
+                case.get_record_value(
+                    rec, ar.constants.RDeadValues.ENTIRE_STRUCT
+                ),
+                True
+            )
             case.delete(1)
         with self.subTest(msg='factor'):
             factor = random()
@@ -66,10 +97,16 @@ class TestExtendedSimpleCase(unittest.TestCase):
             sel_str = rec.Objects.ToText().strip()
             self.assertEqual(sel_str, str(other_bar.Number))
             self.assertEqual(
-                rec.GetValue(ar.constants.RDeadValues.COEFF), factor)
+                case.get_record_value(rec, ar.constants.RDeadValues.COEFF),
+                factor
+            )
             self.assertEqual(rec.Description, 'sw fact')
             self.assertEqual(
-                rec.GetValue(ar.constants.RDeadValues.ENTIRE_STRUCT), False)
+                case.get_record_value(
+                    rec, ar.constants.RDeadValues.ENTIRE_STRUCT
+                ),
+                False
+            )
             case.delete(1)
         self.rb.cases.delete('all')
 
@@ -87,27 +124,49 @@ class TestExtendedSimpleCase(unittest.TestCase):
         sel_str = rec.Objects.ToText().strip()
         self.assertEqual(sel_str, str(bar.Number))
         self.assertEqual(
-            rec.GetValue(ar.constants.RBarUDLValues.FX), fx * 10.)
+            case.get_record_value(rec, ar.constants.RBarUDLValues.FX),
+            fx * 10.
+        )
         self.assertEqual(
-            rec.GetValue(ar.constants.RBarUDLValues.FY), fy * 10.)
+            case.get_record_value(rec, ar.constants.RBarUDLValues.FY),
+            fy * 10.
+        )
         self.assertEqual(
-            rec.GetValue(ar.constants.RBarUDLValues.FZ), fz * 10.)
+            case.get_record_value(rec, ar.constants.RBarUDLValues.FZ),
+            fz * 10.
+        )
         self.assertEqual(
-            rec.GetValue(ar.constants.RBarUDLValues.ALPHA), alpha * 1.5)
+            case.get_record_value(rec, ar.constants.RBarUDLValues.ALPHA),
+            alpha * 1.5
+        )
         self.assertEqual(
-            rec.GetValue(ar.constants.RBarUDLValues.BETA), beta * 1.5)
+            case.get_record_value(rec, ar.constants.RBarUDLValues.BETA),
+            beta * 1.5
+        )
         self.assertEqual(
-            rec.GetValue(ar.constants.RBarUDLValues.GAMMA), gamma * 1.5)
+            case.get_record_value(rec, ar.constants.RBarUDLValues.GAMMA),
+            gamma * 1.5
+        )
         self.assertEqual(
-            rec.GetValue(ar.constants.RBarUDLValues.IS_LOC), False)
+            case.get_record_value(rec, ar.constants.RBarUDLValues.IS_LOC),
+            False
+        )
         self.assertEqual(
-            rec.GetValue(ar.constants.RBarUDLValues.IS_PROJ), False)
+            case.get_record_value(rec, ar.constants.RBarUDLValues.IS_PROJ),
+            False
+        )
         self.assertEqual(
-            rec.GetValue(ar.constants.RBarUDLValues.IS_REL), False)
+            case.get_record_value(rec, ar.constants.RBarUDLValues.IS_REL),
+            False
+        )
         self.assertEqual(
-            rec.GetValue(ar.constants.RBarUDLValues.OFFSET_Y), offset_y)
+            case.get_record_value(rec, ar.constants.RBarUDLValues.OFFSET_Y),
+            offset_y
+        )
         self.assertEqual(
-            rec.GetValue(ar.constants.RBarUDLValues.OFFSET_Z), offset_z)
+            case.get_record_value(rec, ar.constants.RBarUDLValues.OFFSET_Z),
+            offset_z
+        )
         self.assertEqual(rec.Description, 'udl')
         self.rb.cases.delete('all')
 
@@ -125,27 +184,40 @@ class TestExtendedSimpleCase(unittest.TestCase):
         rec = case.get(1)
         sel_str = rec.Objects.ToText().strip()
         self.assertEqual(sel_str, str(bar.Number))
-        self.assertEqual(rec.GetValue(ar.constants.RBarPLValues.X), x)
         self.assertEqual(
-            rec.GetValue(ar.constants.RBarPLValues.FX), fx * 10.)
+            case.get_record_value(rec, ar.constants.RBarPLValues.X),
+            x
+        )
         self.assertEqual(
-            rec.GetValue(ar.constants.RBarPLValues.FY), fy * 10.)
+            case.get_record_value(rec, ar.constants.RBarPLValues.FX), fx * 10.)
         self.assertEqual(
-            rec.GetValue(ar.constants.RBarPLValues.FZ), fz * 10.)
+            case.get_record_value(rec, ar.constants.RBarPLValues.FY), fy * 10.)
         self.assertEqual(
-            rec.GetValue(ar.constants.RBarPLValues.ALPHA), alpha * 1.5)
+            case.get_record_value(rec, ar.constants.RBarPLValues.FZ), fz * 10.)
         self.assertEqual(
-            rec.GetValue(ar.constants.RBarPLValues.BETA), beta * 1.5)
+            case.get_record_value(rec, ar.constants.RBarPLValues.ALPHA),
+            alpha * 1.5
+        )
         self.assertEqual(
-            rec.GetValue(ar.constants.RBarPLValues.GAMMA), gamma * 1.5)
+            case.get_record_value(rec, ar.constants.RBarPLValues.BETA),
+            beta * 1.5
+        )
         self.assertEqual(
-            rec.GetValue(ar.constants.RBarPLValues.IS_LOC), False)
+            case.get_record_value(rec, ar.constants.RBarPLValues.GAMMA),
+            gamma * 1.5
+        )
         self.assertEqual(
-            rec.GetValue(ar.constants.RBarPLValues.IS_REL), True)
+            case.get_record_value(rec, ar.constants.RBarPLValues.IS_LOC), False)
         self.assertEqual(
-            rec.GetValue(ar.constants.RBarPLValues.OFFSET_Y), offset_y)
+            case.get_record_value(rec, ar.constants.RBarPLValues.IS_REL), True)
         self.assertEqual(
-            rec.GetValue(ar.constants.RBarPLValues.OFFSET_Z), offset_z)
+            case.get_record_value(rec, ar.constants.RBarPLValues.OFFSET_Y),
+            offset_y
+        )
+        self.assertEqual(
+            case.get_record_value(rec, ar.constants.RBarPLValues.OFFSET_Z),
+            offset_z
+        )
         self.assertEqual(rec.Description, 'pl')
         self.rb.cases.delete('all')
 

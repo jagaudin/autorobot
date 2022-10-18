@@ -1,3 +1,5 @@
+import clr
+
 from .app import initialize  # NOQA F401
 
 from .constants import (  # NOQA F401

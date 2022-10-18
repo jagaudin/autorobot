@@ -60,23 +60,23 @@ This comes handy when creating load cases' combinations in particular.
 
    The predefined synonyms are:
 
-    * ``'BUILDING'``: :py:class:`.RProjType` ``.BUILDING``
-    * ``'FRAME_2D'``: :py:class:`.RProjType` ``.FRAME_2D``
-    * ``'FRAME_3D'``: :py:class:`.RProjType` ``.FRAME_3D``
-    * ``'SHELL'``: :py:class:`.RProjType` ``.SHELL``
-    * ``'TRUSS_2D'``: :py:class:`.RProjType` ``.TRUSS_2D``
-    * ``'TRUSS_3D'``: :py:class:`.RProjType` ``.TRUSS_3D``
+    * ``'BUILDING'``: :py:data:`autorobot.RProjType` ``.BUILDING``
+    * ``'FRAME_2D'``: :py:data:`autorobot.RProjType` ``.FRAME_2D``
+    * ``'FRAME_3D'``: :py:data:`autorobot.RProjType` ``.FRAME_3D``
+    * ``'SHELL'``: :py:data:`autorobot.RProjType` ``.SHELL``
+    * ``'TRUSS_2D'``: :py:data:`autorobot.RProjType` ``.TRUSS_2D``
+    * ``'TRUSS_3D'``: :py:data:`autorobot.RProjType` ``.TRUSS_3D``
 
-    * ``'PERM'``: :py:class:`.RCaseNature` ``.PERM``
-    * ``'IMPOSED'``: :py:class:`.RCaseNature` ``.IMPOSED``
-    * ``'WIND'``: :py:class:`.RCaseNature` ``.WIND``
-    * ``'SNOW'``: :py:class:`.RCaseNature` ``.SNOW``
-    * ``'ACC'``: :py:class:`.RCaseNature` ``.ACC``
+    * ``'PERM'``: :py:data:`autorobot.RCaseNature` ``.PERM``
+    * ``'IMPOSED'``: :py:data:`autorobot.RCaseNature` ``.IMPOSED``
+    * ``'WIND'``: :py:data:`autorobot.RCaseNature` ``.WIND``
+    * ``'SNOW'``: :py:data:`autorobot.RCaseNature` ``.SNOW``
+    * ``'ACC'``: :py:data:`autorobot.RCaseNature` ``.ACC``
 
-    * ``'SLS'``: :py:class:`.RCombType` ``.SLS``
-    * ``'ULS'``: :py:class:`.RCombType` ``.ULS``
+    * ``'SLS'``: :py:data:`autorobot.RCombType` ``.SLS``
+    * ``'ULS'``: :py:data:`autorobot.RCombType` ``.ULS``
 
-    * ``'LINEAR'``: :py:class:`.RAnalysisType` ``.LINEAR``
-    * ``'NON_LIN'``: :py:class:`.RAnalysisType` ``.NON_LIN``
-    * ``'COMB_LINEAR'``: :py:class:`.RAnalysisType` ``.COMB_LINEAR``
-    * ``'COMB_NON_LIN'``: :py:class:`.RAnalysisType` ``.COMB_NON_LIN``
+    * ``'LINEAR'``: :py:data:`autorobot.RAnalysisType` ``.LINEAR``
+    * ``'NON_LIN'``: :py:data:`autorobot.RAnalysisType` ``.NON_LIN``
+    * ``'COMB_LINEAR'``: :py:data:`autorobot.RAnalysisType` ``.COMB_LINEAR``
+    * ``'COMB_NON_LIN'``: :py:data:`autorobot.RAnalysisType` ``.COMB_NON_LIN``

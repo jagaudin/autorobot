@@ -20,19 +20,19 @@ class TestExtendedRelease(unittest.TestCase):
     def test_properties(self):
         label = self.rb.releases.create('test_properties', '111000', '000111')
         with self.subTest(msg='start'):
-            self.assertTrue(label.start.UX)
-            self.assertTrue(label.start.UY)
-            self.assertTrue(label.start.UZ)
-            self.assertFalse(label.start.RX)
-            self.assertFalse(label.start.RY)
-            self.assertFalse(label.start.RZ)
+            self.assertTrue(int(label.start.UX))
+            self.assertTrue(int(label.start.UY))
+            self.assertTrue(int(label.start.UZ))
+            self.assertFalse(int(label.start.RX))
+            self.assertFalse(int(label.start.RY))
+            self.assertFalse(int(label.start.RZ))
         with self.subTest(msg='end'):
-            self.assertFalse(label.end.UX)
-            self.assertFalse(label.end.UY)
-            self.assertFalse(label.end.UZ)
-            self.assertTrue(label.end.RX)
-            self.assertTrue(label.end.RY)
-            self.assertTrue(label.end.RZ)
+            self.assertFalse(int(label.end.UX))
+            self.assertFalse(int(label.end.UY))
+            self.assertFalse(int(label.end.UZ))
+            self.assertTrue(int(label.end.RX))
+            self.assertTrue(int(label.end.RY))
+            self.assertTrue(int(label.end.RZ))
 
 
 class TestExtendedReleaseServer(unittest.TestCase):
@@ -52,18 +52,18 @@ class TestExtendedReleaseServer(unittest.TestCase):
 
     def test_create(self):
         label = self.rb.releases.create('test_create', '001100', '110011')
-        self.assertFalse(label.start.UX)
-        self.assertFalse(label.start.UY)
-        self.assertTrue(label.start.UZ)
-        self.assertTrue(label.start.RX)
-        self.assertFalse(label.start.RY)
-        self.assertFalse(label.start.RZ)
-        self.assertTrue(label.end.UX)
-        self.assertTrue(label.end.UY)
-        self.assertFalse(label.end.UZ)
-        self.assertFalse(label.end.RX)
-        self.assertTrue(label.end.RY)
-        self.assertTrue(label.end.RZ)
+        self.assertFalse(int(label.start.UX))
+        self.assertFalse(int(label.start.UY))
+        self.assertTrue(int(label.start.UZ))
+        self.assertTrue(int(label.start.RX))
+        self.assertFalse(int(label.start.RY))
+        self.assertFalse(int(label.start.RZ))
+        self.assertTrue(int(label.end.UX))
+        self.assertTrue(int(label.end.UY))
+        self.assertFalse(int(label.end.UZ))
+        self.assertFalse(int(label.end.RX))
+        self.assertTrue(int(label.end.RY))
+        self.assertTrue(int(label.end.RZ))
         self.rb.releases.delete('test_create')
 
     def test_set(self):

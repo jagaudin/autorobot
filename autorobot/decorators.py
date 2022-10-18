@@ -2,8 +2,22 @@ from abc import ABC
 from functools import wraps
 
 import autorobot.app as app
-from .errors import AutoRobotInitError
+from .errors import (
+    AutoRobotInitError,
+    COMException
+)
 
+
+def defaults_to_none(func):
+    """Method decorator to catch ``COMException`` and return ``None``.
+    """
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+        except COMException:
+            return None
+    return wrapper
 
 def requires_init(func):
     """Function decorator to provide the autorobot context to a function.
@@ -11,8 +25,7 @@ def requires_init(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
         if not app.app:
-            raise(
-                AutoRobotInitError, "Module `autoRobot` was not initialized.")
+            raise AutoRobotInitError("Module `autoRobot` was not initialized.")
         return func(*args, **kwargs)
     return wrapper
 
@@ -51,7 +64,7 @@ def abstract_attributes(*names):
                         if getattr(cls, n, NotImplemented) is NotImplemented:
                             raise NotImplementedError(
                                 f"`{n}` must be a class attribute of "
-                                "`{cls.__name__}`."
+                                f"`{cls.__name__}`."
                             )
 
             # Bind this new function to the __init_subclass__

@@ -9,6 +9,8 @@ from .constants import (
     ROType,
 )
 
+from .decorators import defaults_to_none
+
 from .extensions import (
     Capsule,
     ExtendedServer,
@@ -41,22 +43,42 @@ class ExtendedBar(Capsule):
         self.bar = inst
 
     @property
+    @defaults_to_none
     def material(self):
         """Material of the bar."""
-        return ExtendedMaterialLabel(
+        # Robot assigns a material by default, its anme is '' (empty string)
+        # Characteristics of this material are mostly set to zero.
+        # For consistency, we return None in this case. To get the no-name
+        # material label, use the ``IRobotBar.GetLabel`` method
+        label = ExtendedMaterialLabel(
             IRobotLabel(self.GetLabel(RLabelType.MAT)))
+        return label if label.Name else None
+
+    @material.setter
+    def material(self, name):
+        self.SetLabel(RLabelType.MAT, name)
 
     @property
+    @defaults_to_none
     def section(self):
         """Section of the bar."""
         return ExtendedSectionLabel(
             IRobotLabel(self.GetLabel(RLabelType.BAR_SECT)))
 
+    @section.setter
+    def section(self, name):
+        self.SetLabel(RLabelType.BAR_SECT, name)
+
     @property
+    @defaults_to_none
     def release(self):
         """Release of the bar."""
         return ExtendedReleaseLabel(
             IRobotLabel(self.GetLabel(RLabelType.RELEASE)))
+
+    @release.setter
+    def release(self, name):
+        self.SetLabel(RLabelType.RELEASE, name)
 
 
 class ExtendedBarServer(ExtendedServer):

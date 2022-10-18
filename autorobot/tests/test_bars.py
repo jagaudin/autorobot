@@ -34,12 +34,35 @@ class TestExtendedBar(unittest.TestCase):
         self.rb.bars.set_section(b.Number, sect)
         self.rb.bars.set_material(b.Number, mat)
         self.rb.bars.set_release(b.Number, release)
-        with self.subTest(msg='section'):
+        with self.subTest(msg='section getter'):
             self.assertEqual(b.section.Name, 'UB 305x165x40')
-        with self.subTest(msg='material'):
+        with self.subTest(msg='material getter'):
             self.assertEqual(b.material.Name, 'STEEL')
-        with self.subTest(msg='release'):
+        with self.subTest(msg='release getter'):
             self.assertEqual(b.release.Name, 'UX-UZ')
+
+        sect = self.rb.sections.create('Rnd10', 10)
+        mat = self.rb.materials.load('S355')
+        release = self.rb.releases.create('UZ-UX', '110111', '011111')
+        b.section = sect.Name
+        b.material = mat.Name
+        b.release = release.Name
+        with self.subTest(msg='section setter'):
+            self.assertEqual(b.section.Name, 'Rnd10')
+        with self.subTest(msg='material setter'):
+            self.assertEqual(b.material.Name, 'S355')
+        with self.subTest(msg='release setter'):
+            self.assertEqual(b.release.Name, 'UZ-UX')
+
+        b.RemoveLabel(ar.RobotOM.IRobotLabelType.I_LT_BAR_SECTION)
+        b.RemoveLabel(ar.RobotOM.IRobotLabelType.I_LT_BAR_MATERIAL)
+        b.RemoveLabel(ar.RobotOM.IRobotLabelType.I_LT_BAR_RELEASE)
+        with self.subTest(msg='section defaults to None'):
+            self.assertEqual(b.section, None)
+        with self.subTest(msg='material defaults to None'):
+            self.assertEqual(b.material, None)
+        with self.subTest(msg='release defaults to None'):
+            self.assertEqual(b.release, None)
 
 
 class TestBarServers(unittest.TestCase):

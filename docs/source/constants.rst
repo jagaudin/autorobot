@@ -14,129 +14,90 @@ they support iteration.
   commonly used enums do not have top-level shortcuts and need to be imported
   from the ``constants`` submodule.
 
-.. automodule:: autorobot.constants
-
 .. _const_types:
 
 Types
 -----
 
-.. autoclass:: autorobot.RProjType
-   :no-members:
+.. autodata:: autorobot.RProjType
+   :annotation:
 
-   .. autoattribute:: BUILDING
-      :annotation:  = IRobotProjectType.I_PT_BUILDING
-   .. autoattribute:: FRAME_2D
-      :annotation:  = IRobotProjectType.I_PT_FRAME_2D
-   .. autoattribute:: FRAME_3D
-      :annotation:  = IRobotProjectType.I_PT_FRAME_3D
-   .. autoattribute:: SHELL
-      :annotation:  = IRobotProjectType.I_PT_SHELL
-   .. autoattribute:: TRUSS_2D
-      :annotation:  = IRobotProjectType.I_PT_TRUSS_2D
-   .. autoattribute:: TRUSS_3D
-      :annotation:  = IRobotProjectType.I_PT_TRUSS_3D
+   * ``BUILDING``: ``IRobotProjectType.I_PT_BUILDING``
+   * ``FRAME_2D``: ``IRobotProjectType.I_PT_FRAME_2D``
+   * ``FRAME_3D``: ``IRobotProjectType.I_PT_FRAME_3D``
+   * ``SHELL``: ``IRobotProjectType.I_PT_SHELL``
+   * ``TRUSS_2D``: ``IRobotProjectType.I_PT_TRUSS_2D``
+   * ``TRUSS_3D``: ``IRobotProjectType.I_PT_TRUSS_3D``
 
-.. autoclass:: autorobot.RCaseNature
-   :no-members:
+.. autodata:: autorobot.RCaseNature
+   :annotation:
 
-   .. autoattribute:: PERM
-      :annotation:  = IRobotCaseNature.I_CN_PERMANENT
-   .. autoattribute:: IMPOSED
-      :annotation:  = IRobotCaseNature.I_CN_EXPLOATATION
-   .. caution:: The typo is **in Robot API**, not this document
-   .. autoattribute:: WIND
-      :annotation:  = IRobotCaseNature.I_CN_WIND
-   .. autoattribute:: SNOW
-      :annotation:  = IRobotCaseNature.I_CN_SNOW
-   .. autoattribute:: ACC
-      :annotation:  = IRobotCaseNature.I_CN_ACCIDENTAL
+   * ``PERM``: ``IRobotCaseNature.I_CN_PERMANENT``
+   * ``IMPOSED``: ``IRobotCaseNature.I_CN_EXPLOATATION``
+   * ``WIND``: ``IRobotCaseNature.I_CN_WIND``
+   * ``SNOW``: ``IRobotCaseNature.I_CN_SNOW``
+   * ``ACC``: ``IRobotCaseNature.I_CN_ACCIDENTAL``
 
-.. autoclass:: autorobot.RCaseType
-   :no-members:
+   .. caution:: The typo in ``I_CN_EXPLOATATION`` is **in Robot API**, not this document
 
-   .. autoattribute:: SIMPLE
-      :annotation:  = IRobotCaseType.I_CT_SIMPLE
-   .. autoattribute:: COMB
-      :annotation:  = IRobotCaseType.I_CT_COMBINATION
+.. autodata:: autorobot.RCaseType
+   :annotation:
 
-.. autoclass:: autorobot.RCombType
-   :no-members:
+   * ``SIMPLE``: ``IRobotCaseType.I_CT_SIMPLE``
+   * ``COMB``: ``IRobotCaseType.I_CT_COMBINATION``
 
-   .. autoattribute:: SLS
-      :annotation:  = IRobotCombinationType.I_CBT_SLS
-   .. autoattribute:: ULS
-      :annotation:  = IRobotCombinationType.I_CBT_ULS
+.. autodata:: autorobot.RCombType
+   :annotation:
 
-.. autoclass:: autorobot.RAnalysisType
-   :no-members:
+   * ``SLS``: ``IRobotCombinationType.I_CBT_SLS``
+   * ``ULS``: ``IRobotCombinationType.I_CBT_ULS``
 
-   .. autoattribute:: LINEAR
-      :annotation:  = IRobotCaseAnalizeType.I_CAT_STATIC_LINEAR
-   .. autoattribute:: NON_LIN
-      :annotation:  = IRobotCaseAnalizeType.I_CAT_STATIC_NONLINEAR
-   .. autoattribute:: COMB_LINEAR
-      :annotation:  = IRobotCaseAnalizeType.I_CAT_COMB
-   .. autoattribute:: COMB_NON_LIN
-      :annotation:  = IRobotCaseAnalizeType.I_CAT_COMB_NONLINEAR
+.. autodata:: autorobot.RAnalysisType
+   :annotation:
 
-.. autoclass:: ROType
-   :no-members:
+   * ``LINEAR``: ``IRobotCaseAnalizeType.I_CAT_STATIC_LINEAR``
+   * ``NON_LIN``: ``IRobotCaseAnalizeType.I_CAT_STATIC_NONLINEAR``
+   * ``COMB_LINEAR``: ``IRobotCaseAnalizeType.I_CAT_COMB``
+   * ``COMB_NON_LIN``: ``IRobotCaseAnalizeType.I_CAT_COMB_NONLINEAR``
 
-   .. autoattribute:: BAR
-      :annotation:  = IRobotObjectType.I_OT_BAR
-   .. autoattribute:: CASE
-      :annotation:  = IRobotObjectType.I_OT_CASE
-   .. autoattribute:: NODE
-      :annotation:  = IRobotObjectType.I_OT_NODE
+.. autodata:: autorobot.constants.ROType
+   :annotation:
 
-.. autoclass:: RLabelType
-   :no-members:
+   * ``BAR``: ``IRobotObjectType.I_OT_BAR``
+   * ``CASE``: ``IRobotObjectType.I_OT_CASE``
+   * ``NODE``: ``IRobotObjectType.I_OT_NODE``
 
-   .. autoattribute:: BAR_SECT
-      :annotation:  = IRobotLabelType.I_LT_BAR_SECTION
-   .. autoattribute:: MAT
-      :annotation:  = IRobotLabelType.I_LT_MATERIAL
-   .. autoattribute:: SUPPORT
-      :annotation:  = IRobotLabelType.I_LT_SUPPORT
-   .. autoattribute:: RELEASE
-      :annotation:  = IRobotLabelType.I_LT_BAR_RELEASE
+.. autodata:: autorobot.RLabelType
+   :annotation:
 
-.. autoclass:: RMatType
-   :no-members:
+   * ``BAR_SECT``: ``IRobotLabelType.I_LT_BAR_SECTION``
+   * ``MAT``: ``IRobotLabelType.I_LT_MATERIAL``
+   * ``SUPPORT``: ``IRobotLabelType.I_LT_SUPPORT``
+   * ``RELEASE``: ``IRobotLabelType.I_LT_BAR_RELEASE``
 
-   .. autoattribute:: STEEL
-      :annotation:  = IRobotMaterialType.I_MT_STEEL
-   .. autoattribute:: ALUM
-      :annotation:  = IRobotMaterialType.I_MT_ALUMINIUM
-   .. autoattribute:: TIMBER
-      :annotation:  = IRobotMaterialType.I_MT_TIMBER
-   .. autoattribute:: CONCRETE
-      :annotation:  = IRobotMaterialType.I_MT_CONCRETE
-   .. autoattribute:: OTHER
-      :annotation:  = IRobotMaterialType.I_MT_OTHER
+.. autodata:: autorobot.constants.RMatType
+   :annotation:
 
-.. autoclass:: RReleaseValues
-   :no-members:
+   * ``STEEL``: ``IRobotMaterialType.I_MT_STEEL``
+   * ``ALUM``: ``IRobotMaterialType.I_MT_ALUMINIUM``
+   * ``TIMBER``: ``IRobotMaterialType.I_MT_TIMBER``
+   * ``CONCRETE``: ``IRobotMaterialType.I_MT_CONCRETE``
+   * ``OTHER``: ``IRobotMaterialType.I_MT_OTHER``
 
-   .. autoattribute:: NONE
-      :annotation:  = IRobotBarEndReleaseValue.I_BERV_NONE
-   .. autoattribute:: STD
-      :annotation:  = IRobotBarEndReleaseValue.I_BERV_STD
-   .. autoattribute:: FIXED
-      :annotation:  = IRobotBarEndReleaseValue.I_BERV_FIXED
+.. autodata:: autorobot.constants.RReleaseValues
+   :annotation:
 
-.. autoclass:: RLoadType
-   :no-members:
+   * ``NONE``: ``IRobotBarEndReleaseValue.I_BERV_NONE``
+   * ``STD``: ``IRobotBarEndReleaseValue.I_BERV_STD``
+   * ``FIXED``: ``IRobotBarEndReleaseValue.I_BERV_FIXED``
 
-   .. autoattribute:: DEAD
-      :annotation:  = IRobotLoadRecordType.I_LRT_DEAD
-   .. autoattribute:: NODAL
-      :annotation:  = IRobotLoadRecordType.I_LRT_NODE_FORCE
-   .. autoattribute:: BAR_UDL
-      :annotation:  = IRobotLoadRecordType.I_LRT_BAR_UNIFORM
-   .. autoattribute:: BAR_PL
-      :annotation:  = IRobotLoadRecordType.I_LRT_BAR_FORCE_CONCENTRATED
+.. autodata:: autorobot.constants.RLoadType
+   :annotation:
+
+   * ``DEAD``: ``IRobotLoadRecordType.I_LRT_DEAD``
+   * ``NODAL``: ``IRobotLoadRecordType.I_LRT_NODE_FORCE``
+   * ``BAR_UDL``: ``IRobotLoadRecordType.I_LRT_BAR_UNIFORM``
+   * ``BAR_PL``: ``IRobotLoadRecordType.I_LRT_BAR_FORCE_CONCENTRATED``
 
 
 .. _const_bar_loads:
@@ -144,15 +105,61 @@ Types
 Bar loads
 ---------
 
-.. autoclass:: RDeadValues
-.. autoclass:: RBarPLValues
-.. autoclass:: RBarUDLValues
+.. autodata:: autorobot.constants.RDeadValues
+   :annotation:
 
+   * ``X``: ``IRobotDeadRecordValues.I_DRV_X``
+   * ``Y``: ``IRobotDeadRecordValues.I_DRV_Y``
+   * ``Z``: ``IRobotDeadRecordValues.I_DRV_Z``
+   * ``COEFF``: ``IRobotDeadRecordValues.I_DRV_COEFF``
+   * ``ENTIRE_STRUCT``: ``IRobotDeadRecordValues.I_DRV_ENTIRE_STRUCTURE``
+
+.. autodata:: autorobot.constants.RBarPLValues
+   :annotation:
+
+   * ``X``: ``IRobotBarForceConcentrateRecordValues.I_BFCRV_X``
+   * ``FX``: ``IRobotBarForceConcentrateRecordValues.I_BFCRV_FX``
+   * ``FY``: ``IRobotBarForceConcentrateRecordValues.I_BFCRV_FY``
+   * ``FZ``: ``IRobotBarForceConcentrateRecordValues.I_BFCRV_FZ``
+   * ``CX``: ``IRobotBarForceConcentrateRecordValues.I_BFCRV_CX``
+   * ``CY``: ``IRobotBarForceConcentrateRecordValues.I_BFCRV_CY``
+   * ``CZ``: ``IRobotBarForceConcentrateRecordValues.I_BFCRV_CZ``
+   * ``ALPHA``: ``IRobotBarForceConcentrateRecordValues.I_BFCRV_ALPHA``
+   * ``BETA``: ``IRobotBarForceConcentrateRecordValues.I_BFCRV_BETA``
+   * ``GAMMA``: ``IRobotBarForceConcentrateRecordValues.I_BFCRV_GAMMA``
+   * ``GEN_NODE``: ``IRobotBarForceConcentrateRecordValues.I_BFCRV_GENERATE_CALC_NODE``
+   * ``IS_LOC``: ``IRobotBarForceConcentrateRecordValues.I_BFCRV_LOC``
+   * ``IS_REL``: ``IRobotBarForceConcentrateRecordValues.I_BFCRV_REL``
+   * ``OFFSET_Y``: ``IRobotBarForceConcentrateRecordValues.I_BFCRV_OFFSET_Y``
+   * ``OFFSET_Z``: ``IRobotBarForceConcentrateRecordValues.I_BFCRV_OFFSET_Z``
+
+.. autodata:: autorobot.constants.RBarUDLValues
+   :annotation:
+
+   * ``FX``: ``IRobotBarUniformRecordValues.I_BURV_PX``
+   * ``FY``: ``IRobotBarUniformRecordValues.I_BURV_PY``
+   * ``FZ``: ``IRobotBarUniformRecordValues.I_BURV_PZ``
+   * ``ALPHA``: ``IRobotBarUniformRecordValues.I_BURV_ALPHA``
+   * ``BETA``: ``IRobotBarUniformRecordValues.I_BURV_BETA``
+   * ``GAMMA``: ``IRobotBarUniformRecordValues.I_BURV_GAMMA``
+   * ``IS_LOC``: ``IRobotBarUniformRecordValues.I_BURV_LOCAL``
+   * ``IS_PROJ``: ``IRobotBarUniformRecordValues.I_BURV_PROJECTION``
+   * ``IS_REL``: ``IRobotBarUniformRecordValues.I_BURV_RELATIVE``
+   * ``OFFSET_Y``: ``IRobotBarUniformRecordValues.I_BURV_OFFSET_Y``
+   * ``OFFSET_Z``: ``IRobotBarUniformRecordValues.I_BURV_OFFSET_Z``
 
 .. _const_license:
 
 License
 -------
 
-.. autoclass:: RLicense
-.. autoclass:: RLicenseStatus
+.. autodata:: autorobot.constants.RLicense
+   :annotation:
+
+   * ``LOCAL``: ``IRobotLicenseEntitlement.I_LE_LOCAL_SOLVE``
+   * ``CLOUD``: ``IRobotLicenseEntitlement.I_LE_CLOUD_SOLVE``
+
+.. autodata:: autorobot.constants.RLicenseStatus
+   :annotation:
+
+   * ``OK``: ``IRobotLicenseEntitlementStatus.I_LES_ENTITLED``

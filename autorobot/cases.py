@@ -53,8 +53,9 @@ class ExtendedSimpleCase(Capsule):
             rec = self.get(i)
             load = {'Type': rec.Type, 'Description': rec.Description}
             if self.load_type_values.get(rec.Type, None):
-                for k in self.load_type_values[rec.Type]:
-                    load[k.name] = rec.GetValue(k)
+                index = self.load_type_values[rec.Type].custom_index
+                for k, v in index.items():
+                    load[k] = self.get_record_value(rec, v)
             _loads.append(load)
         return _loads
 
@@ -71,10 +72,10 @@ class ExtendedSimpleCase(Capsule):
         rec = IRobotLoadRecord(self.Records.Create(RLoadType.DEAD))
         rec.Objects.FromText(str(s))
         rec.Description = desc
-        rec.SetValue(RDeadValues.Z, -1.)
-        rec.SetValue(RDeadValues.COEFF, factor)
+        self.set_record_value(rec, RDeadValues.Z, -1.)
+        self.set_record_value(rec, RDeadValues.COEFF, factor)
         if s.lower() == 'all':
-            rec.SetValue(RDeadValues.ENTIRE_STRUCT, True)
+            self.set_record_value(rec, RDeadValues.ENTIRE_STRUCT, True)
 
     def add_bar_udl(self, s, fx=0., fy=0., fz=0.,
                     alpha=0., beta=0., gamma=0.,
@@ -111,7 +112,7 @@ class ExtendedSimpleCase(Capsule):
             RBarUDLValues.OFFSET_Z: offset_z,
         }
         for k, v in rec_values.items():
-            rec.SetValue(k, v)
+            self.set_record_value(rec, k, v)
 
     def add_bar_pl(self, s, x=0., fx=0., fy=0., fz=0., alpha=0.,
                    beta=0., gamma=0., is_local=False, is_relative=False,
@@ -147,7 +148,7 @@ class ExtendedSimpleCase(Capsule):
             RBarPLValues.OFFSET_Z: offset_z,
         }
         for k, v in rec_values.items():
-            rec.SetValue(k, v)
+            self.set_record_value(rec, k, v)
 
     def delete(self, n):
         """Deletes the load record at index n.
@@ -162,6 +163,38 @@ class ExtendedSimpleCase(Capsule):
         :param int n: The load record number
         """
         return IRobotLoadRecord(self.Records.Get(n))
+
+    @staticmethod
+    def get_record_value(record, key):
+        """
+        Gets a value from a load record.
+
+        :param obj record: A load record
+        :param obj key: The key for the value to get (an Enum member)
+        :return: The value contained in the record
+
+        Because the record types are varied, the ``GetValue`` method for the
+        records takes an integer argument and not an Enum-like type. Since v3,
+        PythonNet doesn't convert Enum to int automatically, hence this helper
+        method to cast the Enum to int.
+        """
+        return record.GetValue(int(key))
+
+    @staticmethod
+    def set_record_value(record, key, value):
+        """
+        Sets a value on a load record.
+
+        :param obj record: A load record
+        :param obj key: The key for the value to be set (an Enum member)
+        :param float value: The value to be set
+
+        Because the record types are varied, the ``SetValue`` method for the
+        records takes an integer argument and not an Enum-like type. Since v3,
+        PythonNet doesn't convert Enum to int automatically, hence this helper
+        method to cast the Enum to int.
+        """
+        record.SetValue(int(key), value)
 
 
 class ExtendedCaseServer(ExtendedServer):

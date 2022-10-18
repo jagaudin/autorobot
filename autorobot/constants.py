@@ -1,4 +1,4 @@
-from enum import IntEnum
+from .extensions import EnumCapsule
 
 from .robotom import RobotOM  # NOQA F401
 from RobotOM import (
@@ -21,186 +21,270 @@ from RobotOM import (
 )
 
 
-class RProjType(IntEnum):
-    """
-    Aliases for common project types. For more details, see
-    ``IRobotProjectType``.
-    """
-    BUILDING = IRobotProjectType.I_PT_BUILDING
-    FRAME_2D = IRobotProjectType.I_PT_FRAME_2D
-    FRAME_3D = IRobotProjectType.I_PT_FRAME_3D
-    SHELL = IRobotProjectType.I_PT_SHELL
-    TRUSS_2D = IRobotProjectType.I_PT_TRUSS_2D
-    TRUSS_3D = IRobotProjectType.I_PT_TRUSS_3D
+__all__ = [
+    'RAnalysisType',
+    'RBarPLValues',
+    'RBarUDLValues',
+    'RCaseNature',
+    'RCaseType',
+    'RCombType',
+    'RDeadValues',
+    'RLabelType',
+    'RLicense',
+    'RLicenseStatus',
+    'RLoadType',
+    'RMatType',
+    'ROType',
+    'RProjType',
+    'RQuitOpt',
+    'RReleaseValues',
+]
 
 
-class RQuitOpt(IntEnum):
-    """
-    Aliases for quit options. For more details, see ``IRobotQuitOption``.
-    """
-    DISCARD = IRobotQuitOption.I_QO_DISCARD_CHANGES
-    PROMPT = IRobotQuitOption.I_QO_PROMPT_TO_SAVE_CHANGES
-    SAVE = IRobotQuitOption.I_QO_SAVE_CHANGES
+RProjType = EnumCapsule(
+    IRobotProjectType,
+    {
+        'BUILDING': 'I_PT_BUILDING',
+        'FRAME_2D': 'I_PT_FRAME_2D',
+        'FRAME_3D': 'I_PT_FRAME_3D',
+        'SHELL': 'I_PT_SHELL',
+        'TRUSS_2D': 'I_PT_TRUSS_2D',
+        'TRUSS_3D': 'I_PT_TRUSS_3D'
+    }
+)
+"""
+Aliases for common project types. For more details, see
+``IRobotProjectType``.
+"""
 
 
-class ROType(IntEnum):
-    """
-    Aliases for object types. For more details, see ``IRobotObjectType``.
-    """
-    BAR = IRobotObjectType.I_OT_BAR
-    CASE = IRobotObjectType.I_OT_CASE
-    NODE = IRobotObjectType.I_OT_NODE
+RQuitOpt = EnumCapsule(
+    IRobotQuitOption,
+    {
+        'DISCARD': 'I_QO_DISCARD_CHANGES',
+        'PROMPT': 'I_QO_PROMPT_TO_SAVE_CHANGES',
+        'SAVE': 'I_QO_SAVE_CHANGES'
+    }
+)
+"""
+Aliases for quit options. For more details, see ``IRobotQuitOption``.
+"""
 
 
-class RLabelType:
-    """
-    Aliases for label types. For more details, see ``IRobotLabelType``.
-    """
-    BAR_SECT = IRobotLabelType.I_LT_BAR_SECTION
-    MAT = IRobotLabelType.I_LT_MATERIAL
-    SUPPORT = IRobotLabelType.I_LT_SUPPORT
-    RELEASE = IRobotLabelType.I_LT_BAR_RELEASE
+ROType = EnumCapsule(
+    IRobotObjectType,
+    {
+        'BAR': 'I_OT_BAR',
+        'CASE': 'I_OT_CASE',
+        'NODE': 'I_OT_NODE'
+    }
+)
+"""
+Aliases for object types. For more details, see ``IRobotObjectType``.
+"""
 
 
-class RCaseNature(IntEnum):
-    """
-    Aliases for load case case nature. For more details, see
-    ``IRobotCaseNature``.
-    """
-    PERM = IRobotCaseNature.I_CN_PERMANENT
-    IMPOSED = IRobotCaseNature.I_CN_EXPLOATATION
-    WIND = IRobotCaseNature.I_CN_WIND
-    SNOW = IRobotCaseNature.I_CN_SNOW
-    ACC = IRobotCaseNature.I_CN_ACCIDENTAL
+RLabelType = EnumCapsule(
+    IRobotLabelType,
+    {
+        'BAR_SECT': 'I_LT_BAR_SECTION',
+        'MAT': 'I_LT_MATERIAL',
+        'SUPPORT': 'I_LT_SUPPORT',
+        'RELEASE': 'I_LT_BAR_RELEASE'
+    }
+)
+"""
+Aliases for label types. For more details, see ``IRobotLabelType``.
+"""
 
 
-class RCaseType(IntEnum):
-    """
-    Aliases for case type. For more details, see ``IRobotCaseType``.
-    """
-    SIMPLE = IRobotCaseType.I_CT_SIMPLE
-    COMB = IRobotCaseType.I_CT_COMBINATION
+RCaseNature = EnumCapsule(
+    IRobotCaseNature,
+    {
+        'PERM': 'I_CN_PERMANENT',
+        'IMPOSED': 'I_CN_EXPLOATATION',
+        'WIND': 'I_CN_WIND',
+        'SNOW': 'I_CN_SNOW',
+        'ACC': 'I_CN_ACCIDENTAL'
+    }
+)
+"""
+Aliases for load case case nature. For more details, see
+``IRobotCaseNature``.
+"""
 
 
-class RCombType(IntEnum):
-    """
-    Aliases for load combination type. For more details, see
-    ``IRobotCombinationType``.
-    """
-    SLS = IRobotCombinationType.I_CBT_SLS
-    ULS = IRobotCombinationType.I_CBT_ULS
+RCaseType = EnumCapsule(
+    IRobotCaseType,
+    {
+        'SIMPLE': 'I_CT_SIMPLE',
+        'COMB': 'I_CT_COMBINATION'
+    }
+)
+"""
+Aliases for case type. For more details, see ``IRobotCaseType``.
+"""
 
 
-class RAnalysisType(IntEnum):
-    """
-    Aliases for analysis type. For more details, see
-    ``IRobotCaseAnalizeType``.
-
-    .. caution:: The typo is **in Robot API**, not this document.
-    """
-    LINEAR = IRobotCaseAnalizeType.I_CAT_STATIC_LINEAR
-    NON_LIN = IRobotCaseAnalizeType.I_CAT_STATIC_NONLINEAR
-    COMB_LINEAR = IRobotCaseAnalizeType.I_CAT_COMB
-    COMB_NON_LIN = IRobotCaseAnalizeType.I_CAT_COMB_NONLINEAR
-
-
-class RLoadType(IntEnum):
-    """
-    Aliases for load record types. For more details, see
-    ``IRobotLoadRecordType``.
-    """
-    DEAD = IRobotLoadRecordType.I_LRT_DEAD
-    NODAL = IRobotLoadRecordType.I_LRT_NODE_FORCE
-    BAR_UDL = IRobotLoadRecordType.I_LRT_BAR_UNIFORM
-    BAR_PL = IRobotLoadRecordType.I_LRT_BAR_FORCE_CONCENTRATED
+RCombType = EnumCapsule(
+    IRobotCombinationType,
+    {
+        'SLS': 'I_CBT_SLS',
+        'ULS': 'I_CBT_ULS'
+    }
+)
+"""
+Aliases for load combination type. For more details, see
+``IRobotCombinationType``.
+"""
 
 
-class RMatType(IntEnum):
-    """
-    Aliases for material type. For more details, see
-    ``IRobotMaterialType``.
-    """
-    STEEL = IRobotMaterialType.I_MT_STEEL
-    ALUM = IRobotMaterialType.I_MT_ALUMINIUM
-    TIMBER = IRobotMaterialType.I_MT_TIMBER
-    CONCRETE = IRobotMaterialType.I_MT_CONCRETE
-    OTHER = IRobotMaterialType.I_MT_OTHER
+RAnalysisType = EnumCapsule(
+    IRobotCaseAnalizeType,
+    {
+        'LINEAR': 'I_CAT_STATIC_LINEAR',
+        'NON_LIN': 'I_CAT_STATIC_NONLINEAR',
+        'COMB_LINEAR': 'I_CAT_COMB',
+        'COMB_NON_LIN': 'I_CAT_COMB_NONLINEAR'
+    }
+)
+"""
+Aliases for analysis type. For more details, see
+``IRobotCaseAnalizeType``.
+
+.. caution:: The typo is **in Robot API**, not this document.
+"""
 
 
-class RReleaseValues(IntEnum):
-    """
-    Aliases for bar end releases' values. For more details, see
-    ``IRobotBarEndReleaseValue``.
-    """
-    NONE = IRobotBarEndReleaseValue.I_BERV_NONE
-    STD = IRobotBarEndReleaseValue.I_BERV_STD
-    FIXED = IRobotBarEndReleaseValue.I_BERV_FIXED
+RLoadType = EnumCapsule(
+    IRobotLoadRecordType,
+    {
+        'DEAD': 'I_LRT_DEAD',
+        'NODAL': 'I_LRT_NODE_FORCE',
+        'BAR_UDL': 'I_LRT_BAR_UNIFORM',
+        'BAR_PL': 'I_LRT_BAR_FORCE_CONCENTRATED'
+    }
+)
+"""
+Aliases for load record types. For more details, see
+``IRobotLoadRecordType``.
+"""
 
 
-class RDeadValues(IntEnum):
-    """
-    Aliases for dead loads values. For more details, see
-    ``IRobotDeadRecordValues``.
-    """
-    X = IRobotDeadRecordValues.I_DRV_X
-    Y = IRobotDeadRecordValues.I_DRV_Y
-    Z = IRobotDeadRecordValues.I_DRV_Z
-    COEFF = IRobotDeadRecordValues.I_DRV_COEFF
-    ENTIRE_STRUCT = IRobotDeadRecordValues.I_DRV_ENTIRE_STRUCTURE
+RMatType = EnumCapsule(
+    IRobotMaterialType,
+    {
+        'STEEL': 'I_MT_STEEL',
+        'ALUM': 'I_MT_ALUMINIUM',
+        'TIMBER': 'I_MT_TIMBER',
+        'CONCRETE': 'I_MT_CONCRETE',
+        'OTHER': 'I_MT_OTHER'
+    }
+)
+"""
+Aliases for material type. For more details, see
+``IRobotMaterialType``.
+"""
 
 
-class RBarUDLValues(IntEnum):
-    """
-    Aliases for bars' uniform distributed loads. For more details, see
-    ``IRobotBarUniformRecordValues``.
-    """
-    FX = IRobotBarUniformRecordValues.I_BURV_PX
-    FY = IRobotBarUniformRecordValues.I_BURV_PY
-    FZ = IRobotBarUniformRecordValues.I_BURV_PZ
-    ALPHA = IRobotBarUniformRecordValues.I_BURV_ALPHA
-    BETA = IRobotBarUniformRecordValues.I_BURV_BETA
-    GAMMA = IRobotBarUniformRecordValues.I_BURV_GAMMA
-    IS_LOC = IRobotBarUniformRecordValues.I_BURV_LOCAL
-    IS_PROJ = IRobotBarUniformRecordValues.I_BURV_PROJECTION
-    IS_REL = IRobotBarUniformRecordValues.I_BURV_RELATIVE
-    OFFSET_Y = IRobotBarUniformRecordValues.I_BURV_OFFSET_Y
-    OFFSET_Z = IRobotBarUniformRecordValues.I_BURV_OFFSET_Z
+RReleaseValues = EnumCapsule(
+    IRobotBarEndReleaseValue,
+    {
+        'NONE': 'I_BERV_NONE',
+        'STD': 'I_BERV_STD',
+        'FIXED': 'I_BERV_FIXED'
+    }
+)
+"""
+Aliases for bar end releases' values. For more details, see
+``IRobotBarEndReleaseValue``.
+"""
 
 
-class RBarPLValues(IntEnum):
-    """
-    Aliases for bars' point loads. For more details, see
-    ``IRobotBarForceConcentrateRecordValues``.
-    """
-    X = IRobotBarForceConcentrateRecordValues.I_BFCRV_X
-    FX = IRobotBarForceConcentrateRecordValues.I_BFCRV_FX
-    FY = IRobotBarForceConcentrateRecordValues.I_BFCRV_FY
-    FZ = IRobotBarForceConcentrateRecordValues.I_BFCRV_FZ
-    CX = IRobotBarForceConcentrateRecordValues.I_BFCRV_CX
-    CY = IRobotBarForceConcentrateRecordValues.I_BFCRV_CY
-    CZ = IRobotBarForceConcentrateRecordValues.I_BFCRV_CZ
-    ALPHA = IRobotBarForceConcentrateRecordValues.I_BFCRV_ALPHA
-    BETA = IRobotBarForceConcentrateRecordValues.I_BFCRV_BETA
-    GAMMA = IRobotBarForceConcentrateRecordValues.I_BFCRV_GAMMA
-    GEN_NODE = IRobotBarForceConcentrateRecordValues.I_BFCRV_GENERATE_CALC_NODE
-    IS_LOC = IRobotBarForceConcentrateRecordValues.I_BFCRV_LOC
-    IS_REL = IRobotBarForceConcentrateRecordValues.I_BFCRV_REL
-    OFFSET_Y = IRobotBarForceConcentrateRecordValues.I_BFCRV_OFFSET_Y
-    OFFSET_Z = IRobotBarForceConcentrateRecordValues.I_BFCRV_OFFSET_Z
+RDeadValues = EnumCapsule(
+    IRobotDeadRecordValues,
+    {
+        'X': 'I_DRV_X',
+        'Y': 'I_DRV_Y',
+        'Z': 'I_DRV_Z',
+        'COEFF': 'I_DRV_COEFF',
+        'ENTIRE_STRUCT': 'I_DRV_ENTIRE_STRUCTURE'
+    }
+)
+"""
+Aliases for dead loads values. For more details, see
+``IRobotDeadRecordValues``.
+"""
 
 
-class RLicense(IntEnum):
-    """
-    Aliases for license entitlement. For more details see
-    ``IRobotLicenseEntitlement``.
-    """
-    LOCAL = IRobotLicenseEntitlement.I_LE_LOCAL_SOLVE
-    CLOUD = IRobotLicenseEntitlement.I_LE_CLOUD_SOLVE
+RBarUDLValues = EnumCapsule(
+    IRobotBarUniformRecordValues,
+    {
+        'FX': 'I_BURV_PX',
+        'FY': 'I_BURV_PY',
+        'FZ': 'I_BURV_PZ',
+        'ALPHA': 'I_BURV_ALPHA',
+        'BETA': 'I_BURV_BETA',
+        'GAMMA': 'I_BURV_GAMMA',
+        'IS_LOC': 'I_BURV_LOCAL',
+        'IS_PROJ': 'I_BURV_PROJECTION',
+        'IS_REL': 'I_BURV_RELATIVE',
+        'OFFSET_Y': 'I_BURV_OFFSET_Y',
+        'OFFSET_Z': 'I_BURV_OFFSET_Z'
+    }
+)
+"""
+Aliases for bars' uniform distributed loads. For more details, see
+``IRobotBarUniformRecordValues``.
+"""
 
 
-class RLicenseStatus(IntEnum):
-    """
-    Aliases for license status. For more details see
-    ``IRobotLicenseEntitlementStaus``
-    """
-    OK = IRobotLicenseEntitlementStatus.I_LES_ENTITLED
+RBarPLValues = EnumCapsule(
+    IRobotBarForceConcentrateRecordValues,
+    {
+        'X': 'I_BFCRV_X',
+        'FX': 'I_BFCRV_FX',
+        'FY': 'I_BFCRV_FY',
+        'FZ': 'I_BFCRV_FZ',
+        'CX': 'I_BFCRV_CX',
+        'CY': 'I_BFCRV_CY',
+        'CZ': 'I_BFCRV_CZ',
+        'ALPHA': 'I_BFCRV_ALPHA',
+        'BETA': 'I_BFCRV_BETA',
+        'GAMMA': 'I_BFCRV_GAMMA',
+        'GEN_NODE': 'I_BFCRV_GENERATE_CALC_NODE',
+        'IS_LOC': 'I_BFCRV_LOC',
+        'IS_REL': 'I_BFCRV_REL',
+        'OFFSET_Y': 'I_BFCRV_OFFSET_Y',
+        'OFFSET_Z': 'I_BFCRV_OFFSET_Z'
+    }
+)
+"""
+Aliases for bars' point loads. For more details, see
+``IRobotBarForceConcentrateRecordValues``.
+"""
+
+
+RLicense = EnumCapsule(
+    IRobotLicenseEntitlement,
+    {
+        'LOCAL': 'I_LE_LOCAL_SOLVE',
+        'CLOUD': 'I_LE_CLOUD_SOLVE'
+    }
+)
+"""
+Aliases for license entitlement. For more details see
+``IRobotLicenseEntitlement``.
+"""
+
+
+RLicenseStatus = EnumCapsule(
+    IRobotLicenseEntitlementStatus,
+    {
+        'OK': 'I_LES_ENTITLED'
+    }
+)
+"""
+Aliases for license status. For more details see
+``IRobotLicenseEntitlementStatus``
+"""

@@ -49,11 +49,13 @@ class TestAppOperations(TestCase):
         with TemporaryDirectory() as d:
             path = os.path.join(d, 'test_save.rtd')
             rb = ar.initialize(visible=False, interactive=False)
-            for pt in ar.RProjType:
+
+            for pt in ar.RProjType.custom_index.values():
                 with self.subTest(msg='new', proj_type=pt):
                     time.sleep(2)
                     rb.new(pt)
                     self.assertEqual(rb.Project.Type, pt)
+                    rb.close()
                 # Wait for Robot to avoid throwing a server error
                 time.sleep(.5)
 
@@ -64,10 +66,12 @@ class TestAppOperations(TestCase):
                     rb.new(pt)
                     self.assertEqual(
                         rb.Project.Type, ar.synonyms.synonyms[pt])
+                    rb.close()
                     # Wait for Robot to avoid throwing a server error
                     time.sleep(.5)
 
             with self.subTest(msg="save_As"):
+                rb.new('SHELL')
                 rb.save_as(path)
                 self.assertTrue(os.path.exists(path))
 
