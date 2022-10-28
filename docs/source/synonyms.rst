@@ -60,6 +60,9 @@ This comes handy when creating load cases' combinations in particular.
 
    The predefined synonyms are:
 
+    * ``'BAR'``: :py:class:`.ROType` ``.BAR``
+    * ``'NODE'``: :py:class:`.ROType` ``.NODE``
+
     * ``'BUILDING'``: :py:class:`.RProjType` ``.BUILDING``
     * ``'FRAME_2D'``: :py:class:`.RProjType` ``.FRAME_2D``
     * ``'FRAME_3D'``: :py:class:`.RProjType` ``.FRAME_3D``

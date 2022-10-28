@@ -6,6 +6,7 @@ from .cases import ExtendedCaseServer
 from .materials import ExtendedMaterialServer
 from .nodes import ExtendedNodeServer
 from .sections import ExtendedSectionServer
+from .selections import ExtendedSelectionFactory
 from .supports import ExtendedSupportServer
 from .releases import ExtendedReleaseServer
 
@@ -26,6 +27,8 @@ from .robotom import RobotOM  # NOQA F401
 from RobotOM import (
     RobotApplication,
 )
+
+from . import geometry
 
 # Get a reference to the module instance
 _this = sys.modules[__name__]
@@ -73,6 +76,14 @@ class ExtendedRobotApp:
         return ExtendedCaseServer(self.app.Project.Structure.Cases, self)
 
     @property
+    def geom(self):
+        """
+        Provides a handle to geometry functions defined in the ``geometry``
+        sub-module.
+        """
+        return geometry
+
+    @property
     def materials(self):
         """
         Gets the material label server as an instance of
@@ -116,9 +127,9 @@ class ExtendedRobotApp:
     def selections(self):
         """
         Gets the project's selection factory as an instance of
-        ``IRobotSelectionFactory``.
+        :py:class:`.ExtendedSelectionFactory`.
         """
-        return self.app.Project.Structure.Selections
+        return ExtendedSelectionFactory(self.app.Project.Structure.Selections)
 
     @property
     def structure(self):

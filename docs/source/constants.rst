@@ -87,8 +87,22 @@ Types
       :annotation:  = IRobotObjectType.I_OT_BAR
    .. autoattribute:: CASE
       :annotation:  = IRobotObjectType.I_OT_CASE
+   .. autoattribute:: FE
+      :annotation:  = IRobotObjectType.I_OT_FINITE_ELEMENT
+   .. autoattribute:: GEOMETRY
+      :annotation:  = IRobotObjectType.I_OT_GEOMETRY
+   .. autoattribute:: GROUP
+      :annotation:  = IRobotObjectType.I_OT_FAMILY
    .. autoattribute:: NODE
       :annotation:  = IRobotObjectType.I_OT_NODE
+   .. autoattribute:: OBJECT
+      :annotation:  = IRobotObjectType.I_OT_OBJECT
+   .. autoattribute:: PANEL
+      :annotation:  = IRobotObjectType.I_OT_PANEL
+   .. autoattribute:: UNDEFINED
+      :annotation:  = IRobotObjectType.I_OT_UNDEFINED
+   .. autoattribute:: VOLUME
+      :annotation:  = IRobotObjectType.I_OT_VOLUME
 
 .. autoclass:: RLabelType
    :no-members:
@@ -147,6 +161,20 @@ Bar loads
 .. autoclass:: RDeadValues
 .. autoclass:: RBarPLValues
 .. autoclass:: RBarUDLValues
+
+
+.. _const_editing:
+
+Editing
+-------
+
+.. autoclass:: REditOpt
+   :no-members:
+
+   .. autoattribute:: COPY
+      :annotation:  = IRobotTranslateOptions.COPY
+   .. autoattribute:: MOVE
+      :annotation:  = IRobotTranslateOptions.MOVE
 
 
 .. _const_license:

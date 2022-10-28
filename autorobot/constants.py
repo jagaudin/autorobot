@@ -18,6 +18,7 @@ from RobotOM import (
     IRobotObjectType,
     IRobotProjectType,
     IRobotQuitOption,
+    IRobotTranslateOptions,
 )
 
 
@@ -49,7 +50,14 @@ class ROType(IntEnum):
     """
     BAR = IRobotObjectType.I_OT_BAR
     CASE = IRobotObjectType.I_OT_CASE
+    FE = IRobotObjectType.I_OT_FINITE_ELEMENT
+    GEOMETRY = IRobotObjectType.I_OT_GEOMETRY
+    GROUP = IRobotObjectType.I_OT_FAMILY
     NODE = IRobotObjectType.I_OT_NODE
+    OBJECT = IRobotObjectType.I_OT_OBJECT
+    PANEL = IRobotObjectType.I_OT_PANEL
+    UNDEFINED = IRobotObjectType.I_OT_UNDEFINED
+    VOLUME = IRobotObjectType.I_OT_VOLUME
 
 
 class RLabelType:
@@ -187,6 +195,14 @@ class RBarPLValues(IntEnum):
     IS_REL = IRobotBarForceConcentrateRecordValues.I_BFCRV_REL
     OFFSET_Y = IRobotBarForceConcentrateRecordValues.I_BFCRV_OFFSET_Y
     OFFSET_Z = IRobotBarForceConcentrateRecordValues.I_BFCRV_OFFSET_Z
+
+
+class REditOpt(IntEnum):
+    """
+    Aliases for edit options. For more details, see ``IRobotTranslateOptions``.
+    """
+    COPY = IRobotTranslateOptions.I_TO_COPY
+    MOVE = IRobotTranslateOptions.I_TO_MOVE
 
 
 class RLicense(IntEnum):

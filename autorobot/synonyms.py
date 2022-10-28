@@ -1,11 +1,18 @@
+import numpy as np
+
 from .constants import (
+    RAnalysisType,
     RCaseNature,
     RCombType,
+    ROType,
     RProjType,
-    RAnalysisType
 )
 
+
 synonyms = {
+    'BAR': ROType.BAR,
+    'NODE': ROType.NODE,
+
     'BUILDING': RProjType.BUILDING,
     'FRAME_2D': RProjType.FRAME_2D,
     'FRAME_3D': RProjType.FRAME_3D,
@@ -37,5 +44,5 @@ the ``synonyms`` dictionary.
 """
 
 # Add the original constants to the dictionary
-for e in (RCaseNature, RCombType, RProjType, RAnalysisType):
+for e in (RAnalysisType, RCaseNature, RCombType, ROType, RProjType):
     synonyms.update({a: a.value for a in e})
