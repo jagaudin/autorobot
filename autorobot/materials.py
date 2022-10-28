@@ -8,6 +8,8 @@ from .constants import (
     ROType,
 )
 
+from .decorators import accepts_name_as_attribute
+
 from .robotom import RobotOM  # NOQA F401
 from RobotOM import (
     IRobotLabel,
@@ -91,15 +93,22 @@ class ExtendedMaterialServer(ExtendedLabelServer):
             self.Store(label)
             return self.get(name)
 
-    def set(self, s, name):
+    def get(self, name):
+        """Loads the given material if necessary and returns it."""
+        if not self.Exist(self._ltype, name):
+            self.load(name)
+        return super().get(name)
+
+    @accepts_name_as_attribute
+    def set(self, name, s):
         """Sets the material for a selection of bars.
 
-        :param str s: A valid selection string
         :param str name: The material name
+        :param str s: A valid selection string
         """
-        sel = self.app.selections.Create(ROType.BAR)
+        sel = self._app.selections.Create(ROType.BAR)
         sel.FromText(str(s))
-        with self.app.bars as bars:
+        with self._app.bars as bars:
             bars.SetLabel(sel, self._ltype, str(name))
 
     def get_db_names(self, func=lambda s: True):
@@ -108,7 +117,7 @@ class ExtendedMaterialServer(ExtendedLabelServer):
         :param function func: A filter function
         :return: The list of material names in the database
         """
-        db = self.app.Project.Preferences.Materials
+        db = self._app.Project.Preferences.Materials
         names = IRobotNamesArray(db.GetAll())
         names = [names.Get(i) for i in range(1, names.Count + 1)]
         return [name for name in names if func(name)]

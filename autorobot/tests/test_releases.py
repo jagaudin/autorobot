@@ -68,7 +68,7 @@ class TestExtendedReleaseServer(unittest.TestCase):
 
     def test_set(self):
         self.rb.releases.create('test_set', '000011', '110000')
-        self.rb.releases.set(self.b.Number, 'test_set')
+        self.rb.releases.set('test_set', self.b.Number)
         self.assertEqual(self.b.release.Name, 'test_set')
         self.rb.releases.delete('test_set')
 

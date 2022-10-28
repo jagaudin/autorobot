@@ -31,9 +31,9 @@ class TestExtendedBar(unittest.TestCase):
         sect = self.rb.sections.load('UB 305x165x40')
         mat = self.rb.materials.load('STEEL')
         release = self.rb.releases.create('UX-UZ', '011111', '110111')
-        self.rb.bars.set_section(b.Number, sect)
-        self.rb.bars.set_material(b.Number, mat)
-        self.rb.bars.set_release(b.Number, release)
+        self.rb.bars.set_section(sect, b.Number)
+        self.rb.bars.set_material(mat, b.Number)
+        self.rb.bars.set_release(release, b.Number)
         with self.subTest(msg='section getter'):
             self.assertEqual(b.section.Name, 'UB 305x165x40')
         with self.subTest(msg='material getter'):
@@ -96,7 +96,7 @@ class TestBarServers(unittest.TestCase):
             b = self.rb.bars.create(n1, n2)
             self.assertEqual(b.StartNode, n1.Number)
             self.assertEqual(b.EndNode, n2.Number)
-            self.assertAlmostEqual(b.Length, np.sqrt(np.sum((a1 - a2) ** 2)))
+            self.assertAlmostEqual(b.length, np.sqrt(np.sum((a1 - a2) ** 2)))
 
         with self.subTest(msg='bars.create (IRobotNode)'):
             a1, a2 = random((3,)), random((3,))
@@ -107,7 +107,7 @@ class TestBarServers(unittest.TestCase):
             b = self.rb.bars.create(n1.node, n2.node)
             self.assertEqual(b.StartNode, n1.Number)
             self.assertEqual(b.EndNode, n2.Number)
-            self.assertAlmostEqual(b.Length, np.sqrt(np.sum((a1 - a2) ** 2)))
+            self.assertAlmostEqual(b.length, np.sqrt(np.sum((a1 - a2) ** 2)))
 
         with self.subTest(msg='bars.create (int)'):
             a1, a2 = random((3,)), random((3,))
@@ -118,7 +118,7 @@ class TestBarServers(unittest.TestCase):
             b = self.rb.bars.create(n1, n2)
             self.assertEqual(b.StartNode, n1)
             self.assertEqual(b.EndNode, n2)
-            self.assertAlmostEqual(b.Length, np.sqrt(np.sum((a1 - a2) ** 2)))
+            self.assertAlmostEqual(b.length, np.sqrt(np.sum((a1 - a2) ** 2)))
 
         with self.subTest(msg='overwrite'):
             a1, a2 = random((3,)), random((3,))
@@ -183,7 +183,7 @@ class TestBarServers(unittest.TestCase):
         n1 = self.rb.nodes.create(*random((3,)))
         n2 = self.rb.nodes.create(*random((3,)))
         b = self.rb.bars.create(n1, n2)
-        self.rb.bars.set_section('all', 'Rnd10')
+        self.rb.bars.set_section('Rnd10', 'all')
         for b in self.rb.bars.select('all'):
             label = ar.RobotOM.IRobotLabel(
                 b.GetLabel(ar.RobotOM.IRobotLabelType.I_LT_BAR_SECTION))
@@ -194,7 +194,7 @@ class TestBarServers(unittest.TestCase):
         n1 = self.rb.nodes.create(*random((3,)))
         n2 = self.rb.nodes.create(*random((3,)))
         b = self.rb.bars.create(n1, n2)
-        self.rb.bars.set_material('all', 'STEEL')
+        self.rb.bars.set_material('STEEL', 'all')
         for b in self.rb.bars.select('all'):
             label = ar.RobotOM.IRobotLabel(
                 b.GetLabel(ar.RobotOM.IRobotLabelType.I_LT_MATERIAL))
@@ -205,7 +205,7 @@ class TestBarServers(unittest.TestCase):
         n1 = self.rb.nodes.create(*random((3,)))
         n2 = self.rb.nodes.create(*random((3,)))
         b = self.rb.bars.create(n1, n2)
-        self.rb.bars.set_release('all', 'UX-UZ')
+        self.rb.bars.set_release('UX-UZ', 'all')
         for b in self.rb.bars.select('all'):
             label = ar.RobotOM.IRobotLabel(
                 b.GetLabel(ar.RobotOM.IRobotLabelType.I_LT_BAR_RELEASE))

@@ -12,6 +12,7 @@ from .extensions import (
 )
 from .nodes import ExtendedNode
 from .errors import AutoRobotValueError
+from .decorators import accepts_name_as_attribute
 
 from .robotom import RobotOM  # NOQA F401
 from RobotOM import (
@@ -185,13 +186,14 @@ class ExtendedSupportServer(ExtendedLabelServer):
         self.StoreWithName(label, name)
         return self.get(name)
 
-    def set(self, s, name):
+    @accepts_name_as_attribute
+    def set(self, name, s):
         """Sets a support for a selection of nodes.
 
-        :param str s: A valid selection string
         :param str name: The section name
+        :param str s: A valid selection string
         """
-        sel = self.app.selections.Create(ROType.NODE)
+        sel = self._app.selections.Create(ROType.NODE)
         sel.FromText(str(s))
-        with self.app.nodes as nodes:
+        with self._app.nodes as nodes:
             nodes.SetLabel(sel, self._ltype, str(name))

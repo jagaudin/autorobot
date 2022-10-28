@@ -5,6 +5,8 @@ from RobotOM import (
     IRobotBarEndReleaseValue,
     IRobotBarForceConcentrateRecordValues,
     IRobotBarUniformRecordValues,
+    IRobotCalculationStatus,
+    IRobotCalculationMode,
     IRobotCaseAnalizeType,
     IRobotCaseNature,
     IRobotCaseType,
@@ -262,6 +264,39 @@ RBarPLValues = EnumCapsule(
 """
 Aliases for bars' point loads. For more details, see
 ``IRobotBarForceConcentrateRecordValues``.
+"""
+
+
+RCalcStatus = EnumCapsule(
+    IRobotCalculationStatus,
+    {
+        'SUCCESS': 'I_CS_COMPLETED',
+        'NO_VERIF': 'I_CS_FAILED_VERIFICATION',
+        'NO_CALC': 'I_CS_FAILED_CALCULATION',
+        'CANCEL': 'I_CS_CANCELLED_BY_USER',
+        'NO_GEN': 'I_CS_FAILED_GENERATION',
+        'PROGRESS': 'I_CS_IN_PROGRESS',
+        'NO_LICENSE': 'I_CS_FAILED_NO_ENTITLEMENT'
+    }
+)
+"""
+Aliases for calculation status. For more details, see
+``IRobotCalculationStatus``.
+"""
+
+
+RCalcMode = EnumCapsule(
+    IRobotCalculationMode,
+    {
+        'LOCAL': 'I_CM_LOCAL',
+        'LOCAL_ASYNC': 'I_CM_LOCAL_ASYNCHRONOUS',
+        'CLOUD': 'I_CM_CLOUD',
+        'CLOUD_ASYNC': 'I_CM_CLOUD_ASYNCHRONOUS',
+    }
+)
+"""
+Aliases for calculation mode. For more details, see
+``IRobotCalculationMode``.
 """
 
 

@@ -136,7 +136,7 @@ class TestSupportServer(unittest.TestCase):
 
     def test_set(self):
         self.rb.supports.create('test_set', '111111')
-        self.rb.supports.set('all', 'test_set')
+        self.rb.supports.set('test_set', 'all')
         for n in self.rb.nodes.select('all'):
             label = ar.RobotOM.IRobotLabel(
                 n.GetLabel(ar.RobotOM.IRobotLabelType.I_LT_SUPPORT))

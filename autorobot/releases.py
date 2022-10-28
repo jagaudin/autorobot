@@ -3,6 +3,7 @@ from .constants import (
     ROType,
     RReleaseValues,
 )
+from .decorators import accepts_name_as_attribute
 
 from .extensions import (
     ExtendedLabel,
@@ -92,13 +93,14 @@ class ExtendedReleaseServer(ExtendedLabelServer):
         self.StoreWithName(label, name)
         return self.get(name)
 
-    def set(self, s, name):
+    @accepts_name_as_attribute
+    def set(self, name, s):
         """Sets the releases for a selection of bars.
 
-        :param str s: A valid selection string
         :param str name: The release label name
+        :param str s: A valid selection string
         """
-        sel = self.app.selections.Create(ROType.BAR)
+        sel = self._app.selections.Create(ROType.BAR)
         sel.FromText(str(s))
-        with self.app.bars as bars:
+        with self._app.bars as bars:
             bars.SetLabel(sel, self._ltype, str(name))

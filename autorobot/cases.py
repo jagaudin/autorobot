@@ -13,6 +13,12 @@ from .extensions import (
     Capsule,
     ExtendedServer,
 )
+from .loads import (
+    ExtendedBarPLRecord,
+    ExtendedBarUDLRecord,
+    ExtendedLoadRecord,
+    ExtendedSelfWeightRecord,
+)
 from .synonyms import synonyms
 
 from .errors import (
@@ -44,9 +50,25 @@ class ExtendedSimpleCase(Capsule):
         RLoadType.BAR_PL: RBarPLValues,
     }
 
+    @staticmethod
+    def cast(record):
+        """Casts a load record object according to its type.
+
+        :param IRobotCase case: The load case object
+        """
+        if record.Type == RLoadType.DEAD:
+            return ExtendedSelfWeightRecord(IRobotLoadRecord(record))
+        elif record.Type == RLoadType.BAR_UDL:
+            return ExtendedBarUDLRecord(IRobotLoadRecord(record))
+        elif record.Type == RLoadType.BAR_PL:
+            return ExtendedBarPLRecord(IRobotLoadRecord(record))
+        else:
+            return ExtendedLoadRecord(IRobotLoadRecord(record))
+
     @property
     def loads(self):
         """The list of loads defined."""
+        self.refresh()
         n = self.Records.Count
         _loads = []
         for i in range(1, n + 1):
@@ -59,29 +81,32 @@ class ExtendedSimpleCase(Capsule):
             _loads.append(load)
         return _loads
 
-    def add_self_weight(self, s='all', factor=1., desc=''):
+    def get_load_desc(self):
+        """Returns a list of load records descriptions."""
+        return [load['Description'] for load in self.loads]
+
+    def add_self_weight(self, s='all', coeff=1., desc=''):
         """Adds self-weight forces to the structure.
 
         :param str s: A valid bar selection string (default: `'all'`')
-        :param factor: A factor applied on the self-weight
+        :param coeff: A factor applied on the self-weight
 
         .. note:
            The self-weight forces are applied in the negative Z
            direction.
         """
-        rec = IRobotLoadRecord(self.Records.Create(RLoadType.DEAD))
+        rec = self.cast(self.Records.Create(RLoadType.DEAD))
         rec.Objects.FromText(str(s))
         rec.Description = desc
-        self.set_record_value(rec, RDeadValues.Z, -1.)
-        self.set_record_value(rec, RDeadValues.COEFF, factor)
+        rec.z = -1.
+        rec.coeff = coeff
         if s.lower() == 'all':
-            self.set_record_value(rec, RDeadValues.ENTIRE_STRUCT, True)
+            rec.entire_struct = True
+        return rec
 
-    def add_bar_udl(self, s, fx=0., fy=0., fz=0.,
-                    alpha=0., beta=0., gamma=0.,
-                    is_local=False, is_proj=False, is_relative=False,
-                    offset_y=0., offset_z=0.,
-                    unit=1e3, unit_angle=np.pi / 180, desc=''):
+    def add_bar_udl(self, s, fx=0., fy=0., fz=0., alpha=0., beta=0., gamma=0.,
+                    is_local=False, is_projected=False, is_relative=False,
+                    offset_y=0., offset_z=0., desc=''):
         """Adds a uniformly distributed load on a selection of bars.
 
         :param str s: A valid bar selection string
@@ -92,32 +117,26 @@ class ExtendedSimpleCase(Capsule):
         :param bool is_proj: Whether the force is projected
         :param boll is_relative: Whether the position `x` is relative
         :param float offset_y, offset_z: Force vector offset from the bar
-        :param float unit: A multiplication factor for the force input
-        :param float unit_angle: A multiplication factor for angle input
         """
-        rec = IRobotLoadRecord(self.Records.Create(RLoadType.BAR_UDL))
+        rec = self.cast(self.Records.Create(RLoadType.BAR_UDL))
         rec.Objects.FromText(str(s))
         rec.Description = desc
-        rec_values = {
-            RBarUDLValues.FX: fx * unit,
-            RBarUDLValues.FY: fy * unit,
-            RBarUDLValues.FZ: fz * unit,
-            RBarUDLValues.ALPHA: alpha * unit_angle,
-            RBarUDLValues.BETA: beta * unit_angle,
-            RBarUDLValues.GAMMA: gamma * unit_angle,
-            RBarUDLValues.IS_LOC: is_local,
-            RBarUDLValues.IS_PROJ: is_proj,
-            RBarUDLValues.IS_REL: is_relative,
-            RBarUDLValues.OFFSET_Y: offset_y,
-            RBarUDLValues.OFFSET_Z: offset_z,
-        }
-        for k, v in rec_values.items():
-            self.set_record_value(rec, k, v)
+        rec.fx = fx
+        rec.fy = fy
+        rec.fz = fz
+        rec.alpha = alpha
+        rec.beta = beta
+        rec.gamma = gamma
+        rec.is_local = is_local
+        rec.is_projected = is_projected
+        rec.is_relative = is_relative
+        rec.offset_y = offset_y
+        rec.offset_z = offset_z
+        return rec
 
     def add_bar_pl(self, s, x=0., fx=0., fy=0., fz=0., alpha=0.,
                    beta=0., gamma=0., is_local=False, is_relative=False,
-                   offset_y=0., offset_z=0.,
-                   unit=1e3, unit_angle=np.pi / 180, desc=''):
+                   offset_y=0., offset_z=0., desc=''):
         """Adds a point load on a selection of bars.
 
         :param str s: A valid bar selection string
@@ -128,27 +147,22 @@ class ExtendedSimpleCase(Capsule):
         :param bool is_local: Whether the force is defined in local coordinates
         :param bool is_relative: Whether the position ``x`` is relative
         :param float offset_y, offset_z: Force vector offset from the bar
-        :param float unit: A multiplication factor for the force input
-        :param float unit_angle: A multiplication factor for angle input
         """
-        rec = IRobotLoadRecord(self.Records.Create(RLoadType.BAR_PL))
+        rec = self.cast(self.Records.Create(RLoadType.BAR_PL))
         rec.Objects.FromText(str(s))
         rec.Description = desc
-        rec_values = {
-            RBarPLValues.X: x,
-            RBarPLValues.FX: fx * unit,
-            RBarPLValues.FY: fy * unit,
-            RBarPLValues.FZ: fz * unit,
-            RBarPLValues.ALPHA: alpha * unit_angle,
-            RBarPLValues.BETA: beta * unit_angle,
-            RBarPLValues.GAMMA: gamma * unit_angle,
-            RBarPLValues.IS_LOC: is_local,
-            RBarPLValues.IS_REL: is_relative,
-            RBarPLValues.OFFSET_Y: offset_y,
-            RBarPLValues.OFFSET_Z: offset_z,
-        }
-        for k, v in rec_values.items():
-            self.set_record_value(rec, k, v)
+        rec.fx = fx
+        rec.fy = fy
+        rec.fz = fz
+        rec.alpha = alpha
+        rec.beta = beta
+        rec.gamma = gamma
+        rec.is_local = is_local
+        rec.is_relative = is_relative
+        rec.x = x  # x needs to be set after is_relative to get the right unit
+        rec.offset_y = offset_y
+        rec.offset_z = offset_z
+        return rec
 
     def delete(self, n):
         """Deletes the load record at index n.
@@ -162,7 +176,15 @@ class ExtendedSimpleCase(Capsule):
 
         :param int n: The load record number
         """
-        return IRobotLoadRecord(self.Records.Get(n))
+        self.refresh()
+        return self.cast(self.Records.Get(n))
+
+    def refresh(self):
+        """Refreshes the ExtendedSimpleCase with a fresh instance.
+
+           This is useful to detect load records that are defined manually.
+        """
+        self._inst = self._app.cases.get(self.Number)
 
     @staticmethod
     def get_record_value(record, key):

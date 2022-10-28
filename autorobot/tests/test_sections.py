@@ -63,7 +63,7 @@ class TestSectionServer(unittest.TestCase):
             ['Rct Solid', random() * 1e2, random() * 1e2, 0., 'rect'],
             ['Rect Hollow', random() + 1, random() + 1, random() / 1e2, 'rect',
                 False],
-            ['Unit', random(), 0., 0., 'round', True, '', 1.],
+            ['Unit', random(), 0., 0., 'round', True, ''],
         ]
         # Variable used later for the calculation of rectangles IX
         d0 = params[0][1]
@@ -76,7 +76,7 @@ class TestSectionServer(unittest.TestCase):
         d3 = params[3][1]
         b3 = params[3][2]
         t3 = params[3][3]
-        d4 = params[4][1] * 1e3
+        d4 = params[4][1]
         props = [
             # Expected values for d, b, t, IX, IY, IZ
             [
@@ -126,24 +126,24 @@ class TestSectionServer(unittest.TestCase):
             with self.subTest(name=param[0]):
                 label = self.rb.sections.create(*param)
                 self.assertIsInstance(label, ar.sections.ExtendedSectionLabel)
-                self.assertAlmostEqual(label.d * 1e3, prop[0])
-                self.assertAlmostEqual(label.b * 1e3, prop[1])
-                self.assertAlmostEqual(label.t * 1e3, prop[2])
+                self.assertAlmostEqual(label.d, prop[0])
+                self.assertAlmostEqual(label.b, prop[1])
+                self.assertAlmostEqual(label.t, prop[2])
                 # Test relative difference for I values as Robot may give
                 # slightly different values.
                 self.assertAlmostEqual(
-                    (label.IX * 1e12 - prop[3]) / prop[3], 0., delta=5e-3)
+                    (label.IX - prop[3]) / prop[3], 0., delta=5e-3)
                 self.assertAlmostEqual(
-                    (label.IY * 1e12 - prop[4]) / prop[3], 0., delta=5e-3)
+                    (label.IY - prop[4]) / prop[3], 0., delta=5e-3)
                 self.assertAlmostEqual(
-                    (label.IZ * 1e12 - prop[5]) / prop[3], 0., delta=5e-3)
+                    (label.IZ - prop[5]) / prop[3], 0., delta=5e-3)
 
     def test_set(self):
         self.rb.sections.create('Rnd10', 10.)
         n1 = self.rb.nodes.create(*random((3,)))
         n2 = self.rb.nodes.create(*random((3,)))
         b = self.rb.bars.create(n1, n2)
-        self.rb.sections.set('all', 'Rnd10')
+        self.rb.sections.set('Rnd10', 'all')
         for b in self.rb.bars.select('all'):
             label = ar.RobotOM.IRobotLabel(
                 b.GetLabel(ar.RobotOM.IRobotLabelType.I_LT_BAR_SECTION))

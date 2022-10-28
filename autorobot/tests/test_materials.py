@@ -103,7 +103,7 @@ class TestMaterialServer(unittest.TestCase):
         n1 = self.rb.nodes.create(*random((3,)))
         n2 = self.rb.nodes.create(*random((3,)))
         b = self.rb.bars.create(n1, n2)
-        self.rb.materials.set('all', 'STEEL')
+        self.rb.materials.set('STEEL', 'all')
         for b in self.rb.bars.select('all'):
             label = ar.RobotOM.IRobotLabel(
                 b.GetLabel(ar.RobotOM.IRobotLabelType.I_LT_MATERIAL))

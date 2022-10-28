@@ -4,9 +4,26 @@ from functools import wraps
 import autorobot.app as app
 from .errors import (
     AutoRobotInitError,
+    AutoRobotValueError,
     COMException
 )
 
+
+def accepts_name_as_attribute(func):
+    """Method decorator to accept objects with an attribute Name as well as str.
+
+       .. caution::
+          The *name* argument must come in second position after *self*.
+    """
+    @wraps(func)
+    def wrapper(self, value, *args, **kwargs):
+        if isinstance(value, str):
+            func(self, value, *args, **kwargs)
+        elif hasattr(value, 'Name'):
+            func(self, value.Name, *args, **kwargs)
+        else:
+            raise AutoRobotValueError(f'{value} has no attribute `Name`.')
+    return wrapper
 
 def defaults_to_none(func):
     """Method decorator to catch ``COMException`` and return ``None``.

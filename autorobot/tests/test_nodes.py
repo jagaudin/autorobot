@@ -53,7 +53,7 @@ class TestExtendedNode(unittest.TestCase):
         n = self.rb.nodes.create(*a)
         assert_array_almost_equal(a, n.as_array())
         b = random((3,))
-        n.X, n.Y, n.Z = b
+        n.x, n.y, n.z = b
         assert_array_almost_equal(b, n.as_array())
 
     def test_non_override_internal_attribute(self):

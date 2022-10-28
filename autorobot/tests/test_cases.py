@@ -41,25 +41,25 @@ class TestExtendedSimpleCase(unittest.TestCase):
         n2 = self.rb.nodes.create(*random((3,)))
         bar = self.rb.bars.create(n1, n2)
         case = self.rb.cases.create_case(1, 'case 1', 'PERM', 'LINEAR')
-        factor = random()
-        case.add_self_weight(factor=factor, desc='sw fact')
+        coeff = random()
+        case.add_self_weight(coeff=coeff, desc='sw fact')
         rec = case.get(1)
         self.assertEqual(
-            case.get_record_value(rec, ar.constants.RDeadValues.COEFF), factor)
+            case.get_record_value(rec, ar.constants.RDeadValues.COEFF), coeff)
 
     def test_set_record_value(self):
         n1 = self.rb.nodes.create(*random((3,)))
         n2 = self.rb.nodes.create(*random((3,)))
         bar = self.rb.bars.create(n1, n2)
         case = self.rb.cases.create_case(1, 'case 1', 'PERM', 'LINEAR')
-        factor = random()
+        coeff = random()
         case.add_self_weight(desc='sw')
         rec = case.get(1)
         self.assertEqual(
             case.get_record_value(rec, ar.constants.RDeadValues.COEFF), 1.)
-        case.set_record_value(rec, ar.constants.RDeadValues.COEFF, factor)
+        case.set_record_value(rec, ar.constants.RDeadValues.COEFF, coeff)
         self.assertEqual(
-            case.get_record_value(rec, ar.constants.RDeadValues.COEFF), factor)
+            case.get_record_value(rec, ar.constants.RDeadValues.COEFF), coeff)
 
 
     def test_add_self_weight(self):
@@ -89,18 +89,18 @@ class TestExtendedSimpleCase(unittest.TestCase):
                 True
             )
             case.delete(1)
-        with self.subTest(msg='factor'):
-            factor = random()
-            case.add_self_weight(s=str(other_bar.Number), factor=factor,
-                                 desc='sw fact')
+        with self.subTest(msg='coeff'):
+            coeff = random()
+            case.add_self_weight(s=str(other_bar.Number), coeff=coeff,
+                                 desc='sw coeff')
             rec = case.get(1)
             sel_str = rec.Objects.ToText().strip()
             self.assertEqual(sel_str, str(other_bar.Number))
             self.assertEqual(
                 case.get_record_value(rec, ar.constants.RDeadValues.COEFF),
-                factor
+                coeff
             )
-            self.assertEqual(rec.Description, 'sw fact')
+            self.assertEqual(rec.Description, 'sw coeff')
             self.assertEqual(
                 case.get_record_value(
                     rec, ar.constants.RDeadValues.ENTIRE_STRUCT
@@ -118,34 +118,33 @@ class TestExtendedSimpleCase(unittest.TestCase):
         fx, fy, fz, alpha, beta, gamma, offset_y, offset_z = random((8,))
         case.add_bar_udl(bar.Number, fx=fx, fy=fy, fz=fz,
                          alpha=alpha, beta=beta, gamma=gamma,
-                         offset_y=offset_y, offset_z=offset_z,
-                         unit=10., unit_angle=1.5, desc='udl')
+                         offset_y=offset_y, offset_z=offset_z, desc='udl')
         rec = case.get(1)
         sel_str = rec.Objects.ToText().strip()
         self.assertEqual(sel_str, str(bar.Number))
         self.assertEqual(
             case.get_record_value(rec, ar.constants.RBarUDLValues.FX),
-            fx * 10.
+            fx * rec._app.unit_force
         )
         self.assertEqual(
             case.get_record_value(rec, ar.constants.RBarUDLValues.FY),
-            fy * 10.
+            fy * rec._app.unit_force
         )
         self.assertEqual(
             case.get_record_value(rec, ar.constants.RBarUDLValues.FZ),
-            fz * 10.
+            fz * rec._app.unit_force
         )
         self.assertEqual(
             case.get_record_value(rec, ar.constants.RBarUDLValues.ALPHA),
-            alpha * 1.5
+            alpha * rec._app.unit_angle_in
         )
         self.assertEqual(
             case.get_record_value(rec, ar.constants.RBarUDLValues.BETA),
-            beta * 1.5
+            beta * rec._app.unit_angle_in
         )
         self.assertEqual(
             case.get_record_value(rec, ar.constants.RBarUDLValues.GAMMA),
-            gamma * 1.5
+            gamma * rec._app.unit_angle_in
         )
         self.assertEqual(
             case.get_record_value(rec, ar.constants.RBarUDLValues.IS_LOC),
@@ -179,8 +178,7 @@ class TestExtendedSimpleCase(unittest.TestCase):
         case.add_bar_pl(bar.Number, x=x, fx=fx, fy=fy, fz=fz,
                         alpha=alpha, beta=beta, gamma=gamma,
                         is_relative=True,
-                        offset_y=offset_y, offset_z=offset_z,
-                        unit=10., unit_angle=1.5, desc='pl')
+                        offset_y=offset_y, offset_z=offset_z, desc='pl')
         rec = case.get(1)
         sel_str = rec.Objects.ToText().strip()
         self.assertEqual(sel_str, str(bar.Number))
@@ -189,22 +187,25 @@ class TestExtendedSimpleCase(unittest.TestCase):
             x
         )
         self.assertEqual(
-            case.get_record_value(rec, ar.constants.RBarPLValues.FX), fx * 10.)
+            case.get_record_value(
+                rec, ar.constants.RBarPLValues.FX), fx * rec._app.unit_force)
         self.assertEqual(
-            case.get_record_value(rec, ar.constants.RBarPLValues.FY), fy * 10.)
+            case.get_record_value(
+                rec, ar.constants.RBarPLValues.FY), fy * rec._app.unit_force)
         self.assertEqual(
-            case.get_record_value(rec, ar.constants.RBarPLValues.FZ), fz * 10.)
+            case.get_record_value(
+                rec, ar.constants.RBarPLValues.FZ), fz * rec._app.unit_force)
         self.assertEqual(
             case.get_record_value(rec, ar.constants.RBarPLValues.ALPHA),
-            alpha * 1.5
+            alpha * rec._app.unit_angle_in
         )
         self.assertEqual(
             case.get_record_value(rec, ar.constants.RBarPLValues.BETA),
-            beta * 1.5
+            beta * rec._app.unit_angle_in
         )
         self.assertEqual(
             case.get_record_value(rec, ar.constants.RBarPLValues.GAMMA),
-            gamma * 1.5
+            gamma * rec._app.unit_angle_in
         )
         self.assertEqual(
             case.get_record_value(rec, ar.constants.RBarPLValues.IS_LOC), False)

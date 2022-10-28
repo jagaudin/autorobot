@@ -1,6 +1,8 @@
 from abc import ABC
 from functools import wraps
 
+import autorobot.app as app
+
 from .decorators import abstract_attributes
 from .errors import (
     AutoRobotValueError,
@@ -20,6 +22,7 @@ class Capsule(ABC):
     The ``Capsule`` class allow reaad/write access to existing attributes of
     the encapsulated instance.
     """
+    shadowed_attr = ['_inst']
 
     def __init__(self, inst):
         """Initialize a Capsule instance.
@@ -31,6 +34,7 @@ class Capsule(ABC):
            The instance must be of type ``_otype``.
         """
         self._inst = inst
+        self._app = app.get_app()
         if not isinstance(inst, self._otype):
             raise AutoRobotValueError(
                 f"{inst} is not an instance of `{str(self._otype)}`.")
@@ -43,7 +47,7 @@ class Capsule(ABC):
         :raise AttributeError: When the encapsulated instance lookup fails
         """
         # Called when the default attribute access fails
-        if name != '_inst' and hasattr(self._inst, name):
+        if name not in self.shadowed_attr and hasattr(self._inst, name):
             return getattr(self._inst, name)
         raise AttributeError(
             f"{self.__class__.__name__} has no attribute '{name}'.")
@@ -81,7 +85,7 @@ class ExtendedServer(Capsule, ABC):
 
     """
 
-    def __init__(self, inst, app):
+    def __init__(self, inst):
         """
         Initializes an ``ExtendedServer`` instance.
 
@@ -89,7 +93,6 @@ class ExtendedServer(Capsule, ABC):
         :param obj app: The application instance
         """
         super(ExtendedServer, self).__init__(inst)
-        self.app = app
         self.server = inst
 
     def __enter__(self):
@@ -129,7 +132,7 @@ class ExtendedServer(Capsule, ABC):
         :param bool obj: Whether to return the objects or their numbers.
         :return: A generator of the selected objects
         """
-        sel = self.app.selections.Create(self._dtype)
+        sel = self._app.selections.Create(self._dtype)
         sel.FromText(str(s))
         if not obj:
             for i in range(sel.Count):
@@ -144,7 +147,7 @@ class ExtendedServer(Capsule, ABC):
 
         :param str s: A valid selection string
         """
-        sel = self.app.selections.Create(self._dtype)
+        sel = self._app.selections.Create(self._dtype)
         sel.FromText(str(s))
         self.DeleteMany(sel)
 
@@ -170,6 +173,9 @@ class ExtendedLabel(Capsule, ABC):
         """The string representation of a label."""
         return self.Name
 
+    def save_data(self):
+        self._app.Project.Structure.Labels.StoreWithName(self._inst, self.Name)
+
 
 @abstract_attributes('_otype', '_ctype', '_ltype', '_dtype', '_rtype')
 class ExtendedLabelServer(Capsule, ABC):
@@ -188,7 +194,7 @@ class ExtendedLabelServer(Capsule, ABC):
 
     """
 
-    def __init__(self, inst, app):
+    def __init__(self, inst):
         """
         Initializes an ``ExtendedLabelServer`` instance.
 
@@ -196,7 +202,6 @@ class ExtendedLabelServer(Capsule, ABC):
         :param obj app: The application instance
         """
         super(ExtendedLabelServer, self).__init__(inst)
-        self.app = app
         self.server = inst
 
     def get(self, name):

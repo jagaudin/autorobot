@@ -3,6 +3,10 @@ from .constants import (
     ROType,
 )
 
+from .decorators import (
+    accepts_name_as_attribute,
+)
+
 from .extensions import (
     ExtendedLabel,
     ExtendedLabelServer,
@@ -38,53 +42,61 @@ class ExtendedSectionLabel(ExtendedLabel):
     @property
     def IX(self):
         """Torsion constant of the section."""
-        return self.data.GetValue(IRobotBarSectionDataValue.I_BSDV_IX)
+        unit = self._app.unit_section ** 4
+        return self.data.GetValue(IRobotBarSectionDataValue.I_BSDV_IX) / unit
 
     @property
     def IY(self):
         """Second moment of area in the Y axis."""
-        return self.data.GetValue(IRobotBarSectionDataValue.I_BSDV_IY)
+        unit = self._app.unit_section ** 4
+        return self.data.GetValue(IRobotBarSectionDataValue.I_BSDV_IY) / unit
 
     @property
     def IZ(self):
         """Second moment of area in the Z axis."""
-        return self.data.GetValue(IRobotBarSectionDataValue.I_BSDV_IZ)
+        unit = self._app.unit_section ** 4
+        return self.data.GetValue(IRobotBarSectionDataValue.I_BSDV_IZ) / unit
 
     @property
     def d(self):
         """Depth or diameter of the section."""
+        unit = self._app.unit_section
         if self.data.NonstdCount > 1:
             raise AutoRobotValueError("Can't get depth of tapered section.")
         elif self.data.NonstdCount == 1:
             ns_data = IRobotBarSectionNonstdData(self.data.GetNonstd(1))
             if self.data.Type == IRobotBarSectionType.I_BST_NS_TUBE:
                 return ns_data.GetValue(
-                    IRobotBarSectionNonstdDataValue.I_BSNDV_TUBE_D)
+                    IRobotBarSectionNonstdDataValue.I_BSNDV_TUBE_D) / unit
             elif self.data.Type == IRobotBarSectionType.I_BST_NS_RECT:
                 return ns_data.GetValue(
-                    IRobotBarSectionNonstdDataValue.I_BSNDV_RECT_H)
+                    IRobotBarSectionNonstdDataValue.I_BSNDV_RECT_H) / unit
         else:
-            return self.data.GetValue(IRobotBarSectionDataValue.I_BSDV_D)
+            return self.data.GetValue(
+                IRobotBarSectionDataValue.I_BSDV_D) / unit
 
     @property
     def b(self):
         """Width of the section."""
+        unit = self._app.unit_section
         if self.data.NonstdCount > 1:
             raise AutoRobotValueError("Can't get width of tapered section.")
         elif self.data.NonstdCount == 1:
             ns_data = IRobotBarSectionNonstdData(self.data.GetNonstd(1))
             if self.data.Type == IRobotBarSectionType.I_BST_NS_TUBE:
                 return ns_data.GetValue(
-                    IRobotBarSectionNonstdDataValue.I_BSNDV_TUBE_D)
+                    IRobotBarSectionNonstdDataValue.I_BSNDV_TUBE_D) / unit
             elif self.data.Type == IRobotBarSectionType.I_BST_NS_RECT:
                 return ns_data.GetValue(
-                    IRobotBarSectionNonstdDataValue.I_BSNDV_RECT_B)
+                    IRobotBarSectionNonstdDataValue.I_BSNDV_RECT_B) / unit
         else:
-            return self.data.GetValue(IRobotBarSectionDataValue.I_BSDV_BF)
+            return self.data.GetValue(
+                IRobotBarSectionDataValue.I_BSDV_BF) / unit
 
     @property
     def t(self):
         """Thickness of the section."""
+        unit = self._app.unit_section
         if self.data.NonstdCount > 1:
             raise AutoRobotValueError(
                 "Can't get thickness of tapered section.")
@@ -92,17 +104,31 @@ class ExtendedSectionLabel(ExtendedLabel):
             ns_data = IRobotBarSectionNonstdData(self.data.GetNonstd(1))
             if self.data.Type == IRobotBarSectionType.I_BST_NS_TUBE:
                 return ns_data.GetValue(
-                    IRobotBarSectionNonstdDataValue.I_BSNDV_TUBE_T)
+                    IRobotBarSectionNonstdDataValue.I_BSNDV_TUBE_T) / unit
             elif self.data.Type == IRobotBarSectionType.I_BST_NS_RECT:
                 return ns_data.GetValue(
-                    IRobotBarSectionNonstdDataValue.I_BSNDV_RECT_T)
+                    IRobotBarSectionNonstdDataValue.I_BSNDV_RECT_T) / unit
         else:
-            return self.data.GetValue(IRobotBarSectionDataValue.I_BSDV_TF)
+            return self.data.GetValue(
+                IRobotBarSectionDataValue.I_BSDV_TF) / unit
 
     @property
     def weight(self):
         """Linear weight of the section."""
-        return self.data.GetValue(IRobotBarSectionDataValue.I_BSDV_WEIGHT)
+        unit = self._app.unit_mass
+        return self.data.GetValue(
+            IRobotBarSectionDataValue.I_BSDV_WEIGHT) / unit
+
+    @property
+    def material(self):
+        """Material assigned to the section."""
+        return self.data.MaterialName
+
+    @material.setter
+    @accepts_name_as_attribute
+    def material(self, name):
+        self.data.MaterialName = name
+        self.save_data()
 
 
 class ExtendedSectionServer(ExtendedLabelServer):
@@ -118,7 +144,7 @@ class ExtendedSectionServer(ExtendedLabelServer):
     _rtype = ExtendedSectionLabel
 
     def create(self, name, h, w=0., t=0., shape='round', is_solid=True,
-               material='', unit=1e-3):
+               material=''):
         """Creates a custom section.
 
         The supported section shapes are round or rectangular, solid or
@@ -136,6 +162,7 @@ class ExtendedSectionServer(ExtendedLabelServer):
            The unit of section dimension relative to model unit (e.g. mm
            for a model in m: 1e-3)
         """
+        unit = self._app.unit_section
         h, w, t, shape = unit * h, unit * w, unit * t, str(shape).lower()
 
         shape_params = {
@@ -189,15 +216,22 @@ class ExtendedSectionServer(ExtendedLabelServer):
         self.StoreWithName(label, name)
         return self.get(name)
 
-    def set(self, s, name):
+    def get(self, name):
+        """Loads the given section if necessary and returns it."""
+        if not self.Exist(self._ltype, name):
+            self.load(name)
+        return super().get(name)
+
+    @accepts_name_as_attribute
+    def set(self, name, s):
         """Sets the section for a selection of bars.
 
-        :param str s: A valid selection string
         :param str name: The section name
+        :param str s: A valid selection string
         """
-        sel = self.app.selections.Create(ROType.BAR)
+        sel = self._app.selections.Create(ROType.BAR)
         sel.FromText(str(s))
-        with self.app.bars as bars:
+        with self._app.bars as bars:
             bars.SetLabel(sel, self._ltype, str(name))
 
     def db_list(self, func=lambda s: True):
@@ -206,7 +240,7 @@ class ExtendedSectionServer(ExtendedLabelServer):
         :param function func: A condition to filter the result
         :return: List of section database names
         """
-        db_list = self.app.Project.Preferences.SectionsFound
+        db_list = self._app.Project.Preferences.SectionsFound
         db_list = [db_list.Get(i) for i in range(1, db_list.Count + 1)]
         return [name for name in db_list if func(name)]
 
@@ -218,7 +252,7 @@ class ExtendedSectionServer(ExtendedLabelServer):
            The section database with the given name as a
            ``IRobotSectionDatabase`` instance.
         """
-        db_list = self.app.Project.Preferences.SectionsFound
+        db_list = self._app.Project.Preferences.SectionsFound
         return db_list.GetDatabase(db_list.Find(str(name)))
 
     def get_db_names(self, db_name, func=lambda s: True):

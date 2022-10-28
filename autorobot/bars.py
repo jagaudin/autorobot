@@ -8,14 +8,14 @@ from .constants import (
     RLabelType,
     ROType,
 )
-
-from .decorators import defaults_to_none
-
+from .decorators import (
+    defaults_to_none,
+    accepts_name_as_attribute,
+)
 from .extensions import (
     Capsule,
     ExtendedServer,
 )
-
 from .errors import (
     AutoRobotIdError,
     AutoRobotValueError,
@@ -37,10 +37,17 @@ class ExtendedBar(Capsule):
 
     _otype = IRobotBar
 
+    shadowed_attr = ['_inst', 'Length']
+
     def __init__(self, inst):
         """Constructor method."""
         super(ExtendedBar, self).__init__(inst)
         self.bar = inst
+
+    @property
+    def length(self):
+        """Length of the bar."""
+        return self._inst.Length / self._app.unit_length
 
     @property
     @defaults_to_none
@@ -139,26 +146,29 @@ class ExtendedBarServer(ExtendedServer):
             for b in self.select(s)
         ])
 
-    def set_section(self, s, name):
+    @accepts_name_as_attribute
+    def set_section(self, name, s):
         """Sets the section label for the given bars.
 
-        :param str s: A selection string
         :param str name: The name of the section label
+        :param str s: A selection string
         """
-        self.app.sections.set(s, name)
+        self._app.sections.set(name, s)
 
-    def set_material(self, s, name):
+    @accepts_name_as_attribute
+    def set_material(self, name, s):
         """Sets the material label for the given bars.
 
-        :param str s: A selection string
         :param str name: The name of the material label
+        :param str s: A selection string
         """
-        self.app.materials.set(s, name)
+        self._app.materials.set(name, s)
 
-    def set_release(self, s, name):
+    @accepts_name_as_attribute
+    def set_release(self, name, s):
         """Sets the release label for the given bars.
 
-        :param str s: A selection string
         :param str name: The name of the release label
+        :param str s: A selection string
         """
-        self.app.releases.set(s, name)
+        self._app.releases.set(name, s)

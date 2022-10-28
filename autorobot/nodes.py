@@ -11,7 +11,10 @@ from .extensions import (
 from .constants import (
     ROType,
 )
-from .decorators import requires_init
+from .decorators import (
+    requires_init,
+    accepts_name_as_attribute,
+)
 from .errors import (
     AutoRobotIdError,
     AutoRobotValueError,
@@ -60,6 +63,9 @@ class ExtendedNode(Capsule):
     """
 
     _otype = IRobotNode
+    # To avoid confusion, coordinates are only available through the lower case
+    # attribute which reflects the unit choice.
+    shadowed_attr = ['_inst', 'X', 'Y', 'Z']
 
     def __init__(self, inst):
         """Constructor method."""
@@ -74,12 +80,39 @@ class ExtendedNode(Capsule):
         """Casts the node to ``str``."""
         return f'Node {self.Number}: {self.as_array()}'
 
+    @property
+    def x(self):
+        """The X coordinate."""
+        return self._inst.X / self._app.unit_length
+
+    @x.setter
+    def x(self, value):
+        self._inst.X = value * self._app.unit_length
+
+    @property
+    def y(self):
+        """The Y coordinate."""
+        return self._inst.Y / self._app.unit_length
+
+    @y.setter
+    def y(self, value):
+        self._inst.Y = value * self._app.unit_length
+
+    @property
+    def z(self):
+        """The Z coordinate."""
+        return self._inst.Z / self._app.unit_length
+
+    @z.setter
+    def z(self, value):
+        self._inst.Z = value * self._app.unit_length
+
     def as_array(self):
         """Returns an array with the node's coordinates.
 
         :return: A numpy array of coordinates
         """
-        return np.array([self.node.X, self.node.Y, self.node.Z])
+        return np.array([self.x, self.y, self.z])
 
     def dist_to(self, other):
         """Returns the distance between the node and another.
@@ -168,7 +201,7 @@ class ExtendedNodeServer(ExtendedServer):
         :return: A 2d array with the nodes numbers and coordinates
         """
         return np.stack(
-            [np.array([n.Number, n.X, n.Y, n.Z]) for n in self.select(s)]
+            [np.array([n.Number, n.x, n.y, n.z]) for n in self.select(s)]
         )
 
     def from_array(self, a, num=None, obj=True, overwrite=False):
@@ -206,10 +239,11 @@ class ExtendedNodeServer(ExtendedServer):
                                    overwrite=overwrite))
         return new
 
-    def set_support(self, s, name):
+    @accepts_name_as_attribute
+    def set_support(self, name, s):
         """Sets the support label for the given nodes.
 
-        :param str s: A valid selection string
         :param str name: The name of the support label
+        :param str s: A valid selection string
         """
-        self.app.supports.set(s, name)
+        self._app.supports.set(name, s)

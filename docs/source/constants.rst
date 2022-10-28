@@ -148,6 +148,30 @@ Bar loads
    * ``OFFSET_Y``: ``IRobotBarUniformRecordValues.I_BURV_OFFSET_Y``
    * ``OFFSET_Z``: ``IRobotBarUniformRecordValues.I_BURV_OFFSET_Z``
 
+.. _const_calculations:
+
+Calculations
+------------
+
+.. autodata:: autorobot.constants.RCalcStatus
+   :annotation:
+
+   * ``SUCCESS``: ``IRobotCalculationStatus.I_CS_COMPLETED``
+   * ``NO_VERIF``: ``IRobotCalculationStatus.I_CS_FAILED_VERIFICATION``
+   * ``NO_CALC``: ``IRobotCalculationStatus.I_CS_FAILED_CALCULATION``
+   * ``CANCEL``: ``IRobotCalculationStatus.I_CS_CANCELLED_BY_USER``
+   * ``NO_GEN``: ``IRobotCalculationStatus.I_CS_FAILED_GENERATION``
+   * ``PROGRESS``: ``IRobotCalculationStatus.I_CS_IN_PROGRESS``
+   * ``NO_LICENSE``: ``IRobotCalculationStatus.I_CS_FAILED_NO_ENTITLEMENT``
+
+.. autodata:: autorobot.constants.RCalcMode
+  :annotation:
+
+  * ``LOCAL``: ``IRobotCalculationMode.I_CM_LOCAL``
+  * ``LOCAL_ASYNC``: ``IRobotCalculationMode.I_CM_LOCAL_ASYNCHRONOUS``
+  * ``CLOUD``: ``IRobotCalculationMode.I_CM_CLOUD``
+  * ``CLOUD_ASYNC``: ``IRobotCalculationMode.I_CM_CLOUD_ASYNCHRONOUS``
+
 .. _const_license:
 
 License
