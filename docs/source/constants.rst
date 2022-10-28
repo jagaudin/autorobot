@@ -65,7 +65,14 @@ Types
 
    * ``BAR``: ``IRobotObjectType.I_OT_BAR``
    * ``CASE``: ``IRobotObjectType.I_OT_CASE``
+   * ``FE``: ``IRobotObjectType.I_OT_FINITE_ELEMENT``
+   * ``GEOMETRY``: ``IRobotObjectType.I_OT_GEOMETRY``
+   * ``GROUP``: ``IRobotObjectType.I_OT_FAMILY``
    * ``NODE``: ``IRobotObjectType.I_OT_NODE``
+   * ``OBJECT``: ``IRobotObjectType.I_OT_OBJECT``
+   * ``PANEL``: ``IRobotObjectType.I_OT_PANEL``
+   * ``UNDEFINED``: ``IRobotObjectType.I_OT_UNDEFINED``
+   * ``VOLUME``: ``IRobotObjectType.I_OT_VOLUME``
 
 .. autodata:: autorobot.RLabelType
    :annotation:
@@ -147,6 +154,20 @@ Bar loads
    * ``IS_REL``: ``IRobotBarUniformRecordValues.I_BURV_RELATIVE``
    * ``OFFSET_Y``: ``IRobotBarUniformRecordValues.I_BURV_OFFSET_Y``
    * ``OFFSET_Z``: ``IRobotBarUniformRecordValues.I_BURV_OFFSET_Z``
+
+.. _const_editing:
+
+Editing
+-------
+
+.. autoclass:: REditOpt
+   :no-members:
+
+   .. autoattribute:: COPY
+      :annotation:  = IRobotTranslateOptions.COPY
+   .. autoattribute:: MOVE
+      :annotation:  = IRobotTranslateOptions.MOVE
+
 
 .. _const_license:
 

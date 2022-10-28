@@ -1,8 +1,11 @@
+import numpy as np
+
 from .constants import (
+    RAnalysisType,
     RCaseNature,
     RCombType,
+    ROType,
     RProjType,
-    RAnalysisType
 )
 
 class ColanderDict(dict):
@@ -13,6 +16,9 @@ class ColanderDict(dict):
         return key
 
 synonyms = ColanderDict({
+    'BAR': ROType.BAR,
+    'NODE': ROType.NODE,
+
     'BUILDING': RProjType.BUILDING,
     'FRAME_2D': RProjType.FRAME_2D,
     'FRAME_3D': RProjType.FRAME_3D,

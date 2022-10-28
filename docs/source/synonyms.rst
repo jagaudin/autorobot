@@ -60,6 +60,9 @@ This comes handy when creating load cases' combinations in particular.
 
    The predefined synonyms are:
 
+    * ``'BAR'``: :py:data:`autorobot.ROType` ``.BAR``
+    * ``'NODE'``: :py:data:`autorobot.ROType` ``.NODE``
+
     * ``'BUILDING'``: :py:data:`autorobot.RProjType` ``.BUILDING``
     * ``'FRAME_2D'``: :py:data:`autorobot.RProjType` ``.FRAME_2D``
     * ``'FRAME_3D'``: :py:data:`autorobot.RProjType` ``.FRAME_3D``

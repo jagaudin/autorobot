@@ -18,6 +18,7 @@ from RobotOM import (
     IRobotObjectType,
     IRobotProjectType,
     IRobotQuitOption,
+    IRobotTranslateOptions,
 )
 
 
@@ -29,6 +30,7 @@ __all__ = [
     'RCaseType',
     'RCombType',
     'RDeadValues',
+    'REditOpt',
     'RLabelType',
     'RLicense',
     'RLicenseStatus',
@@ -76,7 +78,14 @@ ROType = EnumCapsule(
     {
         'BAR': 'I_OT_BAR',
         'CASE': 'I_OT_CASE',
-        'NODE': 'I_OT_NODE'
+        'FE': 'I_OT_FINITE_ELEMENT',
+        'GEOMETRY': 'I_OT_GEOMETRY',
+        'GROUP': 'I_OT_FAMILY',
+        'NODE': 'I_OT_NODE',
+        'OBJECT': 'I_OT_OBJECT',
+        'PANEL': 'I_OT_PANEL',
+        'UNDEFINED': 'I_OT_UNDEFINED',
+        'VOLUME': 'I_OT_VOLUME'
     }
 )
 """
@@ -263,6 +272,18 @@ RBarPLValues = EnumCapsule(
 Aliases for bars' point loads. For more details, see
 ``IRobotBarForceConcentrateRecordValues``.
 """
+
+REditOpt = EnumCapsule(
+    IRobotTranslateOptions,
+    {
+        'COPY': 'I_TO_COPY',
+        'MOVE': 'I_TO_MOVE'
+    }
+)
+"""
+Aliases for edit options. For more details, see ``IRobotTranslateOptions``.
+"""
+
 
 
 RLicense = EnumCapsule(
