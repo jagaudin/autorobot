@@ -160,13 +160,11 @@ Bar loads
 Editing
 -------
 
-.. autoclass:: REditOpt
-   :no-members:
+.. autodata:: autorobot.constants.REditOpt
+   :annotation:
 
-   .. autoattribute:: COPY
-      :annotation:  = IRobotTranslateOptions.COPY
-   .. autoattribute:: MOVE
-      :annotation:  = IRobotTranslateOptions.MOVE
+   * ``COPY``: ``IRobotTranslateOptions.COPY``
+   * ``MOVE``: ``IRobotTranslateOptions.MOVE``
 
 
 .. _const_license:
