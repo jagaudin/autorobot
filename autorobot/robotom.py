@@ -6,7 +6,7 @@ from .errors import AutoRobotPathError
 # Searching for ``interop.RobotOM.dll``
 p = Path(r'C:\Program Files\Autodesk')
 
-suffix = r'System\EXE\interop.RobotOM.dll'
+suffix = r'EXE\interop.RobotOM.dll'
 _robot_dll_path = (
     str(p) if str(p).endswith(suffix)
     else str(next(p.rglob(suffix), ''))
