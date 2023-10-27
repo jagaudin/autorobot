@@ -9,6 +9,9 @@ from .constants import (
     RLoadType,
     ROType,
 )
+from .decorators import (
+    defaults_to_none,
+)
 from .extensions import (
     Capsule,
     ExtendedServer,
@@ -171,6 +174,7 @@ class ExtendedSimpleCase(Capsule):
         """
         self.Records.Delete(n)
 
+    @defaults_to_none
     def get(self, n):
         """Returns the load record at index n.
 
